@@ -1,6 +1,6 @@
 ﻿namespace TuningService
 {
-    partial class Form1
+    partial class MainView
     {
         /// <summary>
         /// Required designer variable.
@@ -30,14 +30,14 @@
         private void InitializeComponent()
         {
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.buttonAddNewOrder = new System.Windows.Forms.Button();
+            this.buttonRemove = new System.Windows.Forms.Button();
+            this.buttonUpdate = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button6 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.buttonShowOrder = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -51,49 +51,63 @@
             this.button1.Text = "Settings";
             this.button1.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // buttonAddNewOrder
             // 
-            this.button2.Location = new System.Drawing.Point(6, 56);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(91, 31);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Add";
-            this.button2.UseVisualStyleBackColor = true;
+            this.buttonAddNewOrder.Location = new System.Drawing.Point(6, 173);
+            this.buttonAddNewOrder.Name = "buttonAddNewOrder";
+            this.buttonAddNewOrder.Size = new System.Drawing.Size(91, 31);
+            this.buttonAddNewOrder.TabIndex = 1;
+            this.buttonAddNewOrder.Text = "Add";
+            this.buttonAddNewOrder.UseVisualStyleBackColor = true;
+            this.buttonAddNewOrder.Click += new System.EventHandler(this.buttonAddNewOrder_Click);
             // 
-            // button3
+            // buttonRemove
             // 
-            this.button3.Location = new System.Drawing.Point(6, 165);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(91, 30);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "Remove";
-            this.button3.UseVisualStyleBackColor = true;
+            this.buttonRemove.Location = new System.Drawing.Point(5, 248);
+            this.buttonRemove.Name = "buttonRemove";
+            this.buttonRemove.Size = new System.Drawing.Size(91, 30);
+            this.buttonRemove.TabIndex = 2;
+            this.buttonRemove.Text = "Remove";
+            this.buttonRemove.UseVisualStyleBackColor = true;
+            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
             // 
-            // button4
+            // buttonUpdate
             // 
-            this.button4.Location = new System.Drawing.Point(6, 129);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(91, 30);
-            this.button4.TabIndex = 3;
-            this.button4.Text = "Refresh";
-            this.button4.UseVisualStyleBackColor = true;
+            this.buttonUpdate.Location = new System.Drawing.Point(6, 284);
+            this.buttonUpdate.Name = "buttonUpdate";
+            this.buttonUpdate.Size = new System.Drawing.Size(91, 30);
+            this.buttonUpdate.TabIndex = 3;
+            this.buttonUpdate.Text = "Update";
+            this.buttonUpdate.UseVisualStyleBackColor = true;
+            this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_Click);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.buttonShowOrder);
+            this.groupBox1.Controls.Add(this.button6);
             this.groupBox1.Controls.Add(this.button5);
             this.groupBox1.Controls.Add(this.button1);
-            this.groupBox1.Controls.Add(this.button3);
-            this.groupBox1.Controls.Add(this.button4);
-            this.groupBox1.Controls.Add(this.button2);
-            this.groupBox1.Location = new System.Drawing.Point(12, 68);
+            this.groupBox1.Controls.Add(this.buttonRemove);
+            this.groupBox1.Controls.Add(this.buttonAddNewOrder);
+            this.groupBox1.Controls.Add(this.buttonUpdate);
+            this.groupBox1.Location = new System.Drawing.Point(12, 36);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(109, 207);
+            this.groupBox1.Size = new System.Drawing.Size(109, 363);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(6, 210);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(90, 32);
+            this.button6.TabIndex = 5;
+            this.button6.Text = "Edit";
+            this.button6.UseVisualStyleBackColor = true;
+            // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(6, 93);
+            this.button5.Location = new System.Drawing.Point(6, 320);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(91, 30);
             this.button5.TabIndex = 4;
@@ -103,67 +117,50 @@
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(127, 68);
+            this.dataGridView1.Location = new System.Drawing.Point(140, 12);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(574, 360);
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.Size = new System.Drawing.Size(732, 737);
             this.dataGridView1.TabIndex = 5;
             // 
-            // comboBox1
+            // buttonShowOrder
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Customers",
-            "Cars",
-            "Masters",
-            "Tuning boxes",
-            "Orders"});
-            this.comboBox1.Location = new System.Drawing.Point(127, 31);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 6;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.buttonShowOrder.Location = new System.Drawing.Point(5, 67);
+            this.buttonShowOrder.Name = "buttonShowOrder";
+            this.buttonShowOrder.Size = new System.Drawing.Size(91, 31);
+            this.buttonShowOrder.TabIndex = 6;
+            this.buttonShowOrder.Text = "Show Order";
+            this.buttonShowOrder.UseVisualStyleBackColor = true;
+            this.buttonShowOrder.Click += new System.EventHandler(this.buttonShowOrder_Click);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
-            this.label1.Location = new System.Drawing.Point(124, 12);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(122, 16);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "Please select table";
-            // 
-            // Form1
+            // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(710, 437);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBox1);
+            this.ClientSize = new System.Drawing.Size(884, 761);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.groupBox1);
-            this.MaximumSize = new System.Drawing.Size(726, 476);
-            this.MinimumSize = new System.Drawing.Size(726, 476);
-            this.Name = "Form1";
+            this.MaximumSize = new System.Drawing.Size(900, 800);
+            this.MinimumSize = new System.Drawing.Size(900, 800);
+            this.Name = "MainView";
             this.Text = "TuningService";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button buttonAddNewOrder;
+        private System.Windows.Forms.Button buttonRemove;
+        private System.Windows.Forms.Button buttonUpdate;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button buttonShowOrder;
     }
 }
