@@ -1,13 +1,19 @@
 ﻿using System.Data;
+using System.Threading.Tasks;
+using TuningService.Models;
 
 namespace TuningService.Services
 {
     public interface IDbService
     {
-        DataTable ShowAllData();
+        Task<DataTable> ShowAllDataAsync();
 
-        void DeleteCustomerById(int customerId);
+        Task DeleteCustomerByIdAsync(int customerId);
 
-        DataTable ShowOrderByTuningBoxId(int customerId);
+        Task<Order> GetOrderByTuningBoxIdAsync(int tuningBoxId);
+
+        Task<Master> GetMasterByTuningBoxIdAsync(int tuningBoxId);
+
+        Task<TuningBox> GetFulInformationAboutTuningBoxById(int tuningBoxId);
     }
 }

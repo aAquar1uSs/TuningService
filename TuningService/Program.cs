@@ -4,6 +4,7 @@ using System;
 using System.Configuration;
 using System.Windows.Forms;
 using TuningService.Services;
+using TuningService.Services.Impl;
 using TuningService.Views;
 
 namespace TuningService
@@ -16,8 +17,8 @@ namespace TuningService
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var providerr = GetServiceProvider();
-            var mainFrom = providerr.GetRequiredService<MainView>();
+            var provider = GetServiceProvider();
+            var mainFrom = provider.GetRequiredService<MainView>();
             Application.Run(mainFrom);
         }
 
@@ -31,8 +32,6 @@ namespace TuningService
             _ = serviceCollection.AddSingleton<IDbService>(_ => new DbService(sqlConn));
 
             _ = serviceCollection.AddTransient<MainView>();
-            _ = serviceCollection.AddTransient<OrderView>();
-            _ = serviceCollection.AddTransient<OrderInfoView>();
 
             return serviceCollection.BuildServiceProvider();
         }

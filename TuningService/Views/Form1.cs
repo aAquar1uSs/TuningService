@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Npgsql;
 using TuningService.Services;
 using TuningService.Views;
 
@@ -9,32 +11,24 @@ namespace TuningService
     {
         private readonly IDbService _dbService;
 
-        private readonly OrderView _orderView;
-
-        private readonly OrderInfoView _orderInfoView;
-
-        public MainView(OrderView orderView,
-            OrderInfoView orderInfoView,
-            IDbService dbService)
+        public MainView(IDbService dbService)
         {
             InitializeComponent();
             WindowState = FormWindowState.Normal;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 
             _dbService = dbService;
-            _orderView = orderView;
-            _orderInfoView = orderInfoView;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_LoadAsync(object sender, EventArgs e)
         {
             try
             {
-                FillingTable();
+                await UpdateDatabaseAsync();
                 if (dataGridView1.ColumnCount < 9)
-                    throw new Exception();
+                    throw new NpgsqlException();
             }
-            catch (Exception)
+            catch (NpgsqlException)
             {
                 MessageBox.Show("The database connection failed. Check the connection and try again.",
                                     "Error",
@@ -42,22 +36,22 @@ namespace TuningService
                                     MessageBoxIcon.Error
                                     );
                 return;
-            }   
-
-           InitHeadersInTable();
+            }
+            InitHeadersInTable();
         }
 
-        private void buttonUpdate_Click(object sender, EventArgs e)
+        private async void buttonUpdate_ClickAsync(object sender, EventArgs e)
         {
-            FillingTable();
+            await UpdateDatabaseAsync();
         }
 
         private void buttonAddNewOrder_Click(object sender, EventArgs e)
         {
-            _orderView.ShowDialog();
+            var orderView = new OrderView();
+            orderView.ShowDialog();
         }
 
-        private void buttonRemove_Click(object sender, EventArgs e)
+        private async void buttonRemove_ClickAsync(object sender, EventArgs e)
         {
             try
             {
@@ -71,9 +65,8 @@ namespace TuningService
 
                 if (result == DialogResult.No)
                     return;
-                
-                _dbService.DeleteCustomerById(customerId);
-                FillingTable();
+                await _dbService.DeleteCustomerByIdAsync(customerId);
+                await UpdateDatabaseAsync();
             }
             catch (FormatException)
             {
@@ -81,9 +74,7 @@ namespace TuningService
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
-                return;
             }
-           
         }
 
         private void InitHeadersInTable()
@@ -99,19 +90,19 @@ namespace TuningService
             dataGridView1.Columns[8].HeaderText = "Master phone";
         }
 
-        private void FillingTable()
+        private async Task UpdateDatabaseAsync()
         {
-            dataGridView1.DataSource = _dbService.ShowAllData();
+            dataGridView1.DataSource = await _dbService.ShowAllDataAsync();
         }
 
-        private void buttonShowOrder_Click(object sender, EventArgs e)
+        private async void buttonShowOrder_ClickAsync(object sender, EventArgs e)
         {
-
+            var orderInfoView = new OrderInfoView(_dbService);
             try
             {
                 var tuningBoxId = Convert.ToInt32(dataGridView1[5, dataGridView1.CurrentRow.Index].Value.ToString());
-                _orderInfoView.LoadOrder(tuningBoxId);
-                _orderInfoView.Show();
+                await orderInfoView.LoadOrderAsync(tuningBoxId);
+                orderInfoView.Show();
             }
             catch (FormatException)
             {
@@ -119,7 +110,6 @@ namespace TuningService
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
-                return;
             }
         }
     }

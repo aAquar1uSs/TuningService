@@ -69,7 +69,7 @@
             this.buttonRemove.TabIndex = 2;
             this.buttonRemove.Text = "Remove";
             this.buttonRemove.UseVisualStyleBackColor = true;
-            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_Click);
+            this.buttonRemove.Click += new System.EventHandler(this.buttonRemove_ClickAsync);
             // 
             // buttonUpdate
             // 
@@ -79,7 +79,7 @@
             this.buttonUpdate.TabIndex = 3;
             this.buttonUpdate.Text = "Update";
             this.buttonUpdate.UseVisualStyleBackColor = true;
-            this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_Click);
+            this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_ClickAsync);
             // 
             // groupBox1
             // 
@@ -131,7 +131,7 @@
             this.buttonShowOrder.TabIndex = 6;
             this.buttonShowOrder.Text = "Show Order";
             this.buttonShowOrder.UseVisualStyleBackColor = true;
-            this.buttonShowOrder.Click += new System.EventHandler(this.buttonShowOrder_Click);
+            this.buttonShowOrder.Click += new System.EventHandler(this.buttonShowOrder_ClickAsync);
             // 
             // MainView
             // 
@@ -144,7 +144,7 @@
             this.MinimumSize = new System.Drawing.Size(900, 800);
             this.Name = "MainView";
             this.Text = "TuningService";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.Form1_LoadAsync);
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);

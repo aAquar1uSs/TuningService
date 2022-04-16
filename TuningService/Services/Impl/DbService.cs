@@ -1,7 +1,10 @@
-﻿using Npgsql;
-using System.Data;
+﻿using System.Data;
+using System.Threading.Tasks;
+using Npgsql;
+using TuningService.Factories;
+using TuningService.Models;
 
-namespace TuningService.Services
+namespace TuningService.Services.Impl
 {
     public sealed class DbService : IDbService
     {
@@ -20,56 +23,122 @@ namespace TuningService.Services
             _sqlConnection = connection;
         }
 
-        public DataTable ShowAllData()
+        public async Task<DataTable> ShowAllDataAsync()
         {
-            _sqlConnection.Open();
-            var command = new NpgsqlCommand();
-            command.Connection = _sqlConnection;
-            command.CommandType = CommandType.Text;
-            command.CommandText = SqlRequestForAllData;
+            await _sqlConnection.OpenAsync();
+            var dt = new DataTable();
 
-            DataTable dt = new DataTable();
-            var reader = command.ExecuteReader();
-            if (reader.HasRows)
-                dt.Load(reader);
+            using (var command = new NpgsqlCommand())
+            {
+                command.Connection = _sqlConnection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = SqlRequestForAllData;
 
-            command.Dispose();
-            _sqlConnection.Close();
+                var reader = await command.ExecuteReaderAsync();
+                if (reader.HasRows)
+                    dt.Load(reader);
+            }
 
+            await _sqlConnection.CloseAsync();
             return dt;
         }
 
-        public void DeleteCustomerById(int customerId)
+        public async Task DeleteCustomerByIdAsync(int customerId)
         {
-            _sqlConnection.Open();
-            var command = new NpgsqlCommand();
-            command.Connection= _sqlConnection;
-            command.CommandType = CommandType.Text;
-            command.CommandText = $"DELETE FROM customer WHERE customer_id = {customerId}";
-            _ = command.ExecuteReader();
+            await _sqlConnection.OpenAsync();
+            using (var command = new NpgsqlCommand())
+            {
+                command.Connection = _sqlConnection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = $"DELETE FROM customer WHERE customer_id = {customerId}";
+                _ = await command.ExecuteReaderAsync();
+            }
 
-            command.Dispose();
-            _sqlConnection.Close();
+            await _sqlConnection.CloseAsync();
         }
 
-        public DataTable ShowOrderByTuningBoxId(int tuningBoxId)
+        public async Task<TuningBox> GetFulInformationAboutTuningBoxById(int tuningBoxId)
         {
-            _sqlConnection.Open();
-            var command = new NpgsqlCommand();
+            var order = await GetOrderByTuningBoxIdAsync(tuningBoxId);
+            var master = await GetMasterByTuningBoxIdAsync(tuningBoxId);
+
+            if (order is null || master is null)
+                return null;
+
+            return new TuningBox(tuningBoxId, master, order);
+        }
+
+        public async Task<Order> GetOrderByTuningBoxIdAsync(int tuningBoxId)
+        {
+            await _sqlConnection.OpenAsync();
+            Order order = null;
+
+            using (var command = new NpgsqlCommand())
+            {
+                command.Connection = _sqlConnection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT tuning_order.order_id, tuning_order.start_date, tuning_order.end_date,"
+                    + " tuning_order.description, tuning_order.price, tuning_order.tuning_box_id FROM tuning_order JOIN tuning_box ON"
+                    + $" tuning_order.tuning_box_id = {tuningBoxId};";
+
+                var reader = await command.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    await reader.ReadAsync();
+                    order = OrderFactory.GetOrderInstance(reader);
+                }
+            }
+            await _sqlConnection.CloseAsync();
+            return order;
+        }
+
+        public async Task<Master> GetMasterByTuningBoxIdAsync(int tuningBoxId)
+        {
+            int? masterId = null;
+
+            await _sqlConnection.OpenAsync();
+
+            using (var command = new NpgsqlCommand())
+            {
+                command.Connection = _sqlConnection;
+                command.CommandType = CommandType.Text;
+                command.CommandText =
+                    $"SELECT tuning_box.master_id FROM tuning_box WHERE tuning_box.box_id = {tuningBoxId}";
+
+                var reader = await command.ExecuteReaderAsync();
+                if (reader.HasRows)
+                {
+                    await reader.ReadAsync();
+                    masterId = reader.GetInt32(0);
+                }
+            }
+
+            await _sqlConnection.CloseAsync();
+            return await GetMasterByIdAsync(masterId);
+        }
+
+        private async Task<Master> GetMasterByIdAsync(int? masterId)
+        {
+            if (masterId is null)
+                return null;
+
+            Master master = null;
+            await _sqlConnection.OpenAsync();
+            using var command = new NpgsqlCommand();
+
             command.Connection = _sqlConnection;
             command.CommandType = CommandType.Text;
-            command.CommandText = "SELECT * FROM tuning_order JOIN tuning_box ON" 
-                + $" tuning_order.tuning_box_id = {tuningBoxId};";
+            command.CommandText = $"SELECT * FROM master WHERE master.master_id = {masterId}";
 
-            DataTable dt = new DataTable();
-            var reader = command.ExecuteReader();
+            var reader = await command.ExecuteReaderAsync();
             if (reader.HasRows)
-                dt.Load(reader);
+            {
+                await reader.ReadAsync();
+                master = MasterFactory.GetMasterInstance(reader);
+            }
 
-            command.Dispose();
-            _sqlConnection.Close();
-
-            return dt;
+            await _sqlConnection.CloseAsync();
+            return master;
         }
     }
 }
