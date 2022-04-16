@@ -48,18 +48,19 @@ namespace TuningService.Views
                 labelError.ForeColor = Color.Red;
                 labelError.Text = "There is no record of this user’s order in the database yet!";
             }
-
+            //Information about order
             labelOrderId.Text = tuningBox.OrderInfo.Id.ToString();
             labelStartDate.Text = tuningBox.OrderInfo.StartDate.ToString(CultureInfo.InvariantCulture);
             labelEndDate.Text = tuningBox.OrderInfo.EndDate.ToString(CultureInfo.InvariantCulture);
             orderDescription.Text = tuningBox.OrderInfo.Description;
             labelPrice.Text = tuningBox.OrderInfo.Price.ToString(CultureInfo.InvariantCulture);
             labelBoxId.Text = tuningBox.OrderInfo.TuningBoxId.ToString();
+            checkBoxInWork.Checked = tuningBox.OrderInfo.InWork;
 
+            //Information about master
             labelMasterName.Text = tuningBox.MasterInfo.Name;
             labelMasterSurname.Text = tuningBox.MasterInfo.Surname;
             labelMasterPhone.Text = tuningBox.MasterInfo.Phome;
         }
-
     }
 }

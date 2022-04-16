@@ -15,11 +15,13 @@ namespace TuningService.Models
 
         public decimal Price { get; set; }
 
+        public bool InWork { get; set; }
+
         public int TuningBoxId { get; set; }
 
         public Order(int id, DateTime startDate,
             DateTime endDate, string description,
-            decimal price, int boxId)
+            decimal price, int boxId, bool inWork)
         {
             Id = id;
             StartDate = startDate;
@@ -27,6 +29,7 @@ namespace TuningService.Models
             Description = description;
             Price = price;
             TuningBoxId = boxId;
+            InWork = inWork;
         }
     }
 }

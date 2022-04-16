@@ -12,7 +12,7 @@ namespace TuningService.Services.Impl
 
         private const string SqlRequestForAllData = "SELECT customer.customer_id,"
             + "concat(customer.surname,' ', customer.name, ' ', customer.lastname), customer.phone,"
-            + "car.car_id, concat(car.name, ' ', car.model), tuning_box.box_id, tuning_box.in_work,"
+            + "car.car_id, concat(car.name, ' ', car.model), tuning_box.box_id,"
             + "concat(master.name, ' ', master.surname), master.phone "
             + "FROM customer JOIN car ON customer.customer_id = car.customer_id "
             + "JOIN tuning_box ON car.car_id = tuning_box.car_id "
@@ -78,7 +78,8 @@ namespace TuningService.Services.Impl
                 command.Connection = _sqlConnection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "SELECT tuning_order.order_id, tuning_order.start_date, tuning_order.end_date,"
-                    + " tuning_order.description, tuning_order.price, tuning_order.tuning_box_id FROM tuning_order JOIN tuning_box ON"
+                    + " tuning_order.description, tuning_order.price, tuning_order.tuning_box_id, tuning_order.in_work " 
+                    + " FROM tuning_order JOIN tuning_box ON"
                     + $" tuning_order.tuning_box_id = {tuningBoxId};";
 
                 var reader = await command.ExecuteReaderAsync();
@@ -112,8 +113,8 @@ namespace TuningService.Services.Impl
                     masterId = reader.GetInt32(0);
                 }
             }
-
             await _sqlConnection.CloseAsync();
+
             return await GetMasterByIdAsync(masterId);
         }
 

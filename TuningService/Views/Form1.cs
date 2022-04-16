@@ -26,15 +26,19 @@ namespace TuningService
             {
                 await UpdateDatabaseAsync();
                 if (dataGridView1.ColumnCount < 9)
-                    throw new NpgsqlException();
+                    throw new ArgumentException();
             }
             catch (NpgsqlException)
             {
                 MessageBox.Show("The database connection failed. Check the connection and try again.",
-                                    "Error",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error
-                                    );
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return;
+            }
+            catch (ArgumentException)
+            {
                 return;
             }
             InitHeadersInTable();
@@ -65,6 +69,7 @@ namespace TuningService
 
                 if (result == DialogResult.No)
                     return;
+
                 await _dbService.DeleteCustomerByIdAsync(customerId);
                 await UpdateDatabaseAsync();
             }
@@ -104,7 +109,7 @@ namespace TuningService
                 await orderInfoView.LoadOrderAsync(tuningBoxId);
                 orderInfoView.Show();
             }
-            catch (FormatException)
+            catch (Exception)
             {
                 MessageBox.Show("Please select a user to view his order!",
                     "Error",

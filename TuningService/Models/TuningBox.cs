@@ -8,8 +8,6 @@ public sealed class TuningBox
 
     public Master MasterInfo { get; set; }
 
-    public bool OnWork { get; set; }
-
     public TuningBox(int id, Master master, Order order)
     {
         Id = order.TuningBoxId;
