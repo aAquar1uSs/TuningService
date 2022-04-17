@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Npgsql;
 using TuningService.Services;
-using TuningService.Views;
 
-namespace TuningService
+namespace TuningService.Views
 {
     public partial class MainView : Form
     {
@@ -59,6 +58,9 @@ namespace TuningService
         {
             try
             {
+                if (dataGridView1.CurrentRow is null)
+                    throw new FormatException();
+
                 var customerId = Convert.ToInt32(dataGridView1[0, dataGridView1.CurrentRow.Index].Value.ToString());
 
                 var result = MessageBox.Show("Are you sure? You want to delete the data?",
@@ -109,7 +111,7 @@ namespace TuningService
                 await orderInfoView.LoadOrderAsync(tuningBoxId);
                 orderInfoView.Show();
             }
-            catch (Exception)
+            catch (FormatException)
             {
                 MessageBox.Show("Please select a user to view his order!",
                     "Error",

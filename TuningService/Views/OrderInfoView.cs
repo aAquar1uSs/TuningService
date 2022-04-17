@@ -47,6 +47,7 @@ namespace TuningService.Views
             {
                 labelError.ForeColor = Color.Red;
                 labelError.Text = "There is no record of this user’s order in the database yet!";
+                return;
             }
             //Information about order
             labelOrderId.Text = tuningBox.OrderInfo.Id.ToString();
@@ -56,11 +57,12 @@ namespace TuningService.Views
             labelPrice.Text = tuningBox.OrderInfo.Price.ToString(CultureInfo.InvariantCulture);
             labelBoxId.Text = tuningBox.OrderInfo.TuningBoxId.ToString();
             checkBoxInWork.Checked = tuningBox.OrderInfo.InWork;
+            checkBoxInWork.AutoCheck = false;
 
             //Information about master
             labelMasterName.Text = tuningBox.MasterInfo.Name;
             labelMasterSurname.Text = tuningBox.MasterInfo.Surname;
-            labelMasterPhone.Text = tuningBox.MasterInfo.Phome;
+            labelMasterPhone.Text = tuningBox.MasterInfo.Phone;
         }
     }
 }

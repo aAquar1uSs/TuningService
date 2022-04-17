@@ -7,8 +7,8 @@ public sealed class Master
     public string Name { get; set; }
 
     public string Surname { get; set; }
-    
-    public string Phome { get; set; }
+
+    public string Phone { get; set; }
 
     public Master(int id, string name,
         string surname, string phone)
@@ -16,6 +16,6 @@ public sealed class Master
         Id = id;
         Name = name;
         Surname = surname;
-        Phome = phone;
+        Phone = phone;
     }
 }

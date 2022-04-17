@@ -11,12 +11,12 @@ namespace TuningService.Services.Impl
         private readonly NpgsqlConnection _sqlConnection;
 
         private const string SqlRequestForAllData = "SELECT customer.customer_id,"
-            + "concat(customer.surname,' ', customer.name, ' ', customer.lastname), customer.phone,"
-            + "car.car_id, concat(car.name, ' ', car.model), tuning_box.box_id,"
-            + "concat(master.name, ' ', master.surname), master.phone "
-            + "FROM customer JOIN car ON customer.customer_id = car.customer_id "
-            + "JOIN tuning_box ON car.car_id = tuning_box.car_id "
-            + "JOIN master ON tuning_box.master_id = master.master_id";
+                                                    + "concat(customer.surname,' ', customer.name, ' ', customer.lastname), customer.phone,"
+                                                    + "car.car_id, concat(car.name, ' ', car.model), tuning_box.box_id,"
+                                                    + "concat(master.name, ' ', master.surname), master.phone "
+                                                    + "FROM customer JOIN car ON customer.customer_id = car.customer_id "
+                                                    + "JOIN tuning_box ON car.car_id = tuning_box.car_id "
+                                                    + "JOIN master ON tuning_box.master_id = master.master_id";
 
         public DbService(NpgsqlConnection connection)
         {

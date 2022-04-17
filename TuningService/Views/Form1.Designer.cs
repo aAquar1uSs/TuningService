@@ -1,4 +1,4 @@
-﻿namespace TuningService
+﻿namespace TuningService.Views
 {
     partial class MainView
     {
