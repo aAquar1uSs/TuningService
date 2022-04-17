@@ -5,20 +5,20 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Npgsql;
 using TuningService.Models;
-using TuningService.Services;
 
-namespace TuningService.Views
+
+namespace TuningService.Views.Impl
 {
-    public partial class OrderInfoView : Form
+    public partial class OrderInfoView : Form, IOrderInfoView
     {
-        private readonly IDbService _dbService;
+        private static OrderInfoView _orderInfoViewInstance;
 
-        public OrderInfoView(IDbService dbService)
+        private OrderInfoView()
         {
             InitializeComponent();
-
-            _dbService = dbService;
         }
+
+        public event EventHandler<int> LoadFullInformationAboutOrder;
 
         private void OrderInfoView_Load(object sender, EventArgs e)
         {
@@ -29,8 +29,7 @@ namespace TuningService.Views
         {
             try
             {
-                var tuningBox = await _dbService.GetFulInformationAboutTuningBoxById(tuningBoxId);
-                ShowInformationAboutOrder(tuningBox);
+                LoadFullInformationAboutOrder?.Invoke(this, tuningBoxId);
             }
             catch (NpgsqlException)
             {
@@ -41,7 +40,7 @@ namespace TuningService.Views
             }
         }
 
-        private void ShowInformationAboutOrder(TuningBox tuningBox)
+        public void ShowInformationAboutOrder(TuningBox tuningBox)
         {
             if (tuningBox is null)
             {
@@ -63,6 +62,21 @@ namespace TuningService.Views
             labelMasterName.Text = tuningBox.MasterInfo.Name;
             labelMasterSurname.Text = tuningBox.MasterInfo.Surname;
             labelMasterPhone.Text = tuningBox.MasterInfo.Phone;
+        }
+
+        public static OrderInfoView GetInstance()
+        {
+            if (_orderInfoViewInstance is null || _orderInfoViewInstance.IsDisposed)
+            {
+                _orderInfoViewInstance = new OrderInfoView();
+            }
+            else
+            {
+                if (_orderInfoViewInstance.WindowState == FormWindowState.Minimized)
+                    _orderInfoViewInstance.WindowState = FormWindowState.Normal;
+            }
+
+            return _orderInfoViewInstance;
         }
     }
 }

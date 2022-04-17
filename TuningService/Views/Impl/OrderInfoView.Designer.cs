@@ -1,4 +1,4 @@
-﻿namespace TuningService.Views
+﻿namespace TuningService.Views.Impl
 {
     partial class OrderInfoView
     {

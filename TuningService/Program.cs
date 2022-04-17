@@ -1,39 +1,31 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Npgsql;
-using System;
+﻿using System;
 using System.Configuration;
 using System.Windows.Forms;
+using TuningService.Presenters;
 using TuningService.Services;
 using TuningService.Services.Impl;
 using TuningService.Views;
+using TuningService.Views.Impl;
 
 namespace TuningService
 {
-    static class Program
+    internal static class Program
     {
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var provider = GetServiceProvider();
-            var mainFrom = provider.GetRequiredService<MainView>();
-            Application.Run(mainFrom);
-        }
+            var sqlConnectionString = ConfigurationManager
+                .ConnectionStrings["ConnectionString"].ConnectionString;
 
-        private static IServiceProvider GetServiceProvider()
-        {
-            var sqlConn = new NpgsqlConnection(ConfigurationManager
-                .ConnectionStrings["ConnectionString"].ConnectionString);
+            IDbService dbService = new DbService(sqlConnectionString);
+            ICustomerService customerService = new CustomerService(sqlConnectionString);
+            IMainView view = new MainView();
 
-            var serviceCollection = new ServiceCollection();
-
-            _ = serviceCollection.AddSingleton<IDbService>(_ => new DbService(sqlConn));
-
-            _ = serviceCollection.AddTransient<MainView>();
-
-            return serviceCollection.BuildServiceProvider();
+            _ = new MainPresenter(view, sqlConnectionString, dbService, customerService);
+            Application.Run((Form) view);
         }
     }
 }
