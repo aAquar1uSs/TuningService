@@ -42,12 +42,6 @@
     <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.6.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
-    </Reference>
     <Reference Include="Npgsql, Version=6.0.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <HintPath>..\packages\Npgsql.6.0.3\lib\netstandard2.0\Npgsql.dll</HintPath>
     </Reference>
@@ -100,16 +94,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Factories\CarFactory.cs" />
+    <Compile Include="Factories\TuningBoxFactory.cs" />
+    <Compile Include="Factories\CustomerFactory.cs" />
     <Compile Include="Factories\MasterFactory.cs" />
     <Compile Include="Factories\OrderFactory.cs" />
+    <Compile Include="Models\Car.cs" />
+    <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Master.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\TuningBox.cs" />
     <Compile Include="Presenters\MainPresenter.cs" />
+    <Compile Include="Presenters\NewOrderViewPresenter.cs" />
     <Compile Include="Presenters\OrderInfoPresenter.cs" />
+    <Compile Include="Services\ICarService.cs" />
     <Compile Include="Services\ICustomerService.cs" />
     <Compile Include="Services\IDbService.cs" />
     <Compile Include="Services\IMasterService.cs" />
+    <Compile Include="Services\Impl\CarService.cs" />
     <Compile Include="Services\Impl\CustomerService.cs" />
     <Compile Include="Services\Impl\DbService.cs" />
     <Compile Include="Program.cs" />
@@ -132,12 +134,13 @@
     <Compile Include="Views\Impl\OrderInfoView.Designer.cs">
       <DependentUpon>OrderInfoView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Impl\OrderView.cs">
+    <Compile Include="Views\Impl\NewOrderView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Impl\OrderView.Designer.cs">
-      <DependentUpon>OrderView.cs</DependentUpon>
+    <Compile Include="Views\Impl\NewOrderView.Designer.cs">
+      <DependentUpon>NewOrderView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\INewOrderView.cs" />
     <Compile Include="Views\IOrderInfoView.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -154,8 +157,8 @@
     <EmbeddedResource Include="Views\Impl\OrderInfoView.resx">
       <DependentUpon>OrderInfoView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Impl\OrderView.resx">
-      <DependentUpon>OrderView.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Impl\NewOrderView.resx">
+      <DependentUpon>NewOrderView.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

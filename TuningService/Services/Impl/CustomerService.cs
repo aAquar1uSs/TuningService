@@ -3,13 +3,15 @@ using System.Data;
 using System.Threading.Tasks;
 using Npgsql;
 using NpgsqlTypes;
+using TuningService.Factories;
+using TuningService.Models;
 
 namespace TuningService.Services.Impl;
 
 public class CustomerService : ICustomerService
 {
     private readonly NpgsqlConnection _sqlConnection;
-    
+
     private const string SqlRequestSearchCustomer = "SELECT customer.customer_id,"
                                                      + "concat(customer.surname,' ', customer.name, ' ', customer.lastname), customer.phone,"
                                                      + "car.car_id, concat(car.name, ' ', car.model), tuning_box.box_id,"
@@ -36,7 +38,7 @@ public class CustomerService : ICustomerService
             command.CommandText = "DELETE FROM customer WHERE customer_id = @id";
             command.Parameters.Add("@id", NpgsqlDbType.Integer).Value = customerId;
 
-            await using (_ = await command.ExecuteReaderAsync());
+            await using (_ = await command.ExecuteReaderAsync()) { };
         }
 
         await _sqlConnection.CloseAsync();
@@ -77,5 +79,111 @@ public class CustomerService : ICustomerService
 
         await _sqlConnection.CloseAsync();
         return dataTable;
+    }
+
+    public async Task<Customer> GetCustomerByIdAsync(int customerId)
+    {
+        Customer customer = null;
+
+        await _sqlConnection.OpenAsync();
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "SELECT * FROM customer WHERE customer_id = @id";
+            command.Parameters.Add("@id", NpgsqlDbType.Integer).Value = customerId;
+
+            await using (var reader = await command.ExecuteReaderAsync())
+            {
+                if (reader.HasRows)
+                {
+                    await reader.ReadAsync();
+                    customer = CustomerFactory.GetCustomerInstance(reader);
+                }
+            }
+        }
+
+        await _sqlConnection.CloseAsync();
+
+        return customer;
+    }
+
+    public async Task InsertNewCustomerAsync(Customer customer)
+    {
+        await _sqlConnection.OpenAsync();
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "INSERT INTO customer(name, surname, lastname, phone) "
+                + "VALUES (@name, @surname, @lastname, @phone)";
+            command.Parameters.Add("@name", NpgsqlDbType.Varchar).Value = customer.Name;
+            command.Parameters.Add("@surname", NpgsqlDbType.Varchar).Value = customer.Surname;
+            command.Parameters.Add("@lastname", NpgsqlDbType.Varchar).Value = customer.Lastname;
+            command.Parameters.Add("@phone", NpgsqlDbType.Varchar).Value = customer.Phone;
+
+            await using (var reader = await command.ExecuteReaderAsync()) { };
+        }
+
+        await _sqlConnection.CloseAsync();
+    }
+
+    public async Task<int> GetCustomerIdByFullInformation(Customer customer)
+    {
+        var customerId = 0;
+
+        await _sqlConnection.OpenAsync();
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "SELECT customer_id FROM customer "
+                + "WHERE name = @name AND surname = @surname AND lastname = @lastname AND phone = @phone";
+            command.Parameters.Add("@name", NpgsqlDbType.Varchar).Value = customer.Name;
+            command.Parameters.Add("@surname", NpgsqlDbType.Varchar).Value = customer.Surname;
+            command.Parameters.Add("@lastname", NpgsqlDbType.Varchar).Value = customer.Lastname;
+            command.Parameters.Add("@phone", NpgsqlDbType.Varchar).Value = customer.Phone;
+
+            await using (var reader = await command.ExecuteReaderAsync())
+            {
+                if (reader.HasRows)
+                {
+                    await reader.ReadAsync();
+                    customerId = reader.GetInt32(0);
+                }
+            }
+        }
+
+        await _sqlConnection.CloseAsync();
+        return customerId;
+    }
+
+    public async Task<Customer> GetCustomerByCarId(int carId)
+    {
+        Customer customer = null;
+
+        await _sqlConnection.OpenAsync();
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "SELECT customer.customer_id, customer.name, "
+                + "customer.lastname, customer.surname, customer.phone "
+                + "FROM customer JOIN car c on customer.customer_id = @carId";
+            command.Parameters.Add("@carId", NpgsqlDbType.Integer).Value = carId;
+
+
+            await using (var reader = await command.ExecuteReaderAsync())
+            {
+                if (reader.HasRows)
+                {
+                    await reader.ReadAsync();
+                    customer = CustomerFactory.GetCustomerInstance(reader);
+                }
+            }
+        }
+
+        await _sqlConnection.CloseAsync();
+        return customer;
     }
 }

@@ -7,5 +7,7 @@ public interface IOrderInfoView
 {
     event EventHandler<int> LoadFullInformationAboutOrder;
 
-    public void ShowInformationAboutOrder(TuningBox tuningBox);
+    event EventHandler ChangeStateOrderEvent;
+
+    public void ShowInformationAboutOrder(Order order);
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.ComponentModel.DataAnnotations;
 
 namespace TuningService.Models
 {
@@ -9,26 +9,28 @@ namespace TuningService.Models
 
         public DateTime StartDate { get; set; }
 
+        [Required]
         public DateTime EndDate { get; set; }
 
+        [Required]
+        [StringLength(10000, MinimumLength = 3)]
         public string Description { get; set; }
 
+        [Required]
         public decimal Price { get; set; }
 
         public bool InWork { get; set; }
 
-        public int TuningBoxId { get; set; }
+        public TuningBox TuningBox { get; set; }
 
-        public Order(int id, DateTime startDate,
+        public Order(DateTime startDate,
             DateTime endDate, string description,
-            decimal price, int boxId, bool inWork)
+            decimal price, bool inWork)
         {
-            Id = id;
             StartDate = startDate;
             EndDate = endDate;
             Description = description;
             Price = price;
-            TuningBoxId = boxId;
             InWork = inWork;
         }
     }

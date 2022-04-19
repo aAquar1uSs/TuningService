@@ -4,14 +4,13 @@ public sealed class TuningBox
 {
     public int Id { get; set; }
 
-    public Order OrderInfo { get; set; }
+    public Car CarInfo { get; set; }
 
     public Master MasterInfo { get; set; }
 
-    public TuningBox(int id, Master master, Order order)
+    public TuningBox(Master master, Car carInfo)
     {
-        Id = order.TuningBoxId;
-        OrderInfo = order;
+        CarInfo = carInfo;
         MasterInfo = master;
     }
 }

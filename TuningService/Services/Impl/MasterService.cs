@@ -73,4 +73,57 @@ public class MasterService : IMasterService
         await _sqlConnection.CloseAsync();
         return master;
     }
+
+    public async Task<DataTable> GetAllMastersAsync()
+    {
+        var dt = new DataTable();
+
+        await _sqlConnection.OpenAsync();
+
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "SELECT concat(name, ' ',  surname) FROM master";
+
+            await using (var reader = await command.ExecuteReaderAsync())
+            {
+                if (reader.HasRows)
+                {
+                    dt.Load(reader);
+                }
+            }
+        }
+        await _sqlConnection.CloseAsync();
+
+        return dt;
+    }
+
+    public async Task<int> GetMasterIdByFullInformation(Master master)
+    {
+        var masterId = 0;
+
+        await _sqlConnection.OpenAsync();
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "SELECT master_id FROM master "
+                + "WHERE name = @name AND surname = @surname";
+            command.Parameters.Add("@name", NpgsqlDbType.Varchar).Value = master.Name;
+            command.Parameters.Add("@surname", NpgsqlDbType.Varchar).Value = master.Surname;
+
+            await using (var reader = await command.ExecuteReaderAsync())
+            {
+                if (reader.HasRows)
+                {
+                    await reader.ReadAsync();
+                    masterId = reader.GetInt32(0);
+                }
+            }
+        }
+
+        await _sqlConnection.CloseAsync();
+        return masterId;
+    }
 }

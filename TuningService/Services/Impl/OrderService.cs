@@ -48,5 +48,45 @@ public class OrderService : IOrderService
         return order;
     }
 
+    public async Task ChangeStateOrderByInstance(Order order)
+    {
+        await _sqlConnection.OpenAsync();
+
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "UPDATE tuning_order " 
+                                  + "SET in_work = @inWork WHERE order_id = @id;";
+
+            command.Parameters.Add("@id", NpgsqlDbType.Integer).Value = order.Id;
+            command.Parameters.Add("@inWork", NpgsqlDbType.Boolean).Value = !order.InWork;
+            order.InWork = !order.InWork;
+            await using (_ = await command.ExecuteReaderAsync()) { };
+        }
+
+        await _sqlConnection.CloseAsync();
+    }
+
+    public async Task InsertNewOrderAsync(Order order)
+    {
+        await _sqlConnection.OpenAsync();
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "INSERT INTO tuning_order(end_date, description, price, in_work, tuning_box_id) "
+                + "VALUES (@endDate, @desc, @price, @inWork, @boxId)";
+            command.Parameters.Add("@endDate", NpgsqlDbType.Date).Value = order.EndDate;
+            command.Parameters.Add("@desc", NpgsqlDbType.Text).Value = order.Description;
+            command.Parameters.Add("@price", NpgsqlDbType.Money).Value = order.Price;
+            command.Parameters.Add("@inWork", NpgsqlDbType.Boolean).Value = order.InWork;
+            command.Parameters.Add("@boxId", NpgsqlDbType.Integer).Value = order.TuningBox.Id;
+
+            await using (var reader = await command.ExecuteReaderAsync()) { };
+        }
+
+        await _sqlConnection.CloseAsync();
+    }
 }
 

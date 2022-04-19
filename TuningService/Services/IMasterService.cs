@@ -1,3 +1,4 @@
+using System.Data;
 using System.Threading.Tasks;
 using TuningService.Models;
 
@@ -8,4 +9,8 @@ public interface IMasterService
     Task<Master> GetMasterByTuningBoxIdAsync(int tuningBoxId);
 
     Task<Master> GetMasterByIdAsync(int? masterId);
+
+    Task<DataTable> GetAllMastersAsync();
+
+    Task<int> GetMasterIdByFullInformation(Master master); 
 }

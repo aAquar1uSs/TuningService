@@ -23,21 +23,43 @@ public class MainPresenter
         _dbService = dbService;
         _customerService = customerService;
         _connectionString = sqlConnection;
+
         _mainView.ShowOrderInfoViewEvent += ShowOrderInfoViewEvent;
-        _mainView.ShowAllDataEvent += ShowAllDataEvent;
+        _mainView.UpdateAllDataEvent += ShowAllDataEvent;
         _mainView.RemoveDataFromTableEvent += RemoveData;
         _mainView.SearchEvent += SearchCustomer;
+        _mainView.ShowNewOrderViewEvent += ShowNewOrderViewEvent;
     }
 
-    private async void ShowOrderInfoViewEvent(object sender, int index)
+    private void ShowOrderInfoViewEvent(object sender, int index)
     {
         var orderService = new OrderService(_connectionString);
         var masterService = new MasterService(_connectionString);
+        var carService = new CarService(_connectionString);
+
+        var tuningBoxService = new TuningBoxService(_connectionString, carService,
+            masterService, _customerService);
 
         var orderInfoView = OrderInfoView.GetInstance();
-        _ = new OrderInfoPresenter(orderInfoView, orderService, masterService);
-        await orderInfoView.LoadOrderAsync(index);
+        _ = new OrderInfoPresenter(orderInfoView, orderService, tuningBoxService);
+        orderInfoView.LoadOrderAsync(index);
         orderInfoView.Show();
+    }
+
+    private void ShowNewOrderViewEvent(object sender, EventArgs e)
+    {
+        var newOrderView = NewOrderView.GetInstance();
+
+        var orderService = new OrderService(_connectionString);
+        var masterService = new MasterService(_connectionString);
+        var carService = new CarService(_connectionString);
+        var tuningBoxService = new TuningBoxService(_connectionString, carService, 
+            masterService, _customerService);
+
+        _ = new NewOrderViewPresenter(newOrderView,carService,
+            _customerService, masterService, orderService, tuningBoxService);
+
+        newOrderView.ShowDialog();
     }
 
     private async void ShowAllDataEvent(object sender, EventArgs e)

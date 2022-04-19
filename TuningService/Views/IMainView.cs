@@ -9,7 +9,7 @@ public interface IMainView
 
     event EventHandler ShowNewOrderViewEvent;
 
-    event EventHandler ShowAllDataEvent;
+    event EventHandler UpdateAllDataEvent;
 
     event EventHandler<int> RemoveDataFromTableEvent;
 
@@ -18,4 +18,6 @@ public interface IMainView
     string SearchValue { get; set; }
 
     void SetAllDataToDataGridView(DataTable dt);
+
+    void InitHeadersInTable();
 }

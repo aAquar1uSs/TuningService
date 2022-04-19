@@ -22,12 +22,12 @@ namespace TuningService.Views.Impl
             SetEventHandlerForOrderButton();
             SetSearchEvents();
             buttonAddNewOrder.Click += (_, _) => ShowNewOrderViewEvent?.Invoke(this, EventArgs.Empty);
-            buttonUpdate.Click += (_, _) => ShowAllDataEvent?.Invoke(this, EventArgs.Empty);
+            buttonUpdate.Click += (_, _) => UpdateAllDataEvent?.Invoke(this, EventArgs.Empty);
         }
 
         public event EventHandler<int> ShowOrderInfoViewEvent;
         public event EventHandler ShowNewOrderViewEvent;
-        public event EventHandler ShowAllDataEvent;
+        public event EventHandler UpdateAllDataEvent;
         public event EventHandler<int> RemoveDataFromTableEvent;
         public event EventHandler SearchEvent;
 
@@ -35,6 +35,8 @@ namespace TuningService.Views.Impl
         public void SetAllDataToDataGridView(DataTable dt)
         {
             dataGridView1.DataSource = dt;
+            if (dataGridView1.Columns.Count == 8)
+                InitHeadersInTable();
         }
 
         private void SetEventHandlerForOrderButton()
@@ -81,7 +83,7 @@ namespace TuningService.Views.Impl
         {
             try
             {
-                ShowAllDataEvent?.Invoke(this, EventArgs.Empty);
+                UpdateAllDataEvent?.Invoke(this, EventArgs.Empty);
 
                 if (dataGridView1.ColumnCount < 9)
                     throw new ArgumentException();
@@ -93,18 +95,10 @@ namespace TuningService.Views.Impl
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
             }
             catch (ArgumentException)
             {
-                return;
             }
-        }
-
-        private void buttonAddNewOrder_Click(object sender, EventArgs e)
-        {
-            var orderView = new OrderView();
-            orderView.ShowDialog();
         }
 
         private void buttonRemove_ClickAsync(object sender, EventArgs e)
@@ -126,7 +120,7 @@ namespace TuningService.Views.Impl
                     return;
 
                 RemoveDataFromTableEvent?.Invoke(sender, customerId);
-                ShowAllDataEvent?.Invoke(this, EventArgs.Empty);
+                UpdateAllDataEvent?.Invoke(this, EventArgs.Empty);
             }
             catch (FormatException)
             {
@@ -137,7 +131,7 @@ namespace TuningService.Views.Impl
             }
         }
 
-        private void InitHeadersInTable()
+        public void InitHeadersInTable()
         {
             dataGridView1.Columns[0].HeaderText = "Id";
             dataGridView1.Columns[1].HeaderText = "Full name";
@@ -145,9 +139,8 @@ namespace TuningService.Views.Impl
             dataGridView1.Columns[3].HeaderText = "Car id";
             dataGridView1.Columns[4].HeaderText = "Car";
             dataGridView1.Columns[5].HeaderText = "Tuning box";
-            dataGridView1.Columns[6].HeaderText = "In work";
-            dataGridView1.Columns[7].HeaderText = "Master full name";
-            dataGridView1.Columns[8].HeaderText = "Master phone";
+            dataGridView1.Columns[6].HeaderText = "Master full name";
+            dataGridView1.Columns[7].HeaderText = "Master phone";
         }
     }
 }

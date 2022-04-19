@@ -19,50 +19,7 @@ namespace TuningService.Views.Impl
         }
 
         public event EventHandler<int> LoadFullInformationAboutOrder;
-
-        private void OrderInfoView_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        public async Task LoadOrderAsync(int tuningBoxId)
-        {
-            try
-            {
-                LoadFullInformationAboutOrder?.Invoke(this, tuningBoxId);
-            }
-            catch (NpgsqlException)
-            {
-                MessageBox.Show("Could not access the order table!",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
-        }
-
-        public void ShowInformationAboutOrder(TuningBox tuningBox)
-        {
-            if (tuningBox is null)
-            {
-                labelError.ForeColor = Color.Red;
-                labelError.Text = "There is no record of this user’s order in the database yet!";
-                return;
-            }
-            //Information about order
-            labelOrderId.Text = tuningBox.OrderInfo.Id.ToString();
-            labelStartDate.Text = tuningBox.OrderInfo.StartDate.ToString(CultureInfo.InvariantCulture);
-            labelEndDate.Text = tuningBox.OrderInfo.EndDate.ToString(CultureInfo.InvariantCulture);
-            orderDescription.Text = tuningBox.OrderInfo.Description;
-            labelPrice.Text = tuningBox.OrderInfo.Price.ToString(CultureInfo.InvariantCulture);
-            labelBoxId.Text = tuningBox.OrderInfo.TuningBoxId.ToString();
-            checkBoxInWork.Checked = tuningBox.OrderInfo.InWork;
-            checkBoxInWork.AutoCheck = false;
-
-            //Information about master
-            labelMasterName.Text = tuningBox.MasterInfo.Name;
-            labelMasterSurname.Text = tuningBox.MasterInfo.Surname;
-            labelMasterPhone.Text = tuningBox.MasterInfo.Phone;
-        }
+        public event EventHandler ChangeStateOrderEvent;
 
         public static OrderInfoView GetInstance()
         {
@@ -77,6 +34,65 @@ namespace TuningService.Views.Impl
             }
 
             return _orderInfoViewInstance;
+        }
+
+        private void OrderInfoView_Load(object sender, EventArgs e)
+        {
+            buttonChange.Click += ChangeStateOrderEvent;
+        }
+
+        public void LoadOrderAsync(int tuningBoxId)
+        {
+            try
+            {
+                LoadFullInformationAboutOrder?.Invoke(this, tuningBoxId);
+            }
+            catch (NpgsqlException)
+            {
+                MessageBox.Show("Could not access the order table!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        public void ShowInformationAboutOrder(Order order)
+        {
+            if (order is null)
+            {
+                MessageBox.Show("There is no record of this user’s order in the database yet!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+            //Information about order
+            labelOrderId.Text = order.Id.ToString();
+            labelStartDate.Text = order.StartDate.ToString(CultureInfo.InvariantCulture);
+            labelEndDate.Text = order.EndDate.ToString(CultureInfo.InvariantCulture);
+            orderDescription.Text = order.Description;
+            labelPrice.Text = order.Price.ToString(CultureInfo.InvariantCulture);
+            labelBoxId.Text = order.TuningBox.Id.ToString();
+            checkBoxInWork.Checked = order.InWork;
+            checkBoxInWork.AutoCheck = false;
+
+            //Information about master
+            labelMasterName.Text = order.TuningBox.MasterInfo.Name;
+            labelMasterSurname.Text = order.TuningBox.MasterInfo.Surname;
+            labelMasterPhone.Text = order.TuningBox.MasterInfo.Phone;
+
+            //Information about car
+            labelCarId.Text = order.TuningBox.CarInfo.Id.ToString();
+            lableCarName.Text = order.TuningBox.CarInfo.Name;
+            labelCarModel.Text = order.TuningBox.CarInfo.Model;
+
+            //Information about customer
+            labelCustomerId.Text = order.TuningBox.CarInfo.Owner.Id.ToString();
+            labelCustomerName.Text = order.TuningBox.CarInfo.Owner.Name;
+            labelCustomerSurname.Text = order.TuningBox.CarInfo.Owner.Surname;
+            labelCustomerLastname.Text = order.TuningBox.CarInfo.Owner.Lastname;
+            labelCustomerPhone.Text = order.TuningBox.CarInfo.Owner.Phone;
         }
     }
 }

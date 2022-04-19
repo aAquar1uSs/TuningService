@@ -29,6 +29,25 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonChange = new System.Windows.Forms.Button();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.labelCustomerPhone = new System.Windows.Forms.Label();
+            this.labelCustomerLastname = new System.Windows.Forms.Label();
+            this.labelCustomerSurname = new System.Windows.Forms.Label();
+            this.labelCustomerName = new System.Windows.Forms.Label();
+            this.labelCustomerId = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.labelCarModel = new System.Windows.Forms.Label();
+            this.lableCarName = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.labelCarId = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.checkBoxInWork = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -52,11 +71,16 @@
             this.label1 = new System.Windows.Forms.Label();
             this.labelError = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.buttonChange);
+            this.groupBox1.Controls.Add(this.groupBox4);
+            this.groupBox1.Controls.Add(this.groupBox3);
             this.groupBox1.Controls.Add(this.checkBoxInWork);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.groupBox2);
@@ -75,10 +99,173 @@
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
             this.groupBox1.Location = new System.Drawing.Point(12, 24);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(776, 390);
+            this.groupBox1.Size = new System.Drawing.Size(887, 390);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Information about order";
+            // 
+            // buttonChange
+            // 
+            this.buttonChange.Location = new System.Drawing.Point(146, 212);
+            this.buttonChange.Name = "buttonChange";
+            this.buttonChange.Size = new System.Drawing.Size(75, 29);
+            this.buttonChange.TabIndex = 23;
+            this.buttonChange.Text = "Change";
+            this.buttonChange.UseVisualStyleBackColor = true;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.labelCustomerPhone);
+            this.groupBox4.Controls.Add(this.labelCustomerLastname);
+            this.groupBox4.Controls.Add(this.labelCustomerSurname);
+            this.groupBox4.Controls.Add(this.labelCustomerName);
+            this.groupBox4.Controls.Add(this.labelCustomerId);
+            this.groupBox4.Controls.Add(this.label18);
+            this.groupBox4.Controls.Add(this.label17);
+            this.groupBox4.Controls.Add(this.label16);
+            this.groupBox4.Controls.Add(this.label15);
+            this.groupBox4.Controls.Add(this.label12);
+            this.groupBox4.Location = new System.Drawing.Point(259, 170);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(233, 213);
+            this.groupBox4.TabIndex = 22;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Owner";
+            // 
+            // labelCustomerPhone
+            // 
+            this.labelCustomerPhone.Location = new System.Drawing.Point(127, 142);
+            this.labelCustomerPhone.Name = "labelCustomerPhone";
+            this.labelCustomerPhone.Size = new System.Drawing.Size(100, 19);
+            this.labelCustomerPhone.TabIndex = 35;
+            // 
+            // labelCustomerLastname
+            // 
+            this.labelCustomerLastname.Location = new System.Drawing.Point(127, 111);
+            this.labelCustomerLastname.Name = "labelCustomerLastname";
+            this.labelCustomerLastname.Size = new System.Drawing.Size(100, 19);
+            this.labelCustomerLastname.TabIndex = 34;
+            // 
+            // labelCustomerSurname
+            // 
+            this.labelCustomerSurname.Location = new System.Drawing.Point(127, 52);
+            this.labelCustomerSurname.Name = "labelCustomerSurname";
+            this.labelCustomerSurname.Size = new System.Drawing.Size(100, 19);
+            this.labelCustomerSurname.TabIndex = 33;
+            // 
+            // labelCustomerName
+            // 
+            this.labelCustomerName.Location = new System.Drawing.Point(127, 80);
+            this.labelCustomerName.Name = "labelCustomerName";
+            this.labelCustomerName.Size = new System.Drawing.Size(100, 19);
+            this.labelCustomerName.TabIndex = 32;
+            // 
+            // labelCustomerId
+            // 
+            this.labelCustomerId.Location = new System.Drawing.Point(127, 19);
+            this.labelCustomerId.Name = "labelCustomerId";
+            this.labelCustomerId.Size = new System.Drawing.Size(100, 19);
+            this.labelCustomerId.TabIndex = 31;
+            // 
+            // label18
+            // 
+            this.label18.Location = new System.Drawing.Point(6, 142);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(79, 19);
+            this.label18.TabIndex = 30;
+            this.label18.Text = "Phone:";
+            // 
+            // label17
+            // 
+            this.label17.Location = new System.Drawing.Point(6, 111);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(79, 19);
+            this.label17.TabIndex = 29;
+            this.label17.Text = "Lastname:";
+            // 
+            // label16
+            // 
+            this.label16.Location = new System.Drawing.Point(6, 52);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(72, 19);
+            this.label16.TabIndex = 28;
+            this.label16.Text = "Surname:";
+            // 
+            // label15
+            // 
+            this.label15.Location = new System.Drawing.Point(6, 80);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(63, 19);
+            this.label15.TabIndex = 27;
+            this.label15.Text = "Name:";
+            // 
+            // label12
+            // 
+            this.label12.Location = new System.Drawing.Point(6, 19);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(63, 19);
+            this.label12.TabIndex = 27;
+            this.label12.Text = "Id:";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.labelCarModel);
+            this.groupBox3.Controls.Add(this.lableCarName);
+            this.groupBox3.Controls.Add(this.label14);
+            this.groupBox3.Controls.Add(this.label13);
+            this.groupBox3.Controls.Add(this.labelCarId);
+            this.groupBox3.Controls.Add(this.label11);
+            this.groupBox3.Location = new System.Drawing.Point(259, 22);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(233, 132);
+            this.groupBox3.TabIndex = 21;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Car";
+            // 
+            // labelCarModel
+            // 
+            this.labelCarModel.Location = new System.Drawing.Point(127, 96);
+            this.labelCarModel.Name = "labelCarModel";
+            this.labelCarModel.Size = new System.Drawing.Size(100, 19);
+            this.labelCarModel.TabIndex = 26;
+            // 
+            // lableCarName
+            // 
+            this.lableCarName.Location = new System.Drawing.Point(127, 60);
+            this.lableCarName.Name = "lableCarName";
+            this.lableCarName.Size = new System.Drawing.Size(100, 19);
+            this.lableCarName.TabIndex = 25;
+            // 
+            // label14
+            // 
+            this.label14.Location = new System.Drawing.Point(6, 96);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(63, 19);
+            this.label14.TabIndex = 24;
+            this.label14.Text = "Model:";
+            // 
+            // label13
+            // 
+            this.label13.Location = new System.Drawing.Point(6, 60);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(63, 19);
+            this.label13.TabIndex = 23;
+            this.label13.Text = "Name:";
+            // 
+            // labelCarId
+            // 
+            this.labelCarId.Location = new System.Drawing.Point(127, 23);
+            this.labelCarId.Name = "labelCarId";
+            this.labelCarId.Size = new System.Drawing.Size(100, 19);
+            this.labelCarId.TabIndex = 22;
+            // 
+            // label11
+            // 
+            this.label11.Location = new System.Drawing.Point(6, 23);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(63, 19);
+            this.label11.TabIndex = 22;
+            this.label11.Text = "Car id:";
             // 
             // checkBoxInWork
             // 
@@ -188,7 +375,7 @@
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(369, 16);
+            this.label4.Location = new System.Drawing.Point(498, 16);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(100, 23);
             this.label4.TabIndex = 7;
@@ -196,7 +383,7 @@
             // 
             // orderDescription
             // 
-            this.orderDescription.Location = new System.Drawing.Point(369, 42);
+            this.orderDescription.Location = new System.Drawing.Point(498, 42);
             this.orderDescription.Name = "orderDescription";
             this.orderDescription.ReadOnly = true;
             this.orderDescription.Size = new System.Drawing.Size(389, 298);
@@ -260,16 +447,41 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(911, 450);
             this.Controls.Add(this.labelError);
             this.Controls.Add(this.groupBox1);
             this.Name = "OrderInfoView";
             this.Text = "OrderInfoView";
             this.Load += new System.EventHandler(this.OrderInfoView_Load);
             this.groupBox1.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
+
         }
+
+        private System.Windows.Forms.Button buttonChange;
+
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label labelCustomerId;
+        private System.Windows.Forms.Label labelCustomerName;
+        private System.Windows.Forms.Label labelCustomerSurname;
+        private System.Windows.Forms.Label labelCustomerLastname;
+        private System.Windows.Forms.Label labelCustomerPhone;
+
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label labelCarId;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label lableCarName;
+        private System.Windows.Forms.Label labelCarModel;
 
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.CheckBox checkBoxInWork;
