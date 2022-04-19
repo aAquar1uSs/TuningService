@@ -29,6 +29,8 @@ public class MainPresenter
         _mainView.RemoveDataFromTableEvent += RemoveData;
         _mainView.SearchEvent += SearchCustomer;
         _mainView.ShowNewOrderViewEvent += ShowNewOrderViewEvent;
+        _mainView.ShowNewMasterView += ShowNewMasterViewEvent;
+        _mainView.ShowDeleteMasterView += ShowDeleteMasterViewEvent;
     }
 
     private void ShowOrderInfoViewEvent(object sender, int index)
@@ -60,6 +62,24 @@ public class MainPresenter
             _customerService, masterService, orderService, tuningBoxService);
 
         newOrderView.ShowDialog();
+    }
+
+    private void ShowNewMasterViewEvent(object sender, EventArgs e)
+    {
+        var newMasterView = NewMasterView.GetInstance();
+        var masterService = new MasterService(_connectionString);
+        _ = new NewMasterViewPresenter(newMasterView, masterService);
+
+        newMasterView.ShowDialog();
+    }
+
+    private void ShowDeleteMasterViewEvent(object sender, EventArgs e)
+    {
+       var deleteMasterView = DeleteMasterView.GetInstance();
+       var masterService = new MasterService(_connectionString);
+        _ = new DeleteMasterViewPresenter(deleteMasterView, masterService);
+
+        deleteMasterView.ShowDialog();
     }
 
     private async void ShowAllDataEvent(object sender, EventArgs e)

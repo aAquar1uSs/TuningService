@@ -12,17 +12,18 @@ namespace TuningService.Views.Impl
             get => textBoxSearch.Text;
             set => textBoxSearch.Text = value;
         }
-
         public MainView()
         {
             InitializeComponent();
             WindowState = FormWindowState.Normal;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 
-            SetEventHandlerForOrderButton();
+            //SetEventHandlerForOrderButton();
             SetSearchEvents();
+            buttonDeleteMaster.Click += (_, _) => ShowDeleteMasterView(this, EventArgs.Empty);
             buttonAddNewOrder.Click += (_, _) => ShowNewOrderViewEvent?.Invoke(this, EventArgs.Empty);
             buttonUpdate.Click += (_, _) => UpdateAllDataEvent?.Invoke(this, EventArgs.Empty);
+            buttonAddMaster.Click += (_, _) => ShowNewMasterView?.Invoke(this, EventArgs.Empty);
         }
 
         public event EventHandler<int> ShowOrderInfoViewEvent;
@@ -30,39 +31,14 @@ namespace TuningService.Views.Impl
         public event EventHandler UpdateAllDataEvent;
         public event EventHandler<int> RemoveDataFromTableEvent;
         public event EventHandler SearchEvent;
-
+        public event EventHandler ShowNewMasterView;
+        public event EventHandler ShowDeleteMasterView;
 
         public void SetAllDataToDataGridView(DataTable dt)
         {
             dataGridView1.DataSource = dt;
             if (dataGridView1.Columns.Count == 8)
                 InitHeadersInTable();
-        }
-
-        private void SetEventHandlerForOrderButton()
-        {
-            try
-            {
-                //DataGridHandler
-                dataGridView1.DoubleClick += (_,_) =>
-                    ShowOrderInfoViewEvent?.Invoke(this, Convert
-                        .ToInt32(dataGridView1[5, dataGridView1.CurrentRow.Index]
-                            .Value
-                            .ToString()));
-                //ButtonHandler
-                buttonShowOrder.Click += (_,_) =>
-                    ShowOrderInfoViewEvent?.Invoke(this, Convert
-                        .ToInt32(dataGridView1[5, dataGridView1.CurrentRow.Index]
-                            .Value
-                            .ToString()));
-            }
-            catch (FormatException)
-            {
-                MessageBox.Show("Please select a user to view his order!",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
         }
 
         private void SetSearchEvents()
@@ -100,7 +76,6 @@ namespace TuningService.Views.Impl
             {
             }
         }
-
         private void buttonRemove_ClickAsync(object sender, EventArgs e)
         {
             try
@@ -141,6 +116,65 @@ namespace TuningService.Views.Impl
             dataGridView1.Columns[5].HeaderText = "Tuning box";
             dataGridView1.Columns[6].HeaderText = "Master full name";
             dataGridView1.Columns[7].HeaderText = "Master phone";
+        }
+
+        private void buttonShowOrder_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+
+                var index = Convert
+                        .ToInt32(dataGridView1[5, dataGridView1.CurrentRow.Index]
+                            .Value
+                            .ToString());
+
+                //ButtonHandler
+                 ShowOrderInfoViewEvent?.Invoke(this, index);
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Please select a user to view his order!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Please select a user to view his order!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void dataGridView1_DoubleClick(object sender, EventArgs e)
+        {
+            try
+            {
+
+                var index = Convert
+                        .ToInt32(dataGridView1[5, dataGridView1.CurrentRow.Index]
+                            .Value
+                            .ToString());
+
+                //DataGridHandler
+                    ShowOrderInfoViewEvent?.Invoke(this, index);
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Please select a user to view his order!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Please select a user to view his order!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }

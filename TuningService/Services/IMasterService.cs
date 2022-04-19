@@ -12,5 +12,9 @@ public interface IMasterService
 
     Task<DataTable> GetAllMastersAsync();
 
-    Task<int> GetMasterIdByFullInformation(Master master); 
+    Task<int> GetMasterIdByFullInformation(Master master);
+
+    Task InsertNewMasterAsync(Master master);
+
+    Task DeleteMasterByFullInfo(Master master);
 }

@@ -127,7 +127,7 @@
             this.groupBox4.Controls.Add(this.label12);
             this.groupBox4.Location = new System.Drawing.Point(259, 170);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(233, 213);
+            this.groupBox4.Size = new System.Drawing.Size(248, 213);
             this.groupBox4.TabIndex = 22;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Owner";
@@ -136,28 +136,28 @@
             // 
             this.labelCustomerPhone.Location = new System.Drawing.Point(127, 142);
             this.labelCustomerPhone.Name = "labelCustomerPhone";
-            this.labelCustomerPhone.Size = new System.Drawing.Size(100, 19);
+            this.labelCustomerPhone.Size = new System.Drawing.Size(115, 19);
             this.labelCustomerPhone.TabIndex = 35;
             // 
             // labelCustomerLastname
             // 
             this.labelCustomerLastname.Location = new System.Drawing.Point(127, 111);
             this.labelCustomerLastname.Name = "labelCustomerLastname";
-            this.labelCustomerLastname.Size = new System.Drawing.Size(100, 19);
+            this.labelCustomerLastname.Size = new System.Drawing.Size(115, 19);
             this.labelCustomerLastname.TabIndex = 34;
             // 
             // labelCustomerSurname
             // 
             this.labelCustomerSurname.Location = new System.Drawing.Point(127, 52);
             this.labelCustomerSurname.Name = "labelCustomerSurname";
-            this.labelCustomerSurname.Size = new System.Drawing.Size(100, 19);
+            this.labelCustomerSurname.Size = new System.Drawing.Size(115, 19);
             this.labelCustomerSurname.TabIndex = 33;
             // 
             // labelCustomerName
             // 
             this.labelCustomerName.Location = new System.Drawing.Point(127, 80);
             this.labelCustomerName.Name = "labelCustomerName";
-            this.labelCustomerName.Size = new System.Drawing.Size(100, 19);
+            this.labelCustomerName.Size = new System.Drawing.Size(115, 19);
             this.labelCustomerName.TabIndex = 32;
             // 
             // labelCustomerId
@@ -217,7 +217,7 @@
             this.groupBox3.Controls.Add(this.label11);
             this.groupBox3.Location = new System.Drawing.Point(259, 22);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(233, 132);
+            this.groupBox3.Size = new System.Drawing.Size(245, 132);
             this.groupBox3.TabIndex = 21;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Car";
@@ -375,7 +375,7 @@
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(498, 16);
+            this.label4.Location = new System.Drawing.Point(510, 16);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(100, 23);
             this.label4.TabIndex = 7;
@@ -383,10 +383,10 @@
             // 
             // orderDescription
             // 
-            this.orderDescription.Location = new System.Drawing.Point(498, 42);
+            this.orderDescription.Location = new System.Drawing.Point(513, 42);
             this.orderDescription.Name = "orderDescription";
             this.orderDescription.ReadOnly = true;
-            this.orderDescription.Size = new System.Drawing.Size(389, 298);
+            this.orderDescription.Size = new System.Drawing.Size(374, 298);
             this.orderDescription.TabIndex = 6;
             this.orderDescription.Text = "";
             // 
@@ -450,6 +450,8 @@
             this.ClientSize = new System.Drawing.Size(911, 450);
             this.Controls.Add(this.labelError);
             this.Controls.Add(this.groupBox1);
+            this.MaximumSize = new System.Drawing.Size(927, 489);
+            this.MinimumSize = new System.Drawing.Size(927, 489);
             this.Name = "OrderInfoView";
             this.Text = "OrderInfoView";
             this.Load += new System.EventHandler(this.OrderInfoView_Load);

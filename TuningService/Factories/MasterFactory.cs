@@ -17,10 +17,9 @@ public static class MasterFactory
         return new Master(name, surname, phone) { Id = id};
     }
 
-    public static Master GetMasterInstance(string name, string surname)
+    public static Master GetMasterInstance(string name, string surname, string phone = "+1111111111111")
     {
-        var defaultNumber = "+1111111111111"; // no metter now
-        var master = new Master(name, surname, defaultNumber);
+        var master = new Master(name, surname, phone);
         var results = new List<ValidationResult>();
         var context = new ValidationContext(master);
 

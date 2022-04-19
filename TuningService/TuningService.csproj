@@ -104,7 +104,9 @@
     <Compile Include="Models\Master.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\TuningBox.cs" />
+    <Compile Include="Presenters\DeleteMasterViewPresenter.cs" />
     <Compile Include="Presenters\MainPresenter.cs" />
+    <Compile Include="Presenters\NewMasterViewPresenter.cs" />
     <Compile Include="Presenters\NewOrderViewPresenter.cs" />
     <Compile Include="Presenters\OrderInfoPresenter.cs" />
     <Compile Include="Services\ICarService.cs" />
@@ -121,12 +123,25 @@
     <Compile Include="Services\Impl\TuningBoxService.cs" />
     <Compile Include="Services\IOrderService.cs" />
     <Compile Include="Services\ITuningBoxService.cs" />
+    <Compile Include="Views\IDeleteMasterView.cs" />
     <Compile Include="Views\IMainView.cs" />
+    <Compile Include="Views\Impl\DeleteMasterView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Impl\DeleteMasterView.Designer.cs">
+      <DependentUpon>DeleteMasterView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\Impl\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\Impl\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Impl\NewMasterView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Impl\NewMasterView.Designer.cs">
+      <DependentUpon>NewMasterView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Impl\OrderInfoView.cs">
       <SubType>Form</SubType>
@@ -140,6 +155,7 @@
     <Compile Include="Views\Impl\NewOrderView.Designer.cs">
       <DependentUpon>NewOrderView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\INewMasterView.cs" />
     <Compile Include="Views\INewOrderView.cs" />
     <Compile Include="Views\IOrderInfoView.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -151,8 +167,14 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\Impl\DeleteMasterView.resx">
+      <DependentUpon>DeleteMasterView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\Impl\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Impl\NewMasterView.resx">
+      <DependentUpon>NewMasterView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Impl\OrderInfoView.resx">
       <DependentUpon>OrderInfoView.cs</DependentUpon>

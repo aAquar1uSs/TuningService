@@ -126,4 +126,41 @@ public class MasterService : IMasterService
         await _sqlConnection.CloseAsync();
         return masterId;
     }
+
+    public async Task InsertNewMasterAsync(Master master)
+    {
+        await _sqlConnection.OpenAsync();
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "INSERT INTO master (name, surname, phone) "
+                + "VALUES (@name, @surname, @phone)";
+            command.Parameters.Add("@name", NpgsqlDbType.Varchar).Value = master.Name;
+            command.Parameters.Add("@surname", NpgsqlDbType.Varchar).Value = master.Surname;
+            command.Parameters.Add("@phone", NpgsqlDbType.Varchar).Value = master.Phone;
+
+            await using (var reader = await command.ExecuteReaderAsync()) { };
+        }
+
+        await _sqlConnection.CloseAsync();
+    }
+
+    public async Task DeleteMasterByFullInfo(Master master)
+    {
+        await _sqlConnection.OpenAsync();
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "DELETE FROM master WHERE"
+                + " master.name = @name AND master.surname = @surname";
+            command.Parameters.Add("@name", NpgsqlDbType.Varchar).Value = master.Name;
+            command.Parameters.Add("@surname", NpgsqlDbType.Varchar).Value = master.Surname;
+
+            await using (var reader = await command.ExecuteReaderAsync()) { };
+        }
+
+        await _sqlConnection.CloseAsync();
+    }
 }

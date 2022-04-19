@@ -9,11 +9,15 @@ public interface IMainView
 
     event EventHandler ShowNewOrderViewEvent;
 
+    event EventHandler ShowNewMasterView;
+
     event EventHandler UpdateAllDataEvent;
 
     event EventHandler<int> RemoveDataFromTableEvent;
 
     event EventHandler SearchEvent;
+
+    event EventHandler ShowDeleteMasterView;
 
     string SearchValue { get; set; }
 
