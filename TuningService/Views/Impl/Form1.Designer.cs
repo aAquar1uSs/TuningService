@@ -34,7 +34,6 @@
             this.buttonUpdate = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonShowOrder = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
             this.buttonAddMaster = new System.Windows.Forms.Button();
             this.buttonSearch = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -49,7 +48,7 @@
             // 
             // buttonAddNewOrder
             // 
-            this.buttonAddNewOrder.Location = new System.Drawing.Point(6, 107);
+            this.buttonAddNewOrder.Location = new System.Drawing.Point(6, 83);
             this.buttonAddNewOrder.Name = "buttonAddNewOrder";
             this.buttonAddNewOrder.Size = new System.Drawing.Size(91, 31);
             this.buttonAddNewOrder.TabIndex = 1;
@@ -58,7 +57,7 @@
             // 
             // buttonRemove
             // 
-            this.buttonRemove.Location = new System.Drawing.Point(6, 182);
+            this.buttonRemove.Location = new System.Drawing.Point(6, 120);
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.Size = new System.Drawing.Size(89, 30);
             this.buttonRemove.TabIndex = 2;
@@ -68,7 +67,7 @@
             // 
             // buttonUpdate
             // 
-            this.buttonUpdate.Location = new System.Drawing.Point(5, 218);
+            this.buttonUpdate.Location = new System.Drawing.Point(5, 156);
             this.buttonUpdate.Name = "buttonUpdate";
             this.buttonUpdate.Size = new System.Drawing.Size(91, 30);
             this.buttonUpdate.TabIndex = 3;
@@ -78,14 +77,13 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.buttonShowOrder);
-            this.groupBox1.Controls.Add(this.button6);
             this.groupBox1.Controls.Add(this.buttonRemove);
             this.groupBox1.Controls.Add(this.buttonAddNewOrder);
             this.groupBox1.Controls.Add(this.buttonUpdate);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
             this.groupBox1.Location = new System.Drawing.Point(12, 75);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(109, 262);
+            this.groupBox1.Size = new System.Drawing.Size(109, 207);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Order menu";
@@ -99,15 +97,6 @@
             this.buttonShowOrder.Text = "Show Order";
             this.buttonShowOrder.UseVisualStyleBackColor = true;
             this.buttonShowOrder.Click += new System.EventHandler(this.buttonShowOrder_Click);
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(5, 144);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(90, 32);
-            this.button6.TabIndex = 5;
-            this.button6.Text = "Edit";
-            this.button6.UseVisualStyleBackColor = true;
             // 
             // buttonAddMaster
             // 
@@ -158,7 +147,7 @@
             this.groupBox2.Controls.Add(this.buttonDeleteMaster);
             this.groupBox2.Controls.Add(this.buttonAddMaster);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.groupBox2.Location = new System.Drawing.Point(12, 384);
+            this.groupBox2.Location = new System.Drawing.Point(12, 318);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(109, 99);
             this.groupBox2.TabIndex = 8;
@@ -211,7 +200,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button buttonSearch;
-        private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button buttonShowOrder;
         private System.Windows.Forms.Button buttonAddMaster;
         private System.Windows.Forms.GroupBox groupBox2;

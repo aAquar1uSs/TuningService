@@ -131,6 +131,12 @@
     <Compile Include="Views\Impl\DeleteMasterView.Designer.cs">
       <DependentUpon>DeleteMasterView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Impl\EditMenu\EditCarView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Impl\EditMenu\EditCarView.Designer.cs">
+      <DependentUpon>EditCarView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\Impl\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,6 +175,9 @@
     </Compile>
     <EmbeddedResource Include="Views\Impl\DeleteMasterView.resx">
       <DependentUpon>DeleteMasterView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Impl\EditMenu\EditCarView.resx">
+      <DependentUpon>EditCarView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Impl\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

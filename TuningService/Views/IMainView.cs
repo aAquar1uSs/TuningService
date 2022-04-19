@@ -18,7 +18,6 @@ public interface IMainView
     event EventHandler SearchEvent;
 
     event EventHandler ShowDeleteMasterView;
-
     string SearchValue { get; set; }
 
     void SetAllDataToDataGridView(DataTable dt);
