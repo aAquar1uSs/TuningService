@@ -52,7 +52,7 @@ public class NewOrderViewPresenter
     private async void AddCustomerEvent(object sender, EventArgs e)
     {
         await _customerService.InsertNewCustomerAsync(_newOrder.Customer);
-        _newOrder.Customer.Id = await _customerService.GetCustomerIdByFullInformation(_newOrder.Customer);
+        _newOrder.Customer.Id = await _customerService.GetCustomerIdByFullInformationAsync(_newOrder.Customer);
     }
 
     private async void AddCarEvent(object sender, EventArgs e)

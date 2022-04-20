@@ -29,7 +29,7 @@ public class TuningBoxService : ITuningBoxService
     public async Task<TuningBox> GetFulInformationAboutTuningBoxById(int tuningBoxId)
     {
         var car = await _carService.GetCarByTuningBoxIdAsync(tuningBoxId);
-        car.Owner = await _customerService.GetCustomerByCarId(car.Id);
+        car.Owner = await _customerService.GetCustomerByCarIdAsync(car.Id);
         var master = await _masterService.GetMasterByTuningBoxIdAsync(tuningBoxId);
 
         if (car is null || master is null)

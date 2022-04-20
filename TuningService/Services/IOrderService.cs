@@ -10,4 +10,8 @@ public interface IOrderService
     Task ChangeStateOrderByInstance(Order order);
 
     Task InsertNewOrderAsync(Order order);
+
+    Task<Order> GetOrderByIdAsync(int id);
+
+    Task UpdateOrderDataByFullInfo(Order order);
 }

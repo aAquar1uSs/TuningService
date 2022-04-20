@@ -9,13 +9,13 @@ namespace TuningService.Views
 {
     public interface IEditCarView
     {
-        event EventHandler<int> UploadDataEvent;
+        event EventHandler<int> GetCarDataEvent;
 
-        event EventHandler ChangeCarDataEvent;
+        event EventHandler UpdateCarDataEvent;
 
         public Car Car { get; set; }
 
-        public void UploadCarData(int carId);
+        public void GetCarData(int carId);
 
         public void ShowOldData();
     }

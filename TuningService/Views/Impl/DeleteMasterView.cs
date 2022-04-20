@@ -47,6 +47,15 @@ namespace TuningService.Views.Impl
         }
         private void buttonDelete_Click(object sender, EventArgs e)
         {
+            var result = MessageBox.Show("If you remove this master, remove the orders that it has executed",
+               "Information",
+               MessageBoxButtons.OKCancel,
+               MessageBoxIcon.Information);
+
+            if (result == DialogResult.Cancel)
+                return;
+
+
             var masterInfo = comboBoxMasters.Text.Split(' ');
             var name = masterInfo[0];
             var surname = masterInfo[1];

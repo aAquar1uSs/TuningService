@@ -44,7 +44,7 @@ public class CustomerService : ICustomerService
         await _sqlConnection.CloseAsync();
     }
 
-    public async Task<DataTable> SearchCustomerByValue(string value)
+    public async Task<DataTable> SearchCustomerByValueAsync(string value)
     {
         var dataTable = new DataTable();
 
@@ -128,7 +128,7 @@ public class CustomerService : ICustomerService
         await _sqlConnection.CloseAsync();
     }
 
-    public async Task<int> GetCustomerIdByFullInformation(Customer customer)
+    public async Task<int> GetCustomerIdByFullInformationAsync(Customer customer)
     {
         var customerId = 0;
 
@@ -158,7 +158,7 @@ public class CustomerService : ICustomerService
         return customerId;
     }
 
-    public async Task<Customer> GetCustomerByCarId(int carId)
+    public async Task<Customer> GetCustomerByCarIdAsync(int carId)
     {
         Customer customer = null;
 
@@ -185,5 +185,28 @@ public class CustomerService : ICustomerService
 
         await _sqlConnection.CloseAsync();
         return customer;
+    }
+
+    public async Task UpdateCustomerByFullInfoAsync(Customer customer)
+    {
+        await _sqlConnection.OpenAsync();
+
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "UPDATE customer"
+                + " SET name = @name, lastname = @lastname, surname = @surname, phone = @phone"
+                + " WHERE customer_id = @customerId;";
+            command.Parameters.Add("@name", NpgsqlDbType.Varchar).Value = customer.Name;
+            command.Parameters.Add("@lastname", NpgsqlDbType.Varchar).Value = customer.Lastname;
+            command.Parameters.Add("@surname", NpgsqlDbType.Varchar).Value = customer.Surname;
+            command.Parameters.Add("@phone", NpgsqlDbType.Varchar).Value = customer.Phone;
+            command.Parameters.Add("@customerId", NpgsqlDbType.Integer).Value = customer.Id;
+
+            await using (var reader = await command.ExecuteReaderAsync()) { };
+        }
+
+        await _sqlConnection.CloseAsync();
     }
 }

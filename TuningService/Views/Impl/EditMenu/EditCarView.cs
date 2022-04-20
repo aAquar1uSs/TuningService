@@ -17,12 +17,12 @@ namespace TuningService.Views.Impl.EditMenu
 
         public Car Car { get => _car; set => _car = value; }
 
-        public event EventHandler<int> UploadDataEvent;
-        public event EventHandler ChangeCarDataEvent;
+        public event EventHandler<int> GetCarDataEvent;
+        public event EventHandler UpdateCarDataEvent;
 
-        public void UploadCarData(int carId)
+        public void GetCarData(int carId)
         {
-            UploadDataEvent?.Invoke(this, carId);
+            GetCarDataEvent?.Invoke(this, carId);
         }
 
         private void EditCarView_Load(object sender, EventArgs e)
@@ -54,7 +54,7 @@ namespace TuningService.Views.Impl.EditMenu
                 return;
             }
 
-            ChangeCarDataEvent?.Invoke(this, EventArgs.Empty);
+            UpdateCarDataEvent?.Invoke(this, EventArgs.Empty);
 
             MessageBox.Show("Car data has been successfully updated!",
                     "Information",

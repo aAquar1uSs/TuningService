@@ -95,7 +95,7 @@ public class MainPresenter
 
     private async void SearchCustomer(object sender, EventArgs e)
     {
-        var dt = await _customerService.SearchCustomerByValue(_mainView.SearchValue);
+        var dt = await _customerService.SearchCustomerByValueAsync(_mainView.SearchValue);
         _mainView.SetAllDataToDataGridView(dt);
     }
 }

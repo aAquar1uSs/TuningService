@@ -16,8 +16,8 @@ namespace TuningService.Presenters
             _editCarView = editCarView;
             _carService = carService;
 
-            _editCarView.UploadDataEvent += UploadCarData;
-            _editCarView.ChangeCarDataEvent += UpdateOldCarData;
+            _editCarView.GetCarDataEvent += UploadCarData;
+            _editCarView.UpdateCarDataEvent += UpdateOldCarData;
         }
 
         private async void UploadCarData(object sender, int carId)

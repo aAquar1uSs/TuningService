@@ -31,7 +31,9 @@ public class OrderInfoPresenter
 
         _orderInfoView.LoadFullInformationAboutOrder += GetFullInformationAboutOrder;
         _orderInfoView.ChangeStateOrderEvent += ChangeStateOrderAsync;
-        _orderInfoView.ShowEditCarEvent += ShowEditCarViewEvent;
+        _orderInfoView.ShowEditCarEvent += ShowEditCarView;
+        _orderInfoView.ShowEditCustomerEvent += ShowEditCustomerView;
+        _orderInfoView.ShowEditOrderEvent += ShowEditOrderView;
     }
 
     private async void GetFullInformationAboutOrder(object sender, EventArgs e)
@@ -60,14 +62,34 @@ public class OrderInfoPresenter
         _orderInfoView.ShowInformationAboutOrder(_order);
     }
 
-    private void ShowEditCarViewEvent(object sender, int carId)
+    private void ShowEditCarView(object sender, int carId)
     {
         var editCarView = new EditCarView();
 
         var carService = new CarService(_connectionString);
 
         _ = new EditCarViewPresenter(editCarView, carService);
-        editCarView.UploadCarData(carId);
+        editCarView.GetCarData(carId);
         editCarView.ShowDialog();
+    }
+
+    private void ShowEditCustomerView(object sender, int customerId)
+    {
+        var editCustomerView = new EditCustomerView();
+        var customerService = new CustomerService(_connectionString);
+
+        _ = new EditCustomerViewPresenter(editCustomerView, customerService);
+        editCustomerView.GetData(customerId);
+        editCustomerView.ShowDialog();
+    }
+
+    private void ShowEditOrderView(object sender, int orderId)
+    {
+        var editOrderView = new EditOrderView();
+        var orderService = new OrderService(_connectionString);
+
+        _ = new EditOrderViewPresenter(editOrderView, orderService);
+        editOrderView.GetOldOrderData(orderId);
+        editOrderView.ShowDialog();
     }
 }

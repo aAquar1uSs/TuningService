@@ -15,14 +15,13 @@ namespace TuningService.Factories
             var endDate = reader.GetDateTime(2);
             var description = reader.GetString(3);
             var price = reader.GetDecimal(4);
-            var tuningBoxId = reader.GetInt32(5);
-            var inWork = reader.GetBoolean(6);
+            var inWork = reader.GetBoolean(5);
 
             return new Order(startDate, endDate, description, price, inWork) { Id = id};
         }
 
         public static Order GetOrderInstance(DateTime finishDate, decimal price,
-            bool inWork, string desc, TuningBox box)
+            bool inWork, string desc, TuningBox box = null)
         {
             var order = new Order(DateTime.UtcNow, finishDate, desc, price, inWork) { TuningBox = box };
             var results = new List<ValidationResult>();

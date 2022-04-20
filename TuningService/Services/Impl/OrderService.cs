@@ -28,7 +28,7 @@ public class OrderService : IOrderService
             command.Connection = _sqlConnection;
             command.CommandType = CommandType.Text;
             command.CommandText = "SELECT tuning_order.order_id, tuning_order.start_date, tuning_order.end_date,"
-                                  + " tuning_order.description, tuning_order.price, tuning_order.tuning_box_id, tuning_order.in_work "
+                                  + " tuning_order.description, tuning_order.price, tuning_order.in_work "
                                   + " FROM tuning_order JOIN tuning_box ON"
                                   + " tuning_order.tuning_box_id = @box_id";
 
@@ -82,6 +82,59 @@ public class OrderService : IOrderService
             command.Parameters.Add("@price", NpgsqlDbType.Money).Value = order.Price;
             command.Parameters.Add("@inWork", NpgsqlDbType.Boolean).Value = order.InWork;
             command.Parameters.Add("@boxId", NpgsqlDbType.Integer).Value = order.TuningBox.Id;
+
+            await using (var reader = await command.ExecuteReaderAsync()) { };
+        }
+
+        await _sqlConnection.CloseAsync();
+    }
+
+    public async Task<Order> GetOrderByIdAsync(int id)
+    {
+        Order order = null;
+
+        await _sqlConnection.OpenAsync();
+
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "SELECT tuning_order.order_id, tuning_order.start_date, tuning_order.end_date,"
+                                  + " tuning_order.description, tuning_order.price, tuning_order.in_work FROM tuning_order "
+                                  + " WHERE tuning_order.order_id = @orderId";
+
+            command.Parameters.Add("@orderId", NpgsqlDbType.Integer).Value = id;
+
+            await using (var reader = await command.ExecuteReaderAsync())
+            {
+                if (reader.HasRows)
+                {
+                    await reader.ReadAsync();
+                    order = OrderFactory.GetOrderInstance(reader);
+                }
+            }
+        }
+
+        await _sqlConnection.CloseAsync();
+        return order;
+    }
+
+    public async Task UpdateOrderDataByFullInfo(Order order)
+    {
+        await _sqlConnection.OpenAsync();
+
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "UPDATE tuning_order"
+                + " SET end_date = @endDate, description = @desc, price = @price, in_work = @inWork"
+                + " WHERE tuning_order.order_id = @orderId;";
+            command.Parameters.Add("@endDate", NpgsqlDbType.Date).Value = order.EndDate;
+            command.Parameters.Add("@desc", NpgsqlDbType.Text).Value = order.Description;
+            command.Parameters.Add("@price", NpgsqlDbType.Money).Value = order.Price;
+            command.Parameters.Add("@inWork", NpgsqlDbType.Boolean).Value = order.InWork;
+            command.Parameters.Add("@orderId", NpgsqlDbType.Integer).Value = order.Id;
 
             await using (var reader = await command.ExecuteReaderAsync()) { };
         }

@@ -116,6 +116,7 @@
             this.buttonChangeOrder.TabIndex = 24;
             this.buttonChangeOrder.Text = "Edit order";
             this.buttonChangeOrder.UseVisualStyleBackColor = true;
+            this.buttonChangeOrder.Click += new System.EventHandler(this.buttonChangeOrder_Click);
             // 
             // buttonChange
             // 
@@ -154,6 +155,7 @@
             this.buttonEditOwner.TabIndex = 36;
             this.buttonEditOwner.Text = "Edit owner";
             this.buttonEditOwner.UseVisualStyleBackColor = true;
+            this.buttonEditOwner.Click += new System.EventHandler(this.buttonEditOwner_Click);
             // 
             // labelCustomerPhone
             // 

@@ -8,13 +8,15 @@ public interface ICustomerService
 {
     Task DeleteCustomerByIdAsync(int customerId);
     
-    Task<DataTable> SearchCustomerByValue(string value);
+    Task<DataTable> SearchCustomerByValueAsync(string value);
 
     Task<Customer> GetCustomerByIdAsync(int customerId);
 
     Task InsertNewCustomerAsync(Customer customer);
 
-    Task<int> GetCustomerIdByFullInformation(Customer customer);
+    Task<int> GetCustomerIdByFullInformationAsync(Customer customer);
 
-    Task<Customer> GetCustomerByCarId(int carId);
+    Task<Customer> GetCustomerByCarIdAsync(int carId);
+
+    Task UpdateCustomerByFullInfoAsync(Customer customer);
 }

@@ -22,6 +22,8 @@ namespace TuningService.Views.Impl
         public event EventHandler LoadFullInformationAboutOrder;
         public event EventHandler ChangeStateOrderEvent;
         public event EventHandler<int> ShowEditCarEvent;
+        public event EventHandler<int> ShowEditCustomerEvent;
+        public event EventHandler<int> ShowEditOrderEvent;
 
         public static OrderInfoView GetInstance()
         {
@@ -103,6 +105,22 @@ namespace TuningService.Views.Impl
         {
             var carId = Convert.ToInt32(labelCarId.Text);
             ShowEditCarEvent?.Invoke(this, carId);
+
+            LoadFullInformationAboutOrder?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void buttonEditOwner_Click(object sender, EventArgs e)
+        {
+            var customerId = Convert.ToInt32(labelCustomerId.Text);
+            ShowEditCustomerEvent?.Invoke(this, customerId);
+
+            LoadFullInformationAboutOrder?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void buttonChangeOrder_Click(object sender, EventArgs e)
+        {
+            var orderId = Convert.ToInt32(labelOrderId.Text);
+            ShowEditOrderEvent?.Invoke(this, orderId);
 
             LoadFullInformationAboutOrder?.Invoke(this, EventArgs.Empty);
         }
