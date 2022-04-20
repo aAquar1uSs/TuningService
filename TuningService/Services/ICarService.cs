@@ -11,5 +11,7 @@ public interface ICarService
 
     Task InsertNewCarAsync(Car car);
 
-    Task<int> GetCarIdByFullInformation(Car car);
+    Task<int> GetCarIdByFullInformationAsync(Car car);
+
+    Task UpdateCarDataAsync(Car car);
 }

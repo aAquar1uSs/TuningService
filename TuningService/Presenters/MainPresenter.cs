@@ -43,7 +43,8 @@ public class MainPresenter
             masterService, _customerService);
 
         var orderInfoView = OrderInfoView.GetInstance();
-        _ = new OrderInfoPresenter(orderInfoView, orderService, tuningBoxService);
+        _ = new OrderInfoPresenter(orderInfoView, orderService,
+            tuningBoxService,_connectionString);
         orderInfoView.LoadOrderAsync(index);
         orderInfoView.Show();
     }

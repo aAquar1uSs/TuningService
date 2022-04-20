@@ -12,12 +12,11 @@ public static class CarFactory
         var id = reader.GetInt32(0);
         var name = reader.GetString(1);
         var model = reader.GetString(2);
-       // var customerId = reader.GetInt32(3);
 
         return new Car(name, model) { Id = id};
     }
 
-    public static Car GetCarInstance(string name, string model, Customer customer)
+    public static Car GetCarInstance(string name, string model, Customer customer = null)
     {
         var car = new Car(name, model) { Owner = customer };
         var results = new List<ValidationResult>();

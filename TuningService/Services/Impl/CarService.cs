@@ -57,7 +57,7 @@ public class CarService : ICarService
 
         command.Connection = _sqlConnection;
         command.CommandType = CommandType.Text;
-        command.CommandText = "SELECT car_id, name, model, customer_id FROM car WHERE car.car_id = @car_id";
+        command.CommandText = "SELECT car_id, name, model FROM car WHERE car.car_id = @car_id";
 
         command.Parameters.Add("@car_id", NpgsqlDbType.Integer).Value = carId;
 
@@ -94,7 +94,7 @@ public class CarService : ICarService
         await _sqlConnection.CloseAsync();
     }
 
-    public async Task<int> GetCarIdByFullInformation(Car car)
+    public async Task<int> GetCarIdByFullInformationAsync(Car car)
     {
         var carId = 0;
 
@@ -121,5 +121,25 @@ public class CarService : ICarService
 
         await _sqlConnection.CloseAsync();
         return carId;
+    }
+
+    public async Task UpdateCarDataAsync(Car car)
+    {
+        await _sqlConnection.OpenAsync();
+
+        using (var command = new NpgsqlCommand())
+        {
+            command.Connection = _sqlConnection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "UPDATE car"
+                + " SET name = @name, model = @model WHERE car_id = @carId;";
+            command.Parameters.Add("@name", NpgsqlDbType.Varchar).Value = car.Name;
+            command.Parameters.Add("@model", NpgsqlDbType.Varchar).Value = car.Model;
+            command.Parameters.Add("@carId", NpgsqlDbType.Integer).Value = car.Id;
+
+            await using (var reader = await command.ExecuteReaderAsync()) { };
+        }
+
+        await _sqlConnection.CloseAsync();
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Drawing;
 using System.Globalization;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Npgsql;
 using TuningService.Models;
@@ -13,13 +11,17 @@ namespace TuningService.Views.Impl
     {
         private static OrderInfoView _orderInfoViewInstance;
 
+        private int _tuningBoxId;
+        public int TuningBoxId { get =>  _tuningBoxId; set => _tuningBoxId = value; }
+
         private OrderInfoView()
         {
             InitializeComponent();
         }
 
-        public event EventHandler<int> LoadFullInformationAboutOrder;
+        public event EventHandler LoadFullInformationAboutOrder;
         public event EventHandler ChangeStateOrderEvent;
+        public event EventHandler<int> ShowEditCarEvent;
 
         public static OrderInfoView GetInstance()
         {
@@ -43,9 +45,11 @@ namespace TuningService.Views.Impl
 
         public void LoadOrderAsync(int tuningBoxId)
         {
+            _tuningBoxId = tuningBoxId;
+
             try
             {
-                LoadFullInformationAboutOrder?.Invoke(this, tuningBoxId);
+                LoadFullInformationAboutOrder?.Invoke(this, EventArgs.Empty);
             }
             catch (NpgsqlException)
             {
@@ -93,6 +97,14 @@ namespace TuningService.Views.Impl
             labelCustomerSurname.Text = order.TuningBox.CarInfo.Owner.Surname;
             labelCustomerLastname.Text = order.TuningBox.CarInfo.Owner.Lastname;
             labelCustomerPhone.Text = order.TuningBox.CarInfo.Owner.Phone;
+        }
+
+        private void buttonEditCar_Click(object sender, EventArgs e)
+        {
+            var carId = Convert.ToInt32(labelCarId.Text);
+            ShowEditCarEvent?.Invoke(this, carId);
+
+            LoadFullInformationAboutOrder?.Invoke(this, EventArgs.Empty);
         }
     }
 }

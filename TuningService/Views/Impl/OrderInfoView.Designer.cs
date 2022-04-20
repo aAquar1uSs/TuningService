@@ -29,8 +29,10 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonChangeOrder = new System.Windows.Forms.Button();
             this.buttonChange = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.buttonEditOwner = new System.Windows.Forms.Button();
             this.labelCustomerPhone = new System.Windows.Forms.Label();
             this.labelCustomerLastname = new System.Windows.Forms.Label();
             this.labelCustomerSurname = new System.Windows.Forms.Label();
@@ -42,6 +44,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.buttonEditCar = new System.Windows.Forms.Button();
             this.labelCarModel = new System.Windows.Forms.Label();
             this.lableCarName = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -70,9 +73,6 @@
             this.labelOrderId = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.labelError = new System.Windows.Forms.Label();
-            this.buttonChangeOrder = new System.Windows.Forms.Button();
-            this.buttonEditCar = new System.Windows.Forms.Button();
-            this.buttonEditOwner = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -108,6 +108,15 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Information about order";
             // 
+            // buttonChangeOrder
+            // 
+            this.buttonChangeOrder.Location = new System.Drawing.Point(6, 239);
+            this.buttonChangeOrder.Name = "buttonChangeOrder";
+            this.buttonChangeOrder.Size = new System.Drawing.Size(85, 33);
+            this.buttonChangeOrder.TabIndex = 24;
+            this.buttonChangeOrder.Text = "Edit order";
+            this.buttonChangeOrder.UseVisualStyleBackColor = true;
+            // 
             // buttonChange
             // 
             this.buttonChange.Location = new System.Drawing.Point(146, 194);
@@ -136,6 +145,15 @@
             this.groupBox4.TabIndex = 22;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Owner";
+            // 
+            // buttonEditOwner
+            // 
+            this.buttonEditOwner.Location = new System.Drawing.Point(55, 164);
+            this.buttonEditOwner.Name = "buttonEditOwner";
+            this.buttonEditOwner.Size = new System.Drawing.Size(108, 28);
+            this.buttonEditOwner.TabIndex = 36;
+            this.buttonEditOwner.Text = "Edit owner";
+            this.buttonEditOwner.UseVisualStyleBackColor = true;
             // 
             // labelCustomerPhone
             // 
@@ -227,6 +245,16 @@
             this.groupBox3.TabIndex = 21;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Car";
+            // 
+            // buttonEditCar
+            // 
+            this.buttonEditCar.Location = new System.Drawing.Point(72, 127);
+            this.buttonEditCar.Name = "buttonEditCar";
+            this.buttonEditCar.Size = new System.Drawing.Size(91, 31);
+            this.buttonEditCar.TabIndex = 27;
+            this.buttonEditCar.Text = "Edit car";
+            this.buttonEditCar.UseVisualStyleBackColor = true;
+            this.buttonEditCar.Click += new System.EventHandler(this.buttonEditCar_Click);
             // 
             // labelCarModel
             // 
@@ -448,33 +476,6 @@
             this.labelError.Name = "labelError";
             this.labelError.Size = new System.Drawing.Size(770, 23);
             this.labelError.TabIndex = 3;
-            // 
-            // buttonChangeOrder
-            // 
-            this.buttonChangeOrder.Location = new System.Drawing.Point(6, 239);
-            this.buttonChangeOrder.Name = "buttonChangeOrder";
-            this.buttonChangeOrder.Size = new System.Drawing.Size(85, 33);
-            this.buttonChangeOrder.TabIndex = 24;
-            this.buttonChangeOrder.Text = "Edit order";
-            this.buttonChangeOrder.UseVisualStyleBackColor = true;
-            // 
-            // buttonEditCar
-            // 
-            this.buttonEditCar.Location = new System.Drawing.Point(72, 127);
-            this.buttonEditCar.Name = "buttonEditCar";
-            this.buttonEditCar.Size = new System.Drawing.Size(91, 31);
-            this.buttonEditCar.TabIndex = 27;
-            this.buttonEditCar.Text = "Edit car";
-            this.buttonEditCar.UseVisualStyleBackColor = true;
-            // 
-            // buttonEditOwner
-            // 
-            this.buttonEditOwner.Location = new System.Drawing.Point(55, 164);
-            this.buttonEditOwner.Name = "buttonEditOwner";
-            this.buttonEditOwner.Size = new System.Drawing.Size(108, 28);
-            this.buttonEditOwner.TabIndex = 36;
-            this.buttonEditOwner.Text = "Edit owner";
-            this.buttonEditOwner.UseVisualStyleBackColor = true;
             // 
             // OrderInfoView
             // 

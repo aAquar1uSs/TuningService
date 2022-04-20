@@ -58,7 +58,7 @@ public class NewOrderViewPresenter
     private async void AddCarEvent(object sender, EventArgs e)
     {
         await _carService.InsertNewCarAsync(_newOrder.Car);
-       _newOrder.Car.Id = await _carService.GetCarIdByFullInformation(_newOrder.Car);
+       _newOrder.Car.Id = await _carService.GetCarIdByFullInformationAsync(_newOrder.Car);
     }
 
     private async void UproveMasterAndCreateTuningBoxEvent(object sender, EventArgs e)
