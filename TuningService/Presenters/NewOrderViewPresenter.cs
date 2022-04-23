@@ -70,9 +70,9 @@ public class NewOrderViewPresenter
          return await _masterService.GetMasterIdByFullInformation(master);
     }
 
-    private async Task VerifyTuningBoxNumberAsync(object sender, EventArgs e)
+    private async Task<bool> VerifyTuningBoxNumberAsync(object sender, EventArgs e)
     {
-        _newOrder.BoxIsExist = await _tuningBoxService.VerifyBoxNumberAsync(_newOrder.BoxId);
+        return await _tuningBoxService.VerifyBoxNumberAsync(_newOrder.BoxId);
     }
 
     private async Task<int> CreateTuningBoxAsync(TuningBox tuningBox, int carId)

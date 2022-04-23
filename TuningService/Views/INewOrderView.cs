@@ -5,7 +5,7 @@ using TuningService.Models;
 
 namespace TuningService.Views;
 
-public delegate Task VerifyBoxNumberDelegate(object sender, EventArgs e);
+public delegate Task<bool> VerifyBoxNumberDelegate(object sender, EventArgs e);
 public delegate Task<int> AddNewCarDelegate(Car car);
 public delegate Task<int> AddNewCustomerDelegate(Customer customer);
 public delegate Task<int> UproveMasterDelegate(Master master);
@@ -29,8 +29,6 @@ public interface INewOrderView
     event VerifyBoxNumberDelegate VerifyBoxNumberEvent;
 
     public int BoxId { get; set; }
-
-    public bool BoxIsExist { get; set; }
 
     public void SetDataAboutMasters(DataTable dt);
 }

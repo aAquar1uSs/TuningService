@@ -19,7 +19,7 @@ namespace TuningService.Views.Impl
         private Master _master;
         private TuningBox _tuningBox;
 
-        public bool BoxIsExist { get; set; }
+        private bool _isBoxNumberExist;
 
         public int BoxId {get; set;}
 
@@ -66,7 +66,7 @@ namespace TuningService.Views.Impl
             UpdateListOfMasters?.Invoke(this, EventArgs.Empty);
         }
 
-        private void ConfigureCustomer()
+        private bool ConfigureCustomer()
         {
             //Customer
             var customerName = textBoxCustomerName.Text;
@@ -86,11 +86,12 @@ namespace TuningService.Views.Impl
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
 
-                return;
+                return false;
             }
+            return true;
         }
 
-        private void ConfigureCar()
+        private bool ConfigureCar()
         {
             var carName = textBoxCarName.Text;
             var carModel = textBoxCarModel.Text;
@@ -106,11 +107,12 @@ namespace TuningService.Views.Impl
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
 
-                return;
+                return false;
             }
+            return true;
         }
 
-        private void ConfigureMaster()
+        private bool ConfigureMaster()
         {
             var masterInfo = comboBoxMasters.Text.Split(' ');
             var masterName = masterInfo[0];
@@ -126,7 +128,7 @@ namespace TuningService.Views.Impl
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
-                return;
+                return false;
             }
             catch (FormatException)
             {
@@ -134,11 +136,12 @@ namespace TuningService.Views.Impl
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
-                return;
-            }  
+                return false;
+            }
+            return true;
         }
 
-        private void ConfigureTuningBox()
+        private bool ConfigureTuningBox()
         {
             try
             {
@@ -151,7 +154,7 @@ namespace TuningService.Views.Impl
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
-                return;
+                return false;
             }
             catch (FormatException)
             {
@@ -159,17 +162,19 @@ namespace TuningService.Views.Impl
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
-                return;
+                return false;
             }
+
+            return true;
         }
 
-        private void ConfigureOrder()
+        private bool ConfigureOrder()
         {
             string pattern = "yyyy-mm-dd";
             try
             {
                 var finishData = DateTime.ParseExact(textBoxFinishDate.Text, pattern, CultureInfo.InvariantCulture);
-                var price = Decimal.Parse(textBoxPrice.Text);
+                var price = decimal.Parse(textBoxPrice.Text);
                 var isDone = checkBoxInWork.Checked;
                 var desc = richTextBoxDesc.Text;
 
@@ -181,8 +186,7 @@ namespace TuningService.Views.Impl
                    "Error",
                    MessageBoxButtons.OK,
                    MessageBoxIcon.Error);
-
-                return;
+                return false;
             }
             catch (FormatException)
             {
@@ -190,9 +194,10 @@ namespace TuningService.Views.Impl
                    "Error",
                    MessageBoxButtons.OK,
                    MessageBoxIcon.Error);
-
-                return;
+                return false;
             }
+
+            return true;
         }
 
         private async Task VerifyBoxNumberAsync(object sender, EventArgs e)
@@ -209,14 +214,14 @@ namespace TuningService.Views.Impl
                     MessageBoxIcon.Error);
                 return;
             }
-            await VerifyBoxNumberEvent?.Invoke(sender, e);
+            _isBoxNumberExist = await VerifyBoxNumberEvent?.Invoke(sender, e);
         }
-
+        
         private async void buttonAddOrder_Click(object sender, EventArgs e)
         {
             await VerifyBoxNumberAsync(sender, e);
 
-            if (BoxIsExist)
+            if (_isBoxNumberExist)
             {
                 MessageBox.Show("Box has already taken!",
                     "Warning",
@@ -225,16 +230,15 @@ namespace TuningService.Views.Impl
                 return;
             }
 
-            ConfigureCustomer();
-
-            ConfigureCar();
-
-            ConfigureMaster();
-
-            ConfigureTuningBox();
-
-            ConfigureOrder();
-
+            if (!ConfigureCustomer() 
+                || !ConfigureCar()
+                || !ConfigureMaster()
+                || !ConfigureTuningBox()
+                || !ConfigureOrder())
+            {
+                return;
+            }
+          
             _customer.Id = await AddNewCustomerEvent?.Invoke(_customer);
 
             _car.Id = await AddNewCarEvent?.Invoke(_car);
