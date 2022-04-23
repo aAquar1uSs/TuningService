@@ -60,7 +60,7 @@
             this.labelMasterSurname = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.labelMasterName = new System.Windows.Forms.Label();
-            this.labelBoxId = new System.Windows.Forms.Label();
+            this.labelBoxNumber = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.labelPrice = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -88,7 +88,7 @@
             this.groupBox1.Controls.Add(this.checkBoxInWork);
             this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.groupBox2);
-            this.groupBox1.Controls.Add(this.labelBoxId);
+            this.groupBox1.Controls.Add(this.labelBoxNumber);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.labelPrice);
             this.groupBox1.Controls.Add(this.label5);
@@ -318,7 +318,7 @@
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(109, 19);
             this.label10.TabIndex = 19;
-            this.label10.Text = "In work:";
+            this.label10.Text = "Done:";
             // 
             // groupBox2
             // 
@@ -381,10 +381,10 @@
             // 
             // labelBoxId
             // 
-            this.labelBoxId.Location = new System.Drawing.Point(121, 167);
-            this.labelBoxId.Name = "labelBoxId";
-            this.labelBoxId.Size = new System.Drawing.Size(100, 19);
-            this.labelBoxId.TabIndex = 11;
+            this.labelBoxNumber.Location = new System.Drawing.Point(121, 167);
+            this.labelBoxNumber.Name = "labelBoxId";
+            this.labelBoxNumber.Size = new System.Drawing.Size(100, 19);
+            this.labelBoxNumber.TabIndex = 11;
             // 
             // label7
             // 
@@ -538,7 +538,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label labelPrice;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label labelBoxId;
+        private System.Windows.Forms.Label labelBoxNumber;
 
         private System.Windows.Forms.RichTextBox orderDescription;
         private System.Windows.Forms.Label label4;

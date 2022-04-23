@@ -5,33 +5,31 @@ namespace TuningService.Factories;
 
 public static class TuningBoxFactory
 {
-    public static TuningBox GetCommonDataInstance(NpgsqlDataReader reader)
+    public static TuningBox GetTuningBoxInstance(NpgsqlDataReader reader)
     {
-        var customerId = reader.GetInt32(0);
-        var customerSurname = reader.GetString(1);
-        var customerName= reader.GetString(2);
-        var customerLastname= reader.GetString(3);
-        var customerPhone = reader.GetString(4);
+        var car = new Car(reader.GetString(1), reader.GetString(2))
+        {
+            Id = reader.GetInt32(0),
+            Owner = new Customer(reader.GetString(9),
+                           reader.GetString(11),
+                           reader.GetString(10),
+                           reader.GetString(12))
+            {
+                Id = reader.GetInt32(8)
+            }
+        };
 
-        var customer = new Customer(customerName,
-            customerLastname, customerSurname, customerPhone)
-        { Id = customerId };
+        var master = new Master(reader.GetString(5), reader.GetString(6),
+            reader.GetString(7))
+        { 
+            Id = reader.GetInt32(4) 
+        };
 
-        var carId = reader.GetInt32(5);
-        var carName = reader.GetString(6);
-        var carModel = reader.GetString(7);
+        return new TuningBox(reader.GetInt32(3), master, car);
+    }
 
-        var car = new Car(carName, carModel) { Owner = customer, Id = carId};
-
-        var tuningBoxId = reader.GetInt32(8);
-
-        var masterId = reader.GetInt32(9);
-        var masterName = reader.GetString(10);
-        var masterSurname = reader.GetString(11);
-        var masterPhone = reader.GetString(11);
-
-        var master = new Master(masterName, masterSurname, masterPhone) { Id = masterId};
-
-        return new TuningBox(master, car) { Id = tuningBoxId };
+    public static TuningBox GetTuningBoxInstance(int boxNumber, Master master, Car car)
+    {
+        return new TuningBox(boxNumber, master, car);
     }
 }

@@ -19,7 +19,7 @@ namespace TuningService.Models
         [Required]
         public decimal Price { get; set; }
 
-        public bool InWork { get; set; }
+        public bool IsDone { get; set; }
 
         public TuningBox TuningBox { get; set; }
 
@@ -31,7 +31,7 @@ namespace TuningService.Models
             EndDate = endDate;
             Description = description;
             Price = price;
-            InWork = inWork;
+            IsDone = inWork;
         }
     }
 }

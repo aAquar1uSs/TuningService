@@ -104,14 +104,14 @@
             this.buttonAddMaster.Name = "buttonAddMaster";
             this.buttonAddMaster.Size = new System.Drawing.Size(91, 31);
             this.buttonAddMaster.TabIndex = 7;
-            this.buttonAddMaster.Text = "Add Master";
+            this.buttonAddMaster.Text = "Add ";
             this.buttonAddMaster.UseVisualStyleBackColor = true;
             // 
             // buttonSearch
             // 
-            this.buttonSearch.Location = new System.Drawing.Point(794, 11);
+            this.buttonSearch.Location = new System.Drawing.Point(775, 11);
             this.buttonSearch.Name = "buttonSearch";
-            this.buttonSearch.Size = new System.Drawing.Size(69, 21);
+            this.buttonSearch.Size = new System.Drawing.Size(84, 21);
             this.buttonSearch.TabIndex = 4;
             this.buttonSearch.Text = "Search";
             this.buttonSearch.UseVisualStyleBackColor = true;
@@ -119,27 +119,27 @@
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(127, 38);
+            this.dataGridView1.Location = new System.Drawing.Point(147, 38);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(752, 711);
+            this.dataGridView1.Size = new System.Drawing.Size(712, 711);
             this.dataGridView1.TabIndex = 5;
             this.dataGridView1.DoubleClick += new System.EventHandler(this.dataGridView1_DoubleClick);
             // 
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.label1.Location = new System.Drawing.Point(137, 12);
+            this.label1.Location = new System.Drawing.Point(147, 12);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(126, 20);
+            this.label1.Size = new System.Drawing.Size(127, 20);
             this.label1.TabIndex = 6;
             this.label1.Text = "Search customer:";
             // 
             // textBoxSearch
             // 
-            this.textBoxSearch.Location = new System.Drawing.Point(260, 12);
+            this.textBoxSearch.Location = new System.Drawing.Point(280, 12);
             this.textBoxSearch.Name = "textBoxSearch";
-            this.textBoxSearch.Size = new System.Drawing.Size(528, 20);
+            this.textBoxSearch.Size = new System.Drawing.Size(489, 20);
             this.textBoxSearch.TabIndex = 7;
             // 
             // groupBox2
@@ -156,12 +156,12 @@
             // 
             // buttonDeleteMaster
             // 
-            this.buttonDeleteMaster.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.buttonDeleteMaster.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
             this.buttonDeleteMaster.Location = new System.Drawing.Point(6, 59);
             this.buttonDeleteMaster.Name = "buttonDeleteMaster";
             this.buttonDeleteMaster.Size = new System.Drawing.Size(91, 31);
             this.buttonDeleteMaster.TabIndex = 8;
-            this.buttonDeleteMaster.Text = "Delete Master";
+            this.buttonDeleteMaster.Text = "Delete";
             this.buttonDeleteMaster.UseVisualStyleBackColor = true;
             // 
             // MainView

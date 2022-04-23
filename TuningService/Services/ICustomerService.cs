@@ -16,7 +16,7 @@ public interface ICustomerService
 
     Task<int> GetCustomerIdByFullInformationAsync(Customer customer);
 
-    Task<Customer> GetCustomerByCarIdAsync(int carId);
+    Task<int> GetCustomerIdByCarIdAsync(int carId);
 
     Task UpdateCustomerByFullInfoAsync(Customer customer);
 }

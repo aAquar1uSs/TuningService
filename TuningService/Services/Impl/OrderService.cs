@@ -28,7 +28,7 @@ public class OrderService : IOrderService
             command.Connection = _sqlConnection;
             command.CommandType = CommandType.Text;
             command.CommandText = "SELECT tuning_order.order_id, tuning_order.start_date, tuning_order.end_date,"
-                                  + " tuning_order.description, tuning_order.price, tuning_order.in_work "
+                                  + " tuning_order.description, tuning_order.price, tuning_order.is_done "
                                   + " FROM tuning_order JOIN tuning_box ON"
                                   + " tuning_order.tuning_box_id = @box_id";
 
@@ -57,11 +57,11 @@ public class OrderService : IOrderService
             command.Connection = _sqlConnection;
             command.CommandType = CommandType.Text;
             command.CommandText = "UPDATE tuning_order " 
-                                  + "SET in_work = @inWork WHERE order_id = @id;";
+                                  + "SET is_done = @isDone WHERE order_id = @id;";
 
             command.Parameters.Add("@id", NpgsqlDbType.Integer).Value = order.Id;
-            command.Parameters.Add("@inWork", NpgsqlDbType.Boolean).Value = !order.InWork;
-            order.InWork = !order.InWork;
+            command.Parameters.Add("@isDone", NpgsqlDbType.Boolean).Value = !order.IsDone;
+            order.IsDone = !order.IsDone;
             await using (_ = await command.ExecuteReaderAsync()) { };
         }
 
@@ -75,12 +75,12 @@ public class OrderService : IOrderService
         {
             command.Connection = _sqlConnection;
             command.CommandType = CommandType.Text;
-            command.CommandText = "INSERT INTO tuning_order(end_date, description, price, in_work, tuning_box_id) "
-                + "VALUES (@endDate, @desc, @price, @inWork, @boxId)";
+            command.CommandText = "INSERT INTO tuning_order(end_date, description, price, is_done, tuning_box_id) "
+                + "VALUES (@endDate, @desc, @price, @isDone, @boxId)";
             command.Parameters.Add("@endDate", NpgsqlDbType.Date).Value = order.EndDate;
             command.Parameters.Add("@desc", NpgsqlDbType.Text).Value = order.Description;
             command.Parameters.Add("@price", NpgsqlDbType.Money).Value = order.Price;
-            command.Parameters.Add("@inWork", NpgsqlDbType.Boolean).Value = order.InWork;
+            command.Parameters.Add("@isDone", NpgsqlDbType.Boolean).Value = order.IsDone;
             command.Parameters.Add("@boxId", NpgsqlDbType.Integer).Value = order.TuningBox.Id;
 
             await using (var reader = await command.ExecuteReaderAsync()) { };
@@ -100,7 +100,7 @@ public class OrderService : IOrderService
             command.Connection = _sqlConnection;
             command.CommandType = CommandType.Text;
             command.CommandText = "SELECT tuning_order.order_id, tuning_order.start_date, tuning_order.end_date,"
-                                  + " tuning_order.description, tuning_order.price, tuning_order.in_work FROM tuning_order "
+                                  + " tuning_order.description, tuning_order.price, tuning_order.is_done FROM tuning_order "
                                   + " WHERE tuning_order.order_id = @orderId";
 
             command.Parameters.Add("@orderId", NpgsqlDbType.Integer).Value = id;
@@ -128,12 +128,12 @@ public class OrderService : IOrderService
             command.Connection = _sqlConnection;
             command.CommandType = CommandType.Text;
             command.CommandText = "UPDATE tuning_order"
-                + " SET end_date = @endDate, description = @desc, price = @price, in_work = @inWork"
+                + " SET end_date = @endDate, description = @desc, price = @price, is_done = @isDone"
                 + " WHERE tuning_order.order_id = @orderId;";
             command.Parameters.Add("@endDate", NpgsqlDbType.Date).Value = order.EndDate;
             command.Parameters.Add("@desc", NpgsqlDbType.Text).Value = order.Description;
             command.Parameters.Add("@price", NpgsqlDbType.Money).Value = order.Price;
-            command.Parameters.Add("@inWork", NpgsqlDbType.Boolean).Value = order.InWork;
+            command.Parameters.Add("@isDone", NpgsqlDbType.Boolean).Value = order.IsDone;
             command.Parameters.Add("@orderId", NpgsqlDbType.Integer).Value = order.Id;
 
             await using (var reader = await command.ExecuteReaderAsync()) { };

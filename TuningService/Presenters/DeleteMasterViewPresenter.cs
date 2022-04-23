@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TuningService.Services;
 using TuningService.Views;
 
@@ -20,14 +16,14 @@ namespace TuningService.Presenters
             _deleteMasterView = deleteMasterView;
             _masterService = masterService;
 
-            _deleteMasterView.DeleteMasterEvent += DeleteMasterEvent;
-            _deleteMasterView.UpdateListOfMastersEvent += UpdateDataAboutMastersEventAsync;
+            _deleteMasterView.DeleteMasterEvent += DeleteMasterAsync;
+            _deleteMasterView.UpdateListOfMastersEvent += UpdateDataAboutMastersAsync;
         }
-        private async void DeleteMasterEvent(object sender, EventArgs e)
+        private async void DeleteMasterAsync(object sender, EventArgs e)
         {
             await _masterService.DeleteMasterByFullInfo(_deleteMasterView.MasterInfo);
         }
-        private async void UpdateDataAboutMastersEventAsync(object sender, EventArgs e)
+        private async void UpdateDataAboutMastersAsync(object sender, EventArgs e)
         {
             var dt = await _masterService.GetAllMastersAsync();
             _deleteMasterView.SetDataAboutMasters(dt);

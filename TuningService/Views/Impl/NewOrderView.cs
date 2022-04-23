@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TuningService.Factories;
 using TuningService.Models;
@@ -10,7 +11,6 @@ namespace TuningService.Views.Impl
 {
     public partial class NewOrderView : Form, INewOrderView
     {
-
         private static NewOrderView _newOrderView;
 
         private Customer _customer;
@@ -19,15 +19,9 @@ namespace TuningService.Views.Impl
         private Master _master;
         private TuningBox _tuningBox;
 
-        public Customer Customer { get => _customer; set => _customer = value; }
+        public bool BoxIsExist { get; set; }
 
-        public Car Car { get => _car; set => _car = value; }
-
-        public TuningBox TuningBox { get => _tuningBox; set => _tuningBox = value; }
-
-        public Master Master { get => _master; set => _master = value; }
-
-        public Order Order { get => _order; set => _order = value; }
+        public int BoxId {get; set;}
 
         private NewOrderView()
         {
@@ -35,17 +29,19 @@ namespace TuningService.Views.Impl
         }
 
         public event EventHandler UpdateListOfMasters;
-        public event EventHandler AddNewCarEvent;
-        public event EventHandler AddNewCustomerEvent;
-        public event EventHandler AddNewOrderEvent;
-        public event EventHandler UproveMasterAndCreateTuningBoxEvent;
+        public event AddNewCarDelegate AddNewCarEvent;
+        public event AddNewCustomerDelegate AddNewCustomerEvent;
+        public event AddNewOrderDelegate AddNewOrderEvent;
+        public event UproveMasterDelegate UproveMasterEvent;
+        public event CreateTuningBoxDelegate CreateTuningBoxEvent;
+        public event VerifyBoxNumberDelegate VerifyBoxNumberEvent;
 
         public static NewOrderView GetInstance()
         {
             if (_newOrderView is null || _newOrderView.IsDisposed)
             {
                 _newOrderView = new NewOrderView();
-                _newOrderView.FormBorderStyle = FormBorderStyle.None;
+                _newOrderView.FormBorderStyle = FormBorderStyle.FixedDialog;
             }
             else
             {
@@ -58,6 +54,8 @@ namespace TuningService.Views.Impl
 
         public void SetDataAboutMasters(DataTable dt)
         {
+            if (dt.Columns.Count == 0)
+                return;
             comboBoxMasters.DataSource = dt;
             comboBoxMasters.DisplayMember = "concat";
             comboBoxMasters.ValueMember = "concat";
@@ -68,7 +66,7 @@ namespace TuningService.Views.Impl
             UpdateListOfMasters?.Invoke(this, EventArgs.Empty);
         }
 
-        private void buttonAddCustomer_Click(object sender, EventArgs e)
+        private void ConfigureCustomer()
         {
             //Customer
             var customerName = textBoxCustomerName.Text;
@@ -90,13 +88,9 @@ namespace TuningService.Views.Impl
 
                 return;
             }
-
-            AddNewCustomerEvent?.Invoke(sender, EventArgs.Empty);
-            buttonAddCustomer.Enabled = false;
-            buttonAddCar.Enabled = true;
         }
 
-        private void buttonAddCar_Click(object sender, EventArgs e)
+        private void ConfigureCar()
         {
             var carName = textBoxCarName.Text;
             var carModel = textBoxCarModel.Text;
@@ -114,13 +108,9 @@ namespace TuningService.Views.Impl
 
                 return;
             }
-
-            AddNewCarEvent?.Invoke(sender, EventArgs.Empty);
-            buttonAddCar.Enabled = false;
-            buttonAddMaster.Enabled = true;
         }
 
-        private void buttonAddMaster_Click(object sender, EventArgs e)
+        private void ConfigureMaster()
         {
             var masterInfo = comboBoxMasters.Text.Split(' ');
             var masterName = masterInfo[0];
@@ -136,26 +126,54 @@ namespace TuningService.Views.Impl
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
-
                 return;
             }
-
-            UproveMasterAndCreateTuningBoxEvent?.Invoke(sender, EventArgs.Empty);
-            buttonAddMaster.Enabled = false;
-            buttonAddOrder.Enabled = true;
+            catch (FormatException)
+            {
+                MessageBox.Show("Please enter the box number!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }  
         }
 
-        private void buttonAddOrder_Click(object sender, EventArgs e)
+        private void ConfigureTuningBox()
+        {
+            try
+            {
+                BoxId = Convert.ToInt32(textBoxBoxNumber.Text);
+                _tuningBox = TuningBoxFactory.GetTuningBoxInstance(BoxId, _master, _car);
+            }
+            catch (ValidationException)
+            {
+                MessageBox.Show("Incorrect data entered!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Please enter the box number!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+        }
+
+        private void ConfigureOrder()
         {
             string pattern = "yyyy-mm-dd";
             try
             {
                 var finishData = DateTime.ParseExact(textBoxFinishDate.Text, pattern, CultureInfo.InvariantCulture);
                 var price = Decimal.Parse(textBoxPrice.Text);
-                var inWork = checkBoxInWork.Checked;
+                var isDone = checkBoxInWork.Checked;
                 var desc = richTextBoxDesc.Text;
 
-                _order = OrderFactory.GetOrderInstance(finishData, price, inWork, desc, _tuningBox);
+                _order = OrderFactory.GetOrderInstance(finishData, price, isDone, desc, _tuningBox);
             }
             catch (ValidationException)
             {
@@ -175,14 +193,63 @@ namespace TuningService.Views.Impl
 
                 return;
             }
+        }
 
-            AddNewOrderEvent?.Invoke(sender, EventArgs.Empty);
+        private async Task VerifyBoxNumberAsync(object sender, EventArgs e)
+        {
+            try
+            {
+                BoxId = Convert.ToInt32(textBoxBoxNumber.Text);
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Please enter the box number!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+            await VerifyBoxNumberEvent?.Invoke(sender, e);
+        }
+
+        private async void buttonAddOrder_Click(object sender, EventArgs e)
+        {
+            await VerifyBoxNumberAsync(sender, e);
+
+            if (BoxIsExist)
+            {
+                MessageBox.Show("Box has already taken!",
+                    "Warning",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            ConfigureCustomer();
+
+            ConfigureCar();
+
+            ConfigureMaster();
+
+            ConfigureTuningBox();
+
+            ConfigureOrder();
+
+            _customer.Id = await AddNewCustomerEvent?.Invoke(_customer);
+
+            _car.Id = await AddNewCarEvent?.Invoke(_car);
+
+            _master.Id = await UproveMasterEvent?.Invoke(_master);
+
+            _tuningBox.Id = await CreateTuningBoxEvent?.Invoke(_tuningBox, _car.Id);
+
+            await AddNewOrderEvent?.Invoke(_order);
 
             var result = MessageBox.Show("New order successfully added!",
                 "Information",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
-            
+
             if (result == DialogResult.OK)
                 _newOrderView.Close();
         }

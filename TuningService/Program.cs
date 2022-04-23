@@ -2,9 +2,7 @@
 using System.Configuration;
 using System.Windows.Forms;
 using TuningService.Presenters;
-using TuningService.Services;
 using TuningService.Services.Impl;
-using TuningService.Views;
 using TuningService.Views.Impl;
 
 namespace TuningService
@@ -20,9 +18,9 @@ namespace TuningService
             var sqlConnectionString = ConfigurationManager
                 .ConnectionStrings["ConnectionString"].ConnectionString;
 
-            IDbService dbService = new DbService(sqlConnectionString);
-            ICustomerService customerService = new CustomerService(sqlConnectionString);
-            IMainView view = new MainView();
+            var dbService = new DbService(sqlConnectionString);
+            var customerService = new CustomerService(sqlConnectionString);
+            var view = new MainView();
 
             _ = new MainPresenter(view, sqlConnectionString, dbService, customerService);
             Application.Run((Form) view);

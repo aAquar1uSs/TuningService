@@ -37,7 +37,7 @@ namespace TuningService.Views.Impl.EditMenu
             textBoxEndDate.Text = _order.EndDate.ToString();
             labelStartDate.Text = _order.StartDate.ToString();
             textBoxPrice.Text = _order.Price.ToString();
-            checkBoxInWork.Checked = _order.InWork;
+            checkBoxIsDone.Checked = _order.IsDone;
             orderDescription.Text = _order.Description;
         }
 
@@ -54,7 +54,7 @@ namespace TuningService.Views.Impl.EditMenu
             {
                 var finishData = DateTime.ParseExact(textBoxEndDate.Text, pattern, CultureInfo.InvariantCulture);
                 var price = decimal.Parse(textBoxPrice.Text);
-                var inWork = checkBoxInWork.Checked;
+                var inWork = checkBoxIsDone.Checked;
                 var desc = orderDescription.Text;
 
                 _order = OrderFactory.GetOrderInstance(finishData, price, inWork, desc);

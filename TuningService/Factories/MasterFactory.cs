@@ -17,7 +17,7 @@ public static class MasterFactory
         return new Master(name, surname, phone) { Id = id};
     }
 
-    public static Master GetMasterInstance(string name, string surname, string phone = "+1111111111111")
+    public static Master GetMasterInstance(string name, string surname, string phone = "+111111111111")
     {
         var master = new Master(name, surname, phone);
         var results = new List<ValidationResult>();

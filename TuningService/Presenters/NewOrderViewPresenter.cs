@@ -1,4 +1,7 @@
+using Npgsql;
 using System;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using TuningService.Models;
 using TuningService.Services;
 using TuningService.Views;
@@ -26,8 +29,7 @@ public class NewOrderViewPresenter
         ICustomerService customerService,
         IMasterService masterService,
         IOrderService orderService,
-        ITuningBoxService tuningBoxService
-        )
+        ITuningBoxService tuningBoxService)
     {
         _newOrder = orderView;
         _customerService = customerService;
@@ -36,42 +38,62 @@ public class NewOrderViewPresenter
         _carService = carService;
         _tuningBoxService = tuningBoxService;
 
-        _newOrder.UpdateListOfMasters += UpdateMastersEvent;
-        _newOrder.AddNewCustomerEvent += AddCustomerEvent;
-        _newOrder.AddNewCarEvent += AddCarEvent;
-        _newOrder.UproveMasterAndCreateTuningBoxEvent += UproveMasterAndCreateTuningBoxEvent;
-        _newOrder.AddNewOrderEvent += AddOrderEvent;
+        _newOrder.UpdateListOfMasters += UpdateMastersAsync;
+        _newOrder.AddNewCustomerEvent += AddCustomerAsync;
+        _newOrder.AddNewCarEvent += AddCarAsync;
+        _newOrder.UproveMasterEvent += UproveMasterAsync;
+        _newOrder.AddNewOrderEvent += AddOrderAsync;
+        _newOrder.CreateTuningBoxEvent += CreateTuningBoxAsync;
+        _newOrder.VerifyBoxNumberEvent += VerifyTuningBoxNumberAsync;
     }
 
-    private async void UpdateMastersEvent(object sender, EventArgs e)
+    private async void UpdateMastersAsync(object sender, EventArgs e)
     {
         var dt = await _masterService.GetAllMastersAsync();
         _newOrder.SetDataAboutMasters(dt);
     }
 
-    private async void AddCustomerEvent(object sender, EventArgs e)
+    private async Task<int> AddCustomerAsync(Customer customer)
     {
-        await _customerService.InsertNewCustomerAsync(_newOrder.Customer);
-        _newOrder.Customer.Id = await _customerService.GetCustomerIdByFullInformationAsync(_newOrder.Customer);
+        await _customerService.InsertNewCustomerAsync(customer);
+        return await _customerService.GetCustomerIdByFullInformationAsync(customer); 
     }
 
-    private async void AddCarEvent(object sender, EventArgs e)
+    private async Task<int> AddCarAsync(Car car)
     {
-        await _carService.InsertNewCarAsync(_newOrder.Car);
-       _newOrder.Car.Id = await _carService.GetCarIdByFullInformationAsync(_newOrder.Car);
+        await _carService.InsertNewCarAsync(car);
+        return await _carService.GetCarIdByFullInformationAsync(car);
     }
 
-    private async void UproveMasterAndCreateTuningBoxEvent(object sender, EventArgs e)
+    private async Task<int> UproveMasterAsync(Master master)
     {
-        int masterId = await _masterService.GetMasterIdByFullInformation(_newOrder.Master);
-
-        await _tuningBoxService.InsertNewTuningBox(_newOrder.Car.Id, masterId);
-        int tuningBoxId = await _tuningBoxService.GetTuningBoxIdByCarIdAsync(_newOrder.Car.Id);
-        _newOrder.TuningBox = await _tuningBoxService.GetFulInformationAboutTuningBoxById(tuningBoxId);
+         return await _masterService.GetMasterIdByFullInformation(master);
     }
 
-    private async void AddOrderEvent(object sender, EventArgs e)
+    private async Task VerifyTuningBoxNumberAsync(object sender, EventArgs e)
     {
-        await _orderService.InsertNewOrderAsync(_newOrder.Order);
+        _newOrder.BoxIsExist = await _tuningBoxService.VerifyBoxNumberAsync(_newOrder.BoxId);
+    }
+
+    private async Task<int> CreateTuningBoxAsync(TuningBox tuningBox, int carId)
+    {
+        try
+        {
+            await _tuningBoxService.InsertNewTuningBoxAsync(tuningBox);
+            return await _tuningBoxService.GetTuningBoxIdByCarIdAsync(carId);
+        }
+        catch (InvalidOperationException)
+        {
+            MessageBox.Show("This room already taken.",
+                "Warning",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+            return 0;
+        }
+    }
+
+    private async Task AddOrderAsync(Order order)
+    {
+        await _orderService.InsertNewOrderAsync(order);
     }
 }

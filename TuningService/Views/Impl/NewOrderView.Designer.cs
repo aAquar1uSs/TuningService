@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.buttonAddCustomer = new System.Windows.Forms.Button();
             this.textBoxCutomerPhone = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.textBoxCustomerLastname = new System.Windows.Forms.TextBox();
@@ -39,14 +38,12 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.buttonAddCar = new System.Windows.Forms.Button();
             this.textBoxCarModel = new System.Windows.Forms.TextBox();
             this.textBoxCarName = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.comboBoxMasters = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.buttonAddMaster = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.buttonAddOrder = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
@@ -56,15 +53,18 @@
             this.textBoxFinishDate = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.richTextBoxDesc = new System.Windows.Forms.RichTextBox();
+            this.textBoxBoxNumber = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.buttonAddCustomer);
             this.groupBox1.Controls.Add(this.textBoxCutomerPhone);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.textBoxCustomerLastname);
@@ -76,20 +76,10 @@
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(273, 185);
+            this.groupBox1.Size = new System.Drawing.Size(273, 149);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Add new customer";
-            // 
-            // buttonAddCustomer
-            // 
-            this.buttonAddCustomer.Location = new System.Drawing.Point(96, 145);
-            this.buttonAddCustomer.Name = "buttonAddCustomer";
-            this.buttonAddCustomer.Size = new System.Drawing.Size(75, 34);
-            this.buttonAddCustomer.TabIndex = 8;
-            this.buttonAddCustomer.Text = "Add";
-            this.buttonAddCustomer.UseVisualStyleBackColor = true;
-            this.buttonAddCustomer.Click += new System.EventHandler(this.buttonAddCustomer_Click);
             // 
             // textBoxCutomerPhone
             // 
@@ -157,29 +147,17 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.buttonAddCar);
             this.groupBox2.Controls.Add(this.textBoxCarModel);
             this.groupBox2.Controls.Add(this.textBoxCarName);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.groupBox2.Location = new System.Drawing.Point(12, 203);
+            this.groupBox2.Location = new System.Drawing.Point(12, 167);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(251, 126);
+            this.groupBox2.Size = new System.Drawing.Size(251, 92);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Add car";
-            // 
-            // buttonAddCar
-            // 
-            this.buttonAddCar.Enabled = false;
-            this.buttonAddCar.Location = new System.Drawing.Point(74, 86);
-            this.buttonAddCar.Name = "buttonAddCar";
-            this.buttonAddCar.Size = new System.Drawing.Size(75, 34);
-            this.buttonAddCar.TabIndex = 9;
-            this.buttonAddCar.Text = "Add";
-            this.buttonAddCar.UseVisualStyleBackColor = true;
-            this.buttonAddCar.Click += new System.EventHandler(this.buttonAddCar_Click);
             // 
             // textBoxCarModel
             // 
@@ -226,30 +204,17 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.buttonAddMaster);
             this.groupBox3.Controls.Add(this.comboBoxMasters);
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
-            this.groupBox3.Location = new System.Drawing.Point(12, 347);
+            this.groupBox3.Location = new System.Drawing.Point(12, 331);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(251, 91);
+            this.groupBox3.Size = new System.Drawing.Size(150, 54);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Select master";
             // 
-            // buttonAddMaster
-            // 
-            this.buttonAddMaster.Enabled = false;
-            this.buttonAddMaster.Location = new System.Drawing.Point(153, 18);
-            this.buttonAddMaster.Name = "buttonAddMaster";
-            this.buttonAddMaster.Size = new System.Drawing.Size(75, 25);
-            this.buttonAddMaster.TabIndex = 10;
-            this.buttonAddMaster.Text = "Add";
-            this.buttonAddMaster.UseVisualStyleBackColor = true;
-            this.buttonAddMaster.Click += new System.EventHandler(this.buttonAddMaster_Click);
-            // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.buttonAddOrder);
             this.groupBox4.Controls.Add(this.label9);
             this.groupBox4.Controls.Add(this.checkBoxInWork);
             this.groupBox4.Controls.Add(this.textBoxPrice);
@@ -260,19 +225,19 @@
             this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
             this.groupBox4.Location = new System.Drawing.Point(352, 12);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(570, 417);
+            this.groupBox4.Size = new System.Drawing.Size(570, 383);
             this.groupBox4.TabIndex = 9;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = " Add order";
             // 
             // buttonAddOrder
             // 
-            this.buttonAddOrder.Enabled = false;
-            this.buttonAddOrder.Location = new System.Drawing.Point(247, 383);
+            this.buttonAddOrder.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
+            this.buttonAddOrder.Location = new System.Drawing.Point(779, 410);
             this.buttonAddOrder.Name = "buttonAddOrder";
-            this.buttonAddOrder.Size = new System.Drawing.Size(75, 28);
+            this.buttonAddOrder.Size = new System.Drawing.Size(92, 28);
             this.buttonAddOrder.TabIndex = 10;
-            this.buttonAddOrder.Text = "Add";
+            this.buttonAddOrder.Text = "Add order";
             this.buttonAddOrder.UseVisualStyleBackColor = true;
             this.buttonAddOrder.Click += new System.EventHandler(this.buttonAddOrder_Click);
             // 
@@ -288,12 +253,12 @@
             // checkBoxInWork
             // 
             this.checkBoxInWork.AutoSize = true;
-            this.checkBoxInWork.Location = new System.Drawing.Point(9, 100);
+            this.checkBoxInWork.Location = new System.Drawing.Point(12, 96);
             this.checkBoxInWork.Name = "checkBoxInWork";
-            this.checkBoxInWork.Size = new System.Drawing.Size(75, 21);
+            this.checkBoxInWork.Size = new System.Drawing.Size(15, 14);
             this.checkBoxInWork.TabIndex = 6;
-            this.checkBoxInWork.Text = "In Work";
             this.checkBoxInWork.UseVisualStyleBackColor = true;
+            this.checkBoxInWork.Visible = false;
             // 
             // textBoxPrice
             // 
@@ -335,11 +300,41 @@
             this.richTextBoxDesc.TabIndex = 0;
             this.richTextBoxDesc.Text = "";
             // 
+            // textBoxBoxNumber
+            // 
+            this.textBoxBoxNumber.Location = new System.Drawing.Point(137, 16);
+            this.textBoxBoxNumber.Name = "textBoxBoxNumber";
+            this.textBoxBoxNumber.Size = new System.Drawing.Size(100, 23);
+            this.textBoxBoxNumber.TabIndex = 12;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(7, 19);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(124, 17);
+            this.label10.TabIndex = 11;
+            this.label10.Text = "Enter box number:";
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.textBoxBoxNumber);
+            this.groupBox5.Controls.Add(this.label10);
+            this.groupBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F);
+            this.groupBox5.Location = new System.Drawing.Point(12, 265);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(251, 42);
+            this.groupBox5.TabIndex = 10;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Box";
+            // 
             // NewOrderView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(934, 450);
+            this.Controls.Add(this.buttonAddOrder);
+            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -354,6 +349,8 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -378,15 +375,15 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.CheckBox checkBoxInWork;
         private System.Windows.Forms.TextBox textBoxPrice;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox textBoxFinishDate;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.RichTextBox richTextBoxDesc;
-        private System.Windows.Forms.Button buttonAddCustomer;
-        private System.Windows.Forms.Button buttonAddCar;
-        private System.Windows.Forms.Button buttonAddMaster;
         private System.Windows.Forms.Button buttonAddOrder;
+        private System.Windows.Forms.CheckBox checkBoxInWork;
+        private System.Windows.Forms.TextBox textBoxBoxNumber;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.GroupBox groupBox5;
     }
 }

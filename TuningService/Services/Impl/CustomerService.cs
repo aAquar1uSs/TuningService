@@ -158,18 +158,16 @@ public class CustomerService : ICustomerService
         return customerId;
     }
 
-    public async Task<Customer> GetCustomerByCarIdAsync(int carId)
+    public async Task<int> GetCustomerIdByCarIdAsync(int carId)
     {
-        Customer customer = null;
+        var customerId = 0;
 
         await _sqlConnection.OpenAsync();
         using (var command = new NpgsqlCommand())
         {
             command.Connection = _sqlConnection;
             command.CommandType = CommandType.Text;
-            command.CommandText = "SELECT customer.customer_id, customer.name, "
-                + "customer.lastname, customer.surname, customer.phone "
-                + "FROM customer JOIN car c on customer.customer_id = @carId";
+            command.CommandText = "SELECT car.customer_id FROM car WHERE  car_id = @carId";
             command.Parameters.Add("@carId", NpgsqlDbType.Integer).Value = carId;
 
 
@@ -178,13 +176,13 @@ public class CustomerService : ICustomerService
                 if (reader.HasRows)
                 {
                     await reader.ReadAsync();
-                    customer = CustomerFactory.GetCustomerInstance(reader);
+                    customerId = reader.GetInt32(0);
                 }
             }
         }
 
         await _sqlConnection.CloseAsync();
-        return customer;
+        return customerId;
     }
 
     public async Task UpdateCustomerByFullInfoAsync(Customer customer)

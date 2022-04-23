@@ -79,8 +79,8 @@ namespace TuningService.Views.Impl
             labelEndDate.Text = order.EndDate.ToString(CultureInfo.InvariantCulture);
             orderDescription.Text = order.Description;
             labelPrice.Text = order.Price.ToString(CultureInfo.InvariantCulture);
-            labelBoxId.Text = order.TuningBox.Id.ToString();
-            checkBoxInWork.Checked = order.InWork;
+            labelBoxNumber.Text = order.TuningBox.BoxNumber.ToString();
+            checkBoxInWork.Checked = order.IsDone;
             checkBoxInWork.AutoCheck = false;
 
             //Information about master

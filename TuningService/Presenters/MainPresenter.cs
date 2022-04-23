@@ -36,11 +36,8 @@ public class MainPresenter
     private void ShowOrderInfoViewEvent(object sender, int index)
     {
         var orderService = new OrderService(_connectionString);
-        var masterService = new MasterService(_connectionString);
-        var carService = new CarService(_connectionString);
 
-        var tuningBoxService = new TuningBoxService(_connectionString, carService,
-            masterService, _customerService);
+        var tuningBoxService = new TuningBoxService(_connectionString);
 
         var orderInfoView = OrderInfoView.GetInstance();
         _ = new OrderInfoPresenter(orderInfoView, orderService,
@@ -56,8 +53,7 @@ public class MainPresenter
         var orderService = new OrderService(_connectionString);
         var masterService = new MasterService(_connectionString);
         var carService = new CarService(_connectionString);
-        var tuningBoxService = new TuningBoxService(_connectionString, carService, 
-            masterService, _customerService);
+        var tuningBoxService = new TuningBoxService(_connectionString);
 
         _ = new NewOrderViewPresenter(newOrderView,carService,
             _customerService, masterService, orderService, tuningBoxService);

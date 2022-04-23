@@ -7,7 +7,9 @@ public interface ITuningBoxService
 {
     Task<TuningBox> GetFulInformationAboutTuningBoxById(int tuningBoxId);
 
-    Task InsertNewTuningBox(int carId, int masterId);
+    Task InsertNewTuningBoxAsync(TuningBox box);
 
     Task<int> GetTuningBoxIdByCarIdAsync(int carId);
+
+    Task<bool> VerifyBoxNumberAsync(int boxNumber);
 }

@@ -16,7 +16,7 @@ public sealed class Master
     public string Surname { get; set; }
 
     [Required]
-    [RegularExpression("^(?!0+$)(\\+\\d{1,3}[- ]?)?(?!0+$)\\d{10,15}$")]
+    [RegularExpression("^(?!0+$)(\\+\\d{1,3}[- ]?)?(?!0+$)\\d{9}$")]
     public string Phone { get; set; }
 
     public Master( string name,
