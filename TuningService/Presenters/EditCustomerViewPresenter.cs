@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using TuningService.Models;
 using TuningService.Services;
 using TuningService.Views;
 
@@ -24,15 +22,15 @@ namespace TuningService.Presenters
             _editCustomerView.UpdateCustomerDataEvent += UpdateCustomerDataAsync;
         }
 
-        private async void GetCustomerDataAsync(object sender , int customerId)
+        private async Task GetCustomerDataAsync(int customerId)
         {
-            _editCustomerView.Customer = await _customerService.GetCustomerByIdAsync(customerId);
-            _editCustomerView.ShowCustomerInformation();
+            var customer = await _customerService.GetCustomerByIdAsync(customerId);
+            _editCustomerView.ShowCustomerInformation(customer);
         }
 
-        private async void UpdateCustomerDataAsync(object sender, EventArgs e)
+        private async Task UpdateCustomerDataAsync(Customer customer)
         {
-            await _customerService.UpdateCustomerByFullInfoAsync(_editCustomerView.Customer);
+            await _customerService.UpdateCustomerByFullInfoAsync(customer);
         }
     }
 }

@@ -7,16 +7,16 @@ using TuningService.Models;
 
 namespace TuningService.Views
 {
+    public delegate Task UpdateCustomerDelegate(Customer customer);
+    public delegate Task UploadCustomerDelegate(int customerId);
     public interface IEditCustomerView
     {
-        event EventHandler<int> GetCustomerDataEvent;
+        event UploadCustomerDelegate GetCustomerDataEvent;
 
-        event EventHandler UpdateCustomerDataEvent;
+        event UpdateCustomerDelegate UpdateCustomerDataEvent;
 
-        public Customer Customer { get; set; }
+        void GetDataAsync(int customerId);
 
-        void GetData(int customerId);
-
-        void ShowCustomerInformation();
+        void ShowCustomerInformation(Customer customer);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TuningService.Factories;
 using TuningService.Models;
@@ -8,21 +9,22 @@ namespace TuningService.Views.Impl.EditMenu
 {
     public partial class EditCarView : Form, IEditCarView
     {
+        private int _id;
+        private Car _car;
+
         public EditCarView()
         {
             InitializeComponent();
         }
 
-        private Car _car;
 
-        public Car Car { get => _car; set => _car = value; }
+        public event UploadCarDelegate GetCarDataEvent;
+        public event UpdateCarDelegate UpdateCarDataEvent;
 
-        public event EventHandler<int> GetCarDataEvent;
-        public event EventHandler UpdateCarDataEvent;
-
-        public void GetCarData(int carId)
+        public async void GetCarDataAsync(int carId)
         {
-            GetCarDataEvent?.Invoke(this, carId);
+            _id = carId;
+            await GetCarDataEvent?.Invoke(carId);
         }
 
         private void EditCarView_Load(object sender, EventArgs e)
@@ -30,19 +32,18 @@ namespace TuningService.Views.Impl.EditMenu
 
         }
 
-        public void ShowOldData()
+        public void ShowOldData(Car car)
         {
-            textBoxName.Text = _car.Name;
-            textBoxModel.Text = _car.Model;
+            textBoxName.Text = car.Name;
+            textBoxModel.Text = car.Model;
         }
 
-        private void buttonEditCar_Click(object sender, EventArgs e)
+        private async void buttonEditCar_ClickAsync(object sender, EventArgs e)
         {
-            var id = _car.Id;//Save car id;
             try
             {
                 _car = CarFactory.GetCarInstance(textBoxName.Text, textBoxModel.Text);
-                _car.Id = id;
+                _car.Id = _id;
             }
             catch (ValidationException)
             {
@@ -54,7 +55,7 @@ namespace TuningService.Views.Impl.EditMenu
                 return;
             }
 
-            UpdateCarDataEvent?.Invoke(this, EventArgs.Empty);
+            await UpdateCarDataEvent?.Invoke(_car);
 
             MessageBox.Show("Car data has been successfully updated!",
                     "Information",

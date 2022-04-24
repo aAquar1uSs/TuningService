@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Npgsql;
+using System;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using TuningService.Models;
 using TuningService.Services;
 using TuningService.Views;
 
@@ -19,14 +23,20 @@ namespace TuningService.Presenters
             _deleteMasterView.DeleteMasterEvent += DeleteMasterAsync;
             _deleteMasterView.UpdateListOfMastersEvent += UpdateDataAboutMastersAsync;
         }
-        private async void DeleteMasterAsync(object sender, EventArgs e)
+        private async Task DeleteMasterAsync(Master master)
         {
-            await _masterService.DeleteMasterByFullInfo(_deleteMasterView.MasterInfo);
+            if (!await _masterService.DeleteMasterByFullInfo(master))
+            {
+                MessageBox.Show("An unexpected error has occurred!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }     
         }
         private async void UpdateDataAboutMastersAsync(object sender, EventArgs e)
         {
             var dt = await _masterService.GetAllMastersAsync();
-            _deleteMasterView.SetDataAboutMasters(dt);
+            _deleteMasterView.SetDataAboutMasters(dt);    
         }
     }
 }

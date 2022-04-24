@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using TuningService.Models;
 using TuningService.Services;
 using TuningService.Views;
 
@@ -20,15 +23,21 @@ namespace TuningService.Presenters
             _editCarView.UpdateCarDataEvent += UpdateOldCarData;
         }
 
-        private async void UploadCarData(object sender, int carId)
+        private async Task UploadCarData(int carId)
         {
-            _editCarView.Car = await _carService.GetCarByIdAsync(carId);
-            _editCarView.ShowOldData();
+            Car car = await _carService.GetCarByIdAsync(carId);
+            _editCarView.ShowOldData(car);
         }
 
-        private async void UpdateOldCarData(object sender, EventArgs e)
+        private async Task UpdateOldCarData(Car car)
         {
-            await _carService.UpdateCarDataAsync(_editCarView.Car);
+            if (!await _carService.UpdateCarDataAsync(car))
+            {
+                MessageBox.Show("An unexpected error has occurred!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
 
     }

@@ -16,5 +16,5 @@ public interface IMasterService
 
     Task InsertNewMasterAsync(Master master);
 
-    Task DeleteMasterByFullInfo(Master master);
+    Task<bool> DeleteMasterByFullInfo(Master master);
 }

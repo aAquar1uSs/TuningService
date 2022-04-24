@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TuningService.Factories;
 using TuningService.Models;
@@ -8,6 +9,7 @@ namespace TuningService.Views.Impl.EditMenu
 {
     public partial class EditCustomerView : Form, IEditCustomerView
     {
+        private int _customerId;
         private Customer _customer; 
 
         public EditCustomerView()
@@ -15,22 +17,22 @@ namespace TuningService.Views.Impl.EditMenu
             InitializeComponent();
         }
 
-        public Customer Customer { get => _customer; set => _customer = value; }
+        public event UploadCustomerDelegate GetCustomerDataEvent;
+        public event UpdateCustomerDelegate UpdateCustomerDataEvent;
 
-        public event EventHandler<int> GetCustomerDataEvent;
-        public event EventHandler UpdateCustomerDataEvent;
-
-        public void ShowCustomerInformation()
+        public void ShowCustomerInformation(Customer customer)
         {
+            _customer = customer;
             textBoxSurname.Text = _customer.Surname;
             textBoxName.Text = _customer.Name;
             textBoxLastName.Text = _customer.Lastname;
             textBoxPhone.Text = _customer.Phone;
         }
 
-        public void GetData(int customerId)
+        public async void GetDataAsync(int customerId)
         {
-            GetCustomerDataEvent?.Invoke(this, customerId);
+            await GetCustomerDataEvent?.Invoke(customerId);
+            _customerId = customerId;
         }
 
         private void EditCustomerView_Load(object sender, EventArgs e)
@@ -38,18 +40,17 @@ namespace TuningService.Views.Impl.EditMenu
             
         }
 
-        private void buttonEditOwner_Click(object sender, EventArgs e)
+        private async void buttonEditOwner_ClickAsync(object sender, EventArgs e)
         {
             var name = textBoxName.Text;
             var lastName = textBoxLastName.Text;
             var phone = textBoxPhone.Text;
             var surname = textBoxSurname.Text;
 
-            var id = _customer.Id;
             try
             {
                 _customer = CustomerFactory.GetCustomerInstance(name, lastName, surname, phone);
-                _customer.Id = id;
+                _customer.Id = _customerId;
             }
             catch (ValidationException)
             {
@@ -61,7 +62,7 @@ namespace TuningService.Views.Impl.EditMenu
                 return;
             }
 
-            UpdateCustomerDataEvent?.Invoke(this, EventArgs.Empty);
+            await UpdateCustomerDataEvent?.Invoke(_customer);
 
             MessageBox.Show("Customer data has been successfully updated!",
                    "Information",

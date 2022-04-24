@@ -69,7 +69,7 @@ public class OrderInfoPresenter
         var carService = new CarService(_connectionString);
 
         _ = new EditCarViewPresenter(editCarView, carService);
-        editCarView.GetCarData(carId);
+        editCarView.GetCarDataAsync(carId);
         editCarView.ShowDialog();
     }
 
@@ -79,7 +79,7 @@ public class OrderInfoPresenter
         var customerService = new CustomerService(_connectionString);
 
         _ = new EditCustomerViewPresenter(editCustomerView, customerService);
-        editCustomerView.GetData(customerId);
+        editCustomerView.GetDataAsync(customerId);
         editCustomerView.ShowDialog();
     }
 

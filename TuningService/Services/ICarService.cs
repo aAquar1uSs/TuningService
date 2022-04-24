@@ -13,5 +13,5 @@ public interface ICarService
 
     Task<int> GetCarIdByFullInformationAsync(Car car);
 
-    Task UpdateCarDataAsync(Car car);
+    Task<bool> UpdateCarDataAsync(Car car);
 }

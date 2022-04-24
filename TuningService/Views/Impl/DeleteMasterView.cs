@@ -17,18 +17,18 @@ namespace TuningService.Views.Impl
             InitializeComponent();
         }
 
-        public Master MasterInfo { get => _master; set => _master = value; }
-
         public event EventHandler UpdateListOfMastersEvent;
 
-        public event EventHandler DeleteMasterEvent;
+        public event DeleteMasterDelegate DeleteMasterEvent;
 
         public static DeleteMasterView GetInstance()
         {
             if (_deleteMasterViewInstance is null || _deleteMasterViewInstance.IsDisposed)
             {
-                _deleteMasterViewInstance = new DeleteMasterView();
-                _deleteMasterViewInstance.FormBorderStyle = FormBorderStyle.FixedSingle;
+                _deleteMasterViewInstance = new DeleteMasterView
+                {
+                    FormBorderStyle = FormBorderStyle.FixedSingle
+                };
             }
             else
             {
@@ -45,7 +45,7 @@ namespace TuningService.Views.Impl
             comboBoxMasters.DisplayMember = "concat";
             comboBoxMasters.ValueMember = "concat";
         }
-        private void buttonDelete_Click(object sender, EventArgs e)
+        private async void buttonDelete_Click(object sender, EventArgs e)
         {
             var result = MessageBox.Show("If you remove this master, remove the orders that it has executed",
                "Information",
@@ -62,7 +62,7 @@ namespace TuningService.Views.Impl
 
             _master = MasterFactory.GetMasterInstance(name, surname);
 
-            DeleteMasterEvent?.Invoke(this, EventArgs.Empty);
+            await DeleteMasterEvent?.Invoke(_master);
 
             MessageBox.Show("Master has been successfully deleted!",
                 "Information",

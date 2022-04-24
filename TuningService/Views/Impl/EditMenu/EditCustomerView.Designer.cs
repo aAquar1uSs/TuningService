@@ -96,7 +96,7 @@
             this.buttonEditOwner.TabIndex = 36;
             this.buttonEditOwner.Text = "Edit owner";
             this.buttonEditOwner.UseVisualStyleBackColor = true;
-            this.buttonEditOwner.Click += new System.EventHandler(this.buttonEditOwner_Click);
+            this.buttonEditOwner.Click += new System.EventHandler(this.buttonEditOwner_ClickAsync);
             // 
             // label18
             // 

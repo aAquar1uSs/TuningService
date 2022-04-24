@@ -74,7 +74,7 @@
             this.buttonEditCar.TabIndex = 27;
             this.buttonEditCar.Text = "Edit";
             this.buttonEditCar.UseVisualStyleBackColor = true;
-            this.buttonEditCar.Click += new System.EventHandler(this.buttonEditCar_Click);
+            this.buttonEditCar.Click += new System.EventHandler(this.buttonEditCar_ClickAsync);
             // 
             // label14
             // 
