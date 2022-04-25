@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
 using Npgsql;
-using TuningService.Factories;
-using TuningService.Models;
 
 namespace TuningService.Services.Impl
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using TuningService.Services;
 using TuningService.Views;
 
@@ -6,9 +7,9 @@ namespace TuningService.Presenters
 {
     public class EditOrderViewPresenter
     {
-        private IEditOrderView _editOrderView;
+        private readonly IEditOrderView _editOrderView;
 
-        private IOrderService _orderService;
+        private readonly IOrderService _orderService;
 
         public EditOrderViewPresenter(IEditOrderView editOrderView,
             IOrderService orderService)
@@ -20,7 +21,7 @@ namespace TuningService.Presenters
             _editOrderView.UpdateOrderDataEvent += UpdateOrderDataAsync;
         }
 
-        private async void GetOrderDataAsync(object sende, int orderId)
+        private async void GetOrderDataAsync(object sender, int orderId)
         {
             _editOrderView.OrderInfo = await _orderService.GetOrderByIdAsync(orderId);
             _editOrderView.ShowInformation();
@@ -28,7 +29,13 @@ namespace TuningService.Presenters
 
         private async void UpdateOrderDataAsync(object sender, EventArgs e)
         {
-            await _orderService.UpdateOrderDataByFullInfo(_editOrderView.OrderInfo);
+            if (!await _orderService.UpdateOrderDataByFullInfo(_editOrderView.OrderInfo))
+            {
+                MessageBox.Show("An unexpected error has occurred!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }

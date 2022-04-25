@@ -9,9 +9,9 @@ namespace TuningService.Presenters
 {
     public class EditCarViewPresenter
     {
-        private IEditCarView _editCarView;
+        private readonly IEditCarView _editCarView;
 
-        private ICarService _carService;
+        private readonly ICarService _carService;
 
         public EditCarViewPresenter(IEditCarView editCarView,
             ICarService carService)
@@ -25,7 +25,7 @@ namespace TuningService.Presenters
 
         private async Task UploadCarData(int carId)
         {
-            Car car = await _carService.GetCarByIdAsync(carId);
+            var car = await _carService.GetCarByIdAsync(carId);
             _editCarView.ShowOldData(car);
         }
 

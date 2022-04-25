@@ -1,4 +1,5 @@
 using System;
+using System.Windows.Forms;
 using TuningService.Services;
 using TuningService.Services.Impl;
 using TuningService.Views;
@@ -86,7 +87,13 @@ public class MainPresenter
 
     private async void RemoveData(object sender, int index)
     {
-        await _customerService.DeleteCustomerByIdAsync(index);
+        if (await _customerService.DeleteCustomerByIdAsync(index))
+        {
+            MessageBox.Show("An unexpected error has occurred!",
+                "Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
     }
 
     private async void SearchCustomer(object sender, EventArgs e)

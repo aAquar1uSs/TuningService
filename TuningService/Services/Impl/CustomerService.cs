@@ -28,7 +28,7 @@ public class CustomerService : ICustomerService
         _sqlConnection = new NpgsqlConnection(sqlConnectionString);
     }
 
-    public async Task DeleteCustomerByIdAsync(int customerId)
+    public async Task<bool> DeleteCustomerByIdAsync(int customerId)
     {
         try
         {
@@ -48,7 +48,10 @@ public class CustomerService : ICustomerService
         catch (NpgsqlException)
         {
             await _sqlConnection.CloseAsync();
-        }   
+            return false;
+        }
+
+        return true;
     }
 
     public async Task<DataTable> SearchCustomerByValueAsync(string value)
@@ -127,7 +130,7 @@ public class CustomerService : ICustomerService
             await _sqlConnection.CloseAsync();
             return null;
         }
-       
+
         return customer;
     }
 
@@ -193,7 +196,7 @@ public class CustomerService : ICustomerService
             await _sqlConnection.CloseAsync();
             return 0;
         }
-        
+
         return customerId;
     }
 
@@ -229,11 +232,11 @@ public class CustomerService : ICustomerService
             await _sqlConnection.CloseAsync();
             return 0;
         }
-        
+
         return customerId;
     }
 
-    public async Task UpdateCustomerByFullInfoAsync(Customer customer)
+    public async Task<bool> UpdateCustomerByFullInfoAsync(Customer customer)
     {
         try
         {
@@ -260,6 +263,9 @@ public class CustomerService : ICustomerService
         catch (NpgsqlException)
         {
             await _sqlConnection.CloseAsync();
+            return false;
         }
+
+        return true;
     }
 }

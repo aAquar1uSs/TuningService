@@ -6,8 +6,8 @@ namespace TuningService.Services;
 
 public interface ICustomerService
 {
-    Task DeleteCustomerByIdAsync(int customerId);
-    
+    Task<bool> DeleteCustomerByIdAsync(int customerId);
+
     Task<DataTable> SearchCustomerByValueAsync(string value);
 
     Task<Customer> GetCustomerByIdAsync(int customerId);
@@ -18,5 +18,5 @@ public interface ICustomerService
 
     Task<int> GetCustomerIdByCarIdAsync(int carId);
 
-    Task UpdateCustomerByFullInfoAsync(Customer customer);
+    Task<bool> UpdateCustomerByFullInfoAsync(Customer customer);
 }

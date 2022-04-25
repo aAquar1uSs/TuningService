@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using System.Windows.Forms;
 using TuningService.Models;
 using TuningService.Services;
 using TuningService.Views;
@@ -8,9 +8,9 @@ namespace TuningService.Presenters
 {
     public class EditCustomerViewPresenter
     {
-        private IEditCustomerView _editCustomerView;
+        private readonly IEditCustomerView _editCustomerView;
 
-        private ICustomerService _customerService;
+        private readonly ICustomerService _customerService;
 
         public EditCustomerViewPresenter(IEditCustomerView editCustomerView,
             ICustomerService customerService)
@@ -30,7 +30,13 @@ namespace TuningService.Presenters
 
         private async Task UpdateCustomerDataAsync(Customer customer)
         {
-            await _customerService.UpdateCustomerByFullInfoAsync(customer);
+            if (!await _customerService.UpdateCustomerByFullInfoAsync(customer))
+            {
+                MessageBox.Show("An unexpected error has occurred!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }

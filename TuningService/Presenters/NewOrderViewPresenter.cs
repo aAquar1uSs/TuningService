@@ -1,4 +1,3 @@
-using Npgsql;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -41,7 +40,7 @@ public class NewOrderViewPresenter
         _newOrder.UpdateListOfMasters += UpdateMastersAsync;
         _newOrder.AddNewCustomerEvent += AddCustomerAsync;
         _newOrder.AddNewCarEvent += AddCarAsync;
-        _newOrder.UproveMasterEvent += UproveMasterAsync;
+        _newOrder.UproveMasterEvent += UploadMasterAsync;
         _newOrder.AddNewOrderEvent += AddOrderAsync;
         _newOrder.CreateTuningBoxEvent += CreateTuningBoxAsync;
         _newOrder.VerifyBoxNumberEvent += VerifyTuningBoxNumberAsync;
@@ -65,7 +64,7 @@ public class NewOrderViewPresenter
         return await _carService.GetCarIdByFullInformationAsync(car);
     }
 
-    private async Task<int> UproveMasterAsync(Master master)
+    private async Task<int> UploadMasterAsync(Master master)
     {
          return await _masterService.GetMasterIdByFullInformation(master);
     }

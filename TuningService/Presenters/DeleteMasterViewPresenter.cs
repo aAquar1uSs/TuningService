@@ -1,5 +1,4 @@
-﻿using Npgsql;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TuningService.Models;
@@ -10,9 +9,9 @@ namespace TuningService.Presenters
 {
     public class DeleteMasterViewPresenter
     {
-        private IDeleteMasterView _deleteMasterView;
+        private readonly IDeleteMasterView _deleteMasterView;
 
-        private IMasterService _masterService;
+        private readonly IMasterService _masterService;
 
         public DeleteMasterViewPresenter(IDeleteMasterView deleteMasterView,
             IMasterService masterService)
@@ -31,12 +30,12 @@ namespace TuningService.Presenters
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
-            }     
+            }
         }
         private async void UpdateDataAboutMastersAsync(object sender, EventArgs e)
         {
             var dt = await _masterService.GetAllMastersAsync();
-            _deleteMasterView.SetDataAboutMasters(dt);    
+            _deleteMasterView.SetDataAboutMasters(dt);
         }
     }
 }

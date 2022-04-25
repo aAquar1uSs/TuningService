@@ -50,7 +50,7 @@ public class CarService : ICarService
             await _sqlConnection.CloseAsync();
             return null;
         }
-       
+
         return await GetCarByIdAsync(carId);
     }
 
@@ -88,7 +88,7 @@ public class CarService : ICarService
             await _sqlConnection.CloseAsync();
             return null;
         }
-        
+
         return car;
     }
 
@@ -153,7 +153,7 @@ public class CarService : ICarService
             await _sqlConnection.CloseAsync();
             return 0;
         }
-       
+
         return carId;
     }
 

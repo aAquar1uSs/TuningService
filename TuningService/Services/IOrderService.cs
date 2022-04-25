@@ -13,5 +13,5 @@ public interface IOrderService
 
     Task<Order> GetOrderByIdAsync(int id);
 
-    Task UpdateOrderDataByFullInfo(Order order);
+    Task<bool> UpdateOrderDataByFullInfo(Order order);
 }
