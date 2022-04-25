@@ -1,21 +1,26 @@
 using System;
+using System.Threading.Tasks;
 using TuningService.Models;
 
 namespace TuningService.Views;
 
+public delegate Task LoadFullInformationAboutOrderDelegate(int boxId);
+
+public delegate void ShowEditCarDelegate(int carId);
+public delegate void ShowEditCustomerDelegate(int customerId);
+public delegate void ShowEditOrderDelegate(int orderId);
+
 public interface IOrderInfoView
 {
-    event EventHandler LoadFullInformationAboutOrder;
+    event LoadFullInformationAboutOrderDelegate LoadFullInformationOrderEvent;
 
     event EventHandler ChangeStateOrderEvent;
 
-    event EventHandler<int> ShowEditCarEvent;
+    event ShowEditCarDelegate ShowEditCarEvent;
 
-    event EventHandler<int> ShowEditCustomerEvent;
+    event ShowEditCustomerDelegate ShowEditCustomerEvent;
 
-    event EventHandler<int> ShowEditOrderEvent;
-
-    public int TuningBoxId { get; set; }
+    event ShowEditOrderDelegate ShowEditOrderEvent;
 
     public void ShowInformationAboutOrder(Order order);
 }

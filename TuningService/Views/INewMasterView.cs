@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using TuningService.Models;
 
 namespace TuningService.Views
 {
+    public delegate Task AddNewMasterDelegate(Master master);
     public interface INewMasterView
     {
-        event EventHandler AddNewMaster;
-
-        Master Master { get; set; }
+        event AddNewMasterDelegate AddNewMasterEvent;
     }
 }

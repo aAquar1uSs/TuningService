@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using TuningService.Models;
 using TuningService.Services;
 using TuningService.Services.Impl;
@@ -29,21 +30,21 @@ public class OrderInfoPresenter
         _tuningBoxService = boxService;
         _connectionString = connectionString;
 
-        _orderInfoView.LoadFullInformationAboutOrder += GetFullInformationAboutOrder;
+        _orderInfoView.LoadFullInformationOrderEvent += GetFullInformationAboutOrderEvent;
         _orderInfoView.ChangeStateOrderEvent += ChangeStateOrderAsync;
         _orderInfoView.ShowEditCarEvent += ShowEditCarView;
         _orderInfoView.ShowEditCustomerEvent += ShowEditCustomerView;
         _orderInfoView.ShowEditOrderEvent += ShowEditOrderView;
     }
 
-    private async void GetFullInformationAboutOrder(object sender, EventArgs e)
+    private async Task GetFullInformationAboutOrderEvent(int boxId)
     {
         try
         {
-            _order = await _orderService.GetOrderByTuningBoxIdAsync(_orderInfoView.TuningBoxId);
+            _order = await _orderService.GetOrderByTuningBoxIdAsync(boxId);
 
             if (_order is not null)
-                _order.TuningBox = await _tuningBoxService.GetFulInformationAboutTuningBoxById(_orderInfoView.TuningBoxId);
+                _order.TuningBox = await _tuningBoxService.GetFulInformationAboutTuningBoxById(boxId);
 
             _orderInfoView.ShowInformationAboutOrder(_order);
         }
@@ -62,7 +63,7 @@ public class OrderInfoPresenter
         _orderInfoView.ShowInformationAboutOrder(_order);
     }
 
-    private void ShowEditCarView(object sender, int carId)
+    private void ShowEditCarView(int carId)
     {
         var editCarView = new EditCarView();
 
@@ -73,7 +74,7 @@ public class OrderInfoPresenter
         editCarView.ShowDialog();
     }
 
-    private void ShowEditCustomerView(object sender, int customerId)
+    private void ShowEditCustomerView(int customerId)
     {
         var editCustomerView = new EditCustomerView();
         var customerService = new CustomerService(_connectionString);
@@ -83,7 +84,7 @@ public class OrderInfoPresenter
         editCustomerView.ShowDialog();
     }
 
-    private void ShowEditOrderView(object sender, int orderId)
+    private void ShowEditOrderView(int orderId)
     {
         var editOrderView = new EditOrderView();
         var orderService = new OrderService(_connectionString);

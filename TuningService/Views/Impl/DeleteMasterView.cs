@@ -12,7 +12,8 @@ namespace TuningService.Views.Impl
         private static DeleteMasterView _deleteMasterViewInstance;
 
         private Master _master;
-        public DeleteMasterView()
+
+        private DeleteMasterView()
         {
             InitializeComponent();
         }

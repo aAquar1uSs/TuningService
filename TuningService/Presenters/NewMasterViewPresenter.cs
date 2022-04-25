@@ -1,4 +1,6 @@
-﻿using System;
+﻿using System.Threading.Tasks;
+using System.Windows.Forms;
+using TuningService.Models;
 using TuningService.Services;
 using TuningService.Views;
 
@@ -6,22 +8,25 @@ namespace TuningService.Presenters
 {
     public class NewMasterViewPresenter
     {
-        private readonly INewMasterView _newMasterView;
-
         private readonly IMasterService _masterService;
 
         public NewMasterViewPresenter(INewMasterView masterView,
             IMasterService masterService)
         {
-            _newMasterView = masterView;
             _masterService = masterService;
 
-            _newMasterView.AddNewMaster += AddNewMasterEvent;
+            masterView.AddNewMasterEvent += AddNewMasterEvent;
         }
 
-        private async void AddNewMasterEvent(object sender, EventArgs e)
+        private async Task AddNewMasterEvent(Master master)
         {
-            await _masterService.InsertNewMasterAsync(_newMasterView.Master);
+            if (!await _masterService.InsertNewMasterAsync(master))
+            {
+                MessageBox.Show("An unexpected error has occurred!",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
     }
 }

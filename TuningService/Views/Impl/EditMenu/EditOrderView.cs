@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Drawing;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TuningService.Factories;
 using TuningService.Models;
@@ -16,29 +9,32 @@ namespace TuningService.Views.Impl.EditMenu
 {
     public partial class EditOrderView : Form, IEditOrderView
     {
+        private int _orderId;
+
         private Order _order;
+
         public EditOrderView()
         {
             InitializeComponent();
         }
 
-        public Order OrderInfo { get => _order; set => _order = value; }
+        public event GetOrderDataDelegate GetOrderDataEvent;
+        public event UpdateOrderDataDelegate UpdateOrderDataEvent;
 
-        public event EventHandler<int> GetOrderDataEvent;
-        public event EventHandler UpdateOrderDataEvent;
-
-        public void GetOldOrderData(int orderId)
+        public async void GetOldOrderData(int orderId)
         {
-            GetOrderDataEvent?.Invoke(this, orderId);
+            _orderId = orderId;
+            await GetOrderDataEvent?.Invoke(orderId)!;
         }
 
-        public void ShowInformation()
+        public void ShowInformation(Order order)
         {
-            textBoxEndDate.Text = _order.EndDate.ToString();
-            labelStartDate.Text = _order.StartDate.ToString();
-            textBoxPrice.Text = _order.Price.ToString();
-            checkBoxIsDone.Checked = _order.IsDone;
-            orderDescription.Text = _order.Description;
+            const string pattern = "yyyy-MM-dd";
+            textBoxEndDate.Text = order.EndDate.ToString(pattern, CultureInfo.InvariantCulture);
+            labelStartDate.Text = order.StartDate.ToString(CultureInfo.InvariantCulture);
+            textBoxPrice.Text = order.Price.ToString(CultureInfo.InvariantCulture);
+            checkBoxIsDone.Checked = order.IsDone;
+            orderDescription.Text = order.Description;
         }
 
         private void EditOrderView_Load(object sender, EventArgs e)
@@ -48,17 +44,16 @@ namespace TuningService.Views.Impl.EditMenu
 
         private void buttonChangeOrder_Click(object sender, EventArgs e)
         {
-            string pattern = "yyyy-MM-dd";
-            var id = _order.Id;
+            const string pattern = "yyyy-MM-dd";
             try
             {
                 var finishData = DateTime.ParseExact(textBoxEndDate.Text, pattern, CultureInfo.InvariantCulture);
-                var price = decimal.Parse(textBoxPrice.Text);
+                var price = decimal.Parse(textBoxPrice.Text.Replace('.', ','));
                 var inWork = checkBoxIsDone.Checked;
                 var desc = orderDescription.Text;
 
                 _order = OrderFactory.GetOrderInstance(finishData, price, inWork, desc);
-                _order.Id = id;
+                _order.Id = _orderId;
             }
             catch (ValidationException)
             {
@@ -79,7 +74,7 @@ namespace TuningService.Views.Impl.EditMenu
                 return;
             }
 
-            UpdateOrderDataEvent?.Invoke(this, EventArgs.Empty);
+            UpdateOrderDataEvent?.Invoke(_order);
 
             MessageBox.Show("Order data has been successfully updated!",
                   "Information",

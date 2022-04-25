@@ -20,7 +20,7 @@ namespace TuningService.Views.Impl
 
             //SetEventHandlerForOrderButton();
             SetSearchEvents();
-            buttonDeleteMaster.Click += (_, _) => ShowDeleteMasterView(this, EventArgs.Empty);
+            buttonDeleteMaster.Click += (_, _) => ShowDeleteMasterView?.Invoke(this, EventArgs.Empty);
             buttonAddNewOrder.Click += (_, _) => ShowNewOrderViewEvent?.Invoke(this, EventArgs.Empty);
             buttonUpdate.Click += (_, _) => UpdateAllDataEvent?.Invoke(this, EventArgs.Empty);
             buttonAddMaster.Click += (_, _) => ShowNewMasterView?.Invoke(this, EventArgs.Empty);

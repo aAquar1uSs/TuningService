@@ -40,7 +40,7 @@ public class NewOrderViewPresenter
         _newOrder.UpdateListOfMasters += UpdateMastersAsync;
         _newOrder.AddNewCustomerEvent += AddCustomerAsync;
         _newOrder.AddNewCarEvent += AddCarAsync;
-        _newOrder.UproveMasterEvent += UploadMasterAsync;
+        _newOrder.UploadMasterEvent += UploadMasterAsync;
         _newOrder.AddNewOrderEvent += AddOrderAsync;
         _newOrder.CreateTuningBoxEvent += CreateTuningBoxAsync;
         _newOrder.VerifyBoxNumberEvent += VerifyTuningBoxNumberAsync;
@@ -69,9 +69,9 @@ public class NewOrderViewPresenter
          return await _masterService.GetMasterIdByFullInformation(master);
     }
 
-    private async Task<bool> VerifyTuningBoxNumberAsync(object sender, EventArgs e)
+    private async Task<bool> VerifyTuningBoxNumberAsync(int boxId)
     {
-        return await _tuningBoxService.VerifyBoxNumberAsync(_newOrder.BoxId);
+        return await _tuningBoxService.VerifyBoxNumberAsync(boxId);
     }
 
     private async Task<int> CreateTuningBoxAsync(TuningBox tuningBox, int carId)
