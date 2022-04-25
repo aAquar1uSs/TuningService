@@ -1,26 +1,29 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
+using System.Configuration;
 using System.Windows.Forms;
-using TuningService.Tools;
+using TuningService.Presenters;
+using TuningService.Services.Impl;
+using TuningService.Views.Impl;
 
 namespace TuningService
 {
-    static class Program
+    internal static class Program
     {
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
-        }
 
-        private static IServiceProvider GetServiceProvider()
-        {
-            var serviceCollection = new ServiceCollection();
-            
+            var sqlConnectionString = ConfigurationManager
+                .ConnectionStrings["ConnectionString"].ConnectionString;
 
-            return serviceCollection.BuildServiceProvider();
+            var dbService = new DbService(sqlConnectionString);
+            var customerService = new CustomerService(sqlConnectionString);
+            var view = new MainView();
+
+            _ = new MainPresenter(view, sqlConnectionString, dbService, customerService);
+            Application.Run((Form) view);
         }
     }
 }

@@ -14,6 +14,7 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -41,12 +42,6 @@
     <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.6.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
-    </Reference>
     <Reference Include="Npgsql, Version=6.0.3.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <HintPath>..\packages\Npgsql.6.0.3\lib\netstandard2.0\Npgsql.dll</HintPath>
     </Reference>
@@ -57,6 +52,7 @@
     <Reference Include="System.Collections.Immutable, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.6.0.0\lib\net461\System.Collections.Immutable.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -98,18 +94,94 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tools\DbConnection.cs" />
-    <Compile Include="Views\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Factories\CarFactory.cs" />
+    <Compile Include="Factories\TuningBoxFactory.cs" />
+    <Compile Include="Factories\CustomerFactory.cs" />
+    <Compile Include="Factories\MasterFactory.cs" />
+    <Compile Include="Factories\OrderFactory.cs" />
+    <Compile Include="Models\Car.cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Master.cs" />
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\TuningBox.cs" />
+    <Compile Include="Presenters\DeleteMasterViewPresenter.cs" />
+    <Compile Include="Presenters\EditCarViewPresenter.cs" />
+    <Compile Include="Presenters\EditCustomerViewPresenter.cs" />
+    <Compile Include="Presenters\EditOrderViewPresenter.cs" />
+    <Compile Include="Presenters\MainPresenter.cs" />
+    <Compile Include="Presenters\NewMasterViewPresenter.cs" />
+    <Compile Include="Presenters\NewOrderViewPresenter.cs" />
+    <Compile Include="Presenters\OrderInfoPresenter.cs" />
+    <Compile Include="Services\ICarService.cs" />
+    <Compile Include="Services\ICustomerService.cs" />
+    <Compile Include="Services\IDbService.cs" />
+    <Compile Include="Services\IMasterService.cs" />
+    <Compile Include="Services\Impl\CarService.cs" />
+    <Compile Include="Services\Impl\CustomerService.cs" />
+    <Compile Include="Services\Impl\DbService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Views\Form1.resx">
+    <Compile Include="Services\Impl\MasterService.cs" />
+    <Compile Include="Services\Impl\OrderService.cs" />
+    <Compile Include="Services\Impl\TuningBoxService.cs" />
+    <Compile Include="Services\IOrderService.cs" />
+    <Compile Include="Services\ITuningBoxService.cs" />
+    <Compile Include="Views\IDeleteMasterView.cs" />
+    <Compile Include="Views\IEditCarView.cs" />
+    <Compile Include="Views\IEditCustomerView.cs" />
+    <Compile Include="Views\IEditOrderView.cs" />
+    <Compile Include="Views\IMainView.cs" />
+    <Compile Include="Views\Impl\DeleteMasterView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Impl\DeleteMasterView.Designer.cs">
+      <DependentUpon>DeleteMasterView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Impl\EditMenu\EditCarView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Impl\EditMenu\EditCarView.Designer.cs">
+      <DependentUpon>EditCarView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Impl\EditMenu\EditCustomerView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Impl\EditMenu\EditCustomerView.Designer.cs">
+      <DependentUpon>EditCustomerView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Impl\EditMenu\EditOrderView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Impl\EditMenu\EditOrderView.Designer.cs">
+      <DependentUpon>EditOrderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Impl\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Impl\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
+    </Compile>
+    <Compile Include="Views\Impl\NewMasterView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Impl\NewMasterView.Designer.cs">
+      <DependentUpon>NewMasterView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Impl\OrderInfoView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Impl\OrderInfoView.Designer.cs">
+      <DependentUpon>OrderInfoView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Impl\NewOrderView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Impl\NewOrderView.Designer.cs">
+      <DependentUpon>NewOrderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\INewMasterView.cs" />
+    <Compile Include="Views\INewOrderView.cs" />
+    <Compile Include="Views\IOrderInfoView.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -119,6 +191,30 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\Impl\DeleteMasterView.resx">
+      <DependentUpon>DeleteMasterView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Impl\EditMenu\EditCarView.resx">
+      <DependentUpon>EditCarView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Impl\EditMenu\EditCustomerView.resx">
+      <DependentUpon>EditCustomerView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Impl\EditMenu\EditOrderView.resx">
+      <DependentUpon>EditOrderView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Impl\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Impl\NewMasterView.resx">
+      <DependentUpon>NewMasterView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Impl\OrderInfoView.resx">
+      <DependentUpon>OrderInfoView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Impl\NewOrderView.resx">
+      <DependentUpon>NewOrderView.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
