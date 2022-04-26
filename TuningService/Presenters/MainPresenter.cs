@@ -34,7 +34,7 @@ public class MainPresenter
         _mainView.ShowDeleteMasterView += ShowDeleteMasterViewEvent;
     }
 
-    private void ShowOrderInfoViewEvent(object sender, int index)
+    private void ShowOrderInfoViewEvent(int index)
     {
         var orderService = new OrderService(_connectionString);
 
@@ -85,7 +85,7 @@ public class MainPresenter
         _mainView.SetAllDataToDataGridView(await _dbService.ShowAllDataAsync());
     }
 
-    private async void RemoveData(object sender, int index)
+    private async void RemoveData(int index)
     {
         if (await _customerService.DeleteCustomerByIdAsync(index))
         {

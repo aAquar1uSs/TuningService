@@ -26,10 +26,10 @@ namespace TuningService.Views.Impl
             buttonAddMaster.Click += (_, _) => ShowNewMasterView?.Invoke(this, EventArgs.Empty);
         }
 
-        public event EventHandler<int> ShowOrderInfoViewEvent;
+        public event ShowOrderDelegate ShowOrderInfoViewEvent;
         public event EventHandler ShowNewOrderViewEvent;
         public event EventHandler UpdateAllDataEvent;
-        public event EventHandler<int> RemoveDataFromTableEvent;
+        public event RemoveOrderDelegate RemoveDataFromTableEvent;
         public event EventHandler SearchEvent;
         public event EventHandler ShowNewMasterView;
         public event EventHandler ShowDeleteMasterView;
@@ -94,7 +94,7 @@ namespace TuningService.Views.Impl
                 if (result == DialogResult.No)
                     return;
 
-                RemoveDataFromTableEvent?.Invoke(sender, customerId);
+                RemoveDataFromTableEvent?.Invoke(customerId);
                 UpdateAllDataEvent?.Invoke(this, EventArgs.Empty);
             }
             catch (FormatException)
@@ -106,7 +106,7 @@ namespace TuningService.Views.Impl
             }
         }
 
-        public void InitHeadersInTable()
+        private void InitHeadersInTable()
         {
             dataGridView1.Columns[0].HeaderText = "Id";
             dataGridView1.Columns[1].HeaderText = "Full name";
@@ -130,7 +130,7 @@ namespace TuningService.Views.Impl
                             .ToString());
 
                 //ButtonHandler
-                 ShowOrderInfoViewEvent?.Invoke(this, index);
+                 ShowOrderInfoViewEvent?.Invoke(index);
             }
             catch (FormatException)
             {
@@ -159,7 +159,7 @@ namespace TuningService.Views.Impl
                             .ToString());
 
                 //DataGridHandler
-                    ShowOrderInfoViewEvent?.Invoke(this, index);
+                    ShowOrderInfoViewEvent?.Invoke(index);
             }
             catch (FormatException)
             {
