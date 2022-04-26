@@ -105,6 +105,32 @@ public class TuningBoxService : ITuningBoxService
         await _sqlConnection.CloseAsync();
     }
 
+    public async Task<bool> UpdateMasterIdAsync(int oldId, int newId)
+    {
+        try
+        {
+            await _sqlConnection.OpenAsync();
+            using (var command = new NpgsqlCommand())
+            {
+                command.Connection = _sqlConnection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "UPDATE tuning_box SET master_id = @newId WHERE master_id = @oldId;";
+                command.Parameters.Add("@newId", NpgsqlDbType.Integer).Value = newId;
+                command.Parameters.Add("@oldId", NpgsqlDbType.Integer).Value = oldId;
+
+                await using (var reader = await command.ExecuteReaderAsync()) { };
+            }
+            await _sqlConnection.CloseAsync();
+        }
+        catch (NpgsqlException)
+        {
+            await _sqlConnection.CloseAsync();
+            return false;
+        }
+        
+        return true;
+    }
+
     public async Task<bool> VerifyBoxNumberAsync(int boxNumber)
     {
         var isExist = false;

@@ -123,7 +123,6 @@ namespace TuningService.Views.Impl
 
             try
             {
-
                 var index = Convert
                         .ToInt32(dataGridView1[5, dataGridView1.CurrentRow.Index]
                             .Value

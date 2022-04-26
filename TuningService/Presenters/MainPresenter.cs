@@ -73,9 +73,10 @@ public class MainPresenter
 
     private void ShowDeleteMasterViewEvent(object sender, EventArgs e)
     {
-       var deleteMasterView = DeleteMasterView.GetInstance();
-       var masterService = new MasterService(_connectionString);
-        _ = new DeleteMasterViewPresenter(deleteMasterView, masterService);
+        var deleteMasterView = DeleteMasterView.GetInstance();
+        var masterService = new MasterService(_connectionString);
+        var tuningBoxService = new TuningBoxService(_connectionString);
+        _ = new DeleteMasterViewPresenter(deleteMasterView, tuningBoxService, masterService);
 
         deleteMasterView.ShowDialog();
     }

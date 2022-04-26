@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
 using TuningService.Factories;
@@ -11,7 +12,7 @@ namespace TuningService.Views.Impl
 
         private static DeleteMasterView _deleteMasterViewInstance;
 
-        private Master _master;
+        private DataTable _dataTable;
 
         private DeleteMasterView()
         {
@@ -20,7 +21,7 @@ namespace TuningService.Views.Impl
 
         public event EventHandler UpdateListOfMastersEvent;
 
-        public event DeleteMasterDelegate DeleteMasterEvent;
+        public event DeleteMasterDelegate DeleteAndReplaceMasterEvent;
 
         public static DeleteMasterView GetInstance()
         {
@@ -42,13 +43,15 @@ namespace TuningService.Views.Impl
 
         public void SetDataAboutMasters(DataTable dt)
         {
-            comboBoxMasters.DataSource = dt;
+            _dataTable = dt;
+            comboBoxMasters.DataSource = _dataTable;
             comboBoxMasters.DisplayMember = "concat";
             comboBoxMasters.ValueMember = "concat";
         }
+
         private async void buttonDelete_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show("If you remove this master, remove the orders that it has executed",
+            var result = MessageBox.Show("You sure?",
                "Information",
                MessageBoxButtons.OKCancel,
                MessageBoxIcon.Information);
@@ -56,14 +59,19 @@ namespace TuningService.Views.Impl
             if (result == DialogResult.Cancel)
                 return;
 
+            var oldMasterInfo = comboBoxMasters.Text.Split(' ');
+            var name = oldMasterInfo[0];
+            var surname = oldMasterInfo[1];
 
-            var masterInfo = comboBoxMasters.Text.Split(' ');
-            var name = masterInfo[0];
-            var surname = masterInfo[1];
+            var oldMaster = MasterFactory.GetMasterInstance(name, surname);
 
-            _master = MasterFactory.GetMasterInstance(name, surname);
+            var newMasterInfo = comboBoxMasterRep.Text.Split(' ');
+            name = newMasterInfo[0];
+            surname = newMasterInfo[1];
 
-            await DeleteMasterEvent?.Invoke(_master);
+            var newMaster = MasterFactory.GetMasterInstance(name, surname);
+
+            await DeleteAndReplaceMasterEvent?.Invoke(oldMaster, newMaster);
 
             MessageBox.Show("Master has been successfully deleted!",
                 "Information",
@@ -77,6 +85,23 @@ namespace TuningService.Views.Impl
         {
             UpdateListOfMastersEvent?.Invoke(this, EventArgs.Empty);
             buttonClose.Click += (_, _) => Close();
+        }
+
+        private void comboBoxMasters_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            var selectedMaster = comboBoxMasters.Text;
+
+            var masterList = new List<string>();
+     
+            for (var i = 0; i < _dataTable.Rows.Count; i++)
+            {
+                var row = _dataTable.Rows[i];
+                var item = (string)row.ItemArray.GetValue(0);
+                if (!item.Equals(selectedMaster, StringComparison.InvariantCulture))
+                    masterList.Add(item);
+            }
+
+            comboBoxMasterRep.DataSource = masterList;
         }
     }
 }
