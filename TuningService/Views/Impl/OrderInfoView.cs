@@ -12,18 +12,17 @@ namespace TuningService.Views.Impl
         private static OrderInfoView _orderInfoViewInstance;
 
         private int _tuningBoxId;
-        public int TuningBoxId { get =>  _tuningBoxId; set => _tuningBoxId = value; }
 
         private OrderInfoView()
         {
             InitializeComponent();
         }
 
-        public event EventHandler LoadFullInformationAboutOrder;
+        public event LoadFullInformationAboutOrderDelegate LoadFullInformationOrderEvent;
         public event EventHandler ChangeStateOrderEvent;
-        public event EventHandler<int> ShowEditCarEvent;
-        public event EventHandler<int> ShowEditCustomerEvent;
-        public event EventHandler<int> ShowEditOrderEvent;
+        public event ShowEditCarDelegate ShowEditCarEvent;
+        public event ShowEditCustomerDelegate ShowEditCustomerEvent;
+        public event ShowEditOrderDelegate ShowEditOrderEvent;
 
         public static OrderInfoView GetInstance()
         {
@@ -51,7 +50,7 @@ namespace TuningService.Views.Impl
 
             try
             {
-                LoadFullInformationAboutOrder?.Invoke(this, EventArgs.Empty);
+                LoadFullInformationOrderEvent?.Invoke(_tuningBoxId);
             }
             catch (NpgsqlException)
             {
@@ -101,28 +100,28 @@ namespace TuningService.Views.Impl
             labelCustomerPhone.Text = order.TuningBox.CarInfo.Owner.Phone;
         }
 
-        private void buttonEditCar_Click(object sender, EventArgs e)
+        private async void buttonEditCar_Click(object sender, EventArgs e)
         {
             var carId = Convert.ToInt32(labelCarId.Text);
-            ShowEditCarEvent?.Invoke(this, carId);
+            ShowEditCarEvent?.Invoke(carId);
 
-            LoadFullInformationAboutOrder?.Invoke(this, EventArgs.Empty);
+            await LoadFullInformationOrderEvent?.Invoke(_tuningBoxId)!;
         }
 
-        private void buttonEditOwner_Click(object sender, EventArgs e)
+        private async void buttonEditOwner_Click(object sender, EventArgs e)
         {
             var customerId = Convert.ToInt32(labelCustomerId.Text);
-            ShowEditCustomerEvent?.Invoke(this, customerId);
+            ShowEditCustomerEvent?.Invoke(customerId);
 
-            LoadFullInformationAboutOrder?.Invoke(this, EventArgs.Empty);
+            await LoadFullInformationOrderEvent?.Invoke(_tuningBoxId)!;
         }
 
-        private void buttonChangeOrder_Click(object sender, EventArgs e)
+        private async void buttonChangeOrder_Click(object sender, EventArgs e)
         {
             var orderId = Convert.ToInt32(labelOrderId.Text);
-            ShowEditOrderEvent?.Invoke(this, orderId);
+            ShowEditOrderEvent?.Invoke(orderId);
 
-            LoadFullInformationAboutOrder?.Invoke(this, EventArgs.Empty);
+            await LoadFullInformationOrderEvent?.Invoke(_tuningBoxId)!;
         }
     }
 }

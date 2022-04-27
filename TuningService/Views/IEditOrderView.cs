@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using TuningService.Models;
 
 namespace TuningService.Views
 {
+    public delegate Task GetOrderDataDelegate(int orderId);
+    public delegate Task UpdateOrderDataDelegate(Order order);
+
     public interface IEditOrderView
     {
-        event EventHandler<int> GetOrderDataEvent;
+        event GetOrderDataDelegate GetOrderDataEvent;
 
-        event EventHandler UpdateOrderDataEvent;
+        event UpdateOrderDataDelegate UpdateOrderDataEvent;
 
         public void GetOldOrderData(int orderId);
 
-        Order OrderInfo { get; set; }
-        public void ShowInformation();
+        public void ShowInformation(Order order);
     }
 }

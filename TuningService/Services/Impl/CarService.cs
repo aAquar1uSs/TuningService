@@ -116,7 +116,7 @@ public class CarService : ICarService
         catch (NpgsqlException)
         {
             await _sqlConnection.CloseAsync();
-        } 
+        }
     }
 
     public async Task<int> GetCarIdByFullInformationAsync(Car car)

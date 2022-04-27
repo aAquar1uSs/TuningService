@@ -14,7 +14,7 @@ public interface IMasterService
 
     Task<int> GetMasterIdByFullInformation(Master master);
 
-    Task InsertNewMasterAsync(Master master);
+    Task<bool> InsertNewMasterAsync(Master master);
 
     Task<bool> DeleteMasterByFullInfo(Master master);
 }

@@ -17,9 +17,7 @@ namespace TuningService.Views.Impl
             InitializeComponent();
         }
 
-        public Master Master { get => _master; set => _master = value; }
-
-        public event EventHandler AddNewMaster;
+        public event AddNewMasterDelegate AddNewMasterEvent;
 
         public static NewMasterView GetInstance()
         {
@@ -40,7 +38,7 @@ namespace TuningService.Views.Impl
 
         private void NewMasterView_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         private void buttonClose_Click(object sender, EventArgs e)
@@ -67,10 +65,10 @@ namespace TuningService.Views.Impl
 
                 return;
             }
-            AddNewMaster?.Invoke(this, EventArgs.Empty);
+            AddNewMasterEvent?.Invoke(_master);
 
             MessageBox.Show("Master has been successfully added!",
-                    "Inforamtion",
+                    "Information",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             _newMasterViewInstance.Close();

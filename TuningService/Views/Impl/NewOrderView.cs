@@ -18,10 +18,9 @@ namespace TuningService.Views.Impl
         private Car _car;
         private Master _master;
         private TuningBox _tuningBox;
+        private int _boxId;
 
         private bool _isBoxNumberExist;
-
-        public int BoxId {get; set;}
 
         private NewOrderView()
         {
@@ -32,7 +31,7 @@ namespace TuningService.Views.Impl
         public event AddNewCarDelegate AddNewCarEvent;
         public event AddNewCustomerDelegate AddNewCustomerEvent;
         public event AddNewOrderDelegate AddNewOrderEvent;
-        public event UproveMasterDelegate UproveMasterEvent;
+        public event UploadMasterDelegate UploadMasterEvent;
         public event CreateTuningBoxDelegate CreateTuningBoxEvent;
         public event VerifyBoxNumberDelegate VerifyBoxNumberEvent;
 
@@ -145,8 +144,8 @@ namespace TuningService.Views.Impl
         {
             try
             {
-                BoxId = Convert.ToInt32(textBoxBoxNumber.Text);
-                _tuningBox = TuningBoxFactory.GetTuningBoxInstance(BoxId, _master, _car);
+                _boxId = Convert.ToInt32(textBoxBoxNumber.Text);
+                _tuningBox = TuningBoxFactory.GetTuningBoxInstance(_boxId, _master, _car);
             }
             catch (ValidationException)
             {
@@ -200,11 +199,11 @@ namespace TuningService.Views.Impl
             return true;
         }
 
-        private async Task VerifyBoxNumberAsync(object sender, EventArgs e)
+        private async Task VerifyBoxNumberAsync()
         {
             try
             {
-                BoxId = Convert.ToInt32(textBoxBoxNumber.Text);
+                _boxId = Convert.ToInt32(textBoxBoxNumber.Text);
             }
             catch (FormatException)
             {
@@ -214,12 +213,12 @@ namespace TuningService.Views.Impl
                     MessageBoxIcon.Error);
                 return;
             }
-            _isBoxNumberExist = await VerifyBoxNumberEvent?.Invoke(sender, e);
+            _isBoxNumberExist = await VerifyBoxNumberEvent?.Invoke(_boxId);
         }
-        
+
         private async void buttonAddOrder_Click(object sender, EventArgs e)
         {
-            await VerifyBoxNumberAsync(sender, e);
+            await VerifyBoxNumberAsync();
 
             if (_isBoxNumberExist)
             {
@@ -238,12 +237,11 @@ namespace TuningService.Views.Impl
             {
                 return;
             }
-          
             _customer.Id = await AddNewCustomerEvent?.Invoke(_customer);
 
             _car.Id = await AddNewCarEvent?.Invoke(_car);
 
-            _master.Id = await UproveMasterEvent?.Invoke(_master);
+            _master.Id = await UploadMasterEvent?.Invoke(_master);
 
             _tuningBox.Id = await CreateTuningBoxEvent?.Invoke(_tuningBox, _car.Id);
 

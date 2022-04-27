@@ -155,11 +155,11 @@
     <Compile Include="Views\Impl\EditMenu\EditOrderView.Designer.cs">
       <DependentUpon>EditOrderView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\Impl\Form1.cs">
+    <Compile Include="Views\Impl\MainView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Impl\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Views\Impl\MainView.Designer.cs">
+      <DependentUpon>MainView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Impl\NewMasterView.cs">
       <SubType>Form</SubType>
@@ -203,8 +203,8 @@
     <EmbeddedResource Include="Views\Impl\EditMenu\EditOrderView.resx">
       <DependentUpon>EditOrderView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Impl\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Impl\MainView.resx">
+      <DependentUpon>MainView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Impl\NewMasterView.resx">
       <DependentUpon>NewMasterView.cs</DependentUpon>

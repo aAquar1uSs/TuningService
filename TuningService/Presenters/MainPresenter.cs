@@ -34,7 +34,7 @@ public class MainPresenter
         _mainView.ShowDeleteMasterView += ShowDeleteMasterViewEvent;
     }
 
-    private void ShowOrderInfoViewEvent(object sender, int index)
+    private void ShowOrderInfoViewEvent(int index)
     {
         var orderService = new OrderService(_connectionString);
 
@@ -73,9 +73,10 @@ public class MainPresenter
 
     private void ShowDeleteMasterViewEvent(object sender, EventArgs e)
     {
-       var deleteMasterView = DeleteMasterView.GetInstance();
-       var masterService = new MasterService(_connectionString);
-        _ = new DeleteMasterViewPresenter(deleteMasterView, masterService);
+        var deleteMasterView = DeleteMasterView.GetInstance();
+        var masterService = new MasterService(_connectionString);
+        var tuningBoxService = new TuningBoxService(_connectionString);
+        _ = new DeleteMasterViewPresenter(deleteMasterView, tuningBoxService, masterService);
 
         deleteMasterView.ShowDialog();
     }
@@ -85,9 +86,9 @@ public class MainPresenter
         _mainView.SetAllDataToDataGridView(await _dbService.ShowAllDataAsync());
     }
 
-    private async void RemoveData(object sender, int index)
+    private async void RemoveData(int index)
     {
-        if (await _customerService.DeleteCustomerByIdAsync(index))
+        if (!await _customerService.DeleteCustomerByIdAsync(index))
         {
             MessageBox.Show("An unexpected error has occurred!",
                 "Error",

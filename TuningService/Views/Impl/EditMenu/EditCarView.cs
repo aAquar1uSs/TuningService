@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TuningService.Factories;
 using TuningService.Models;

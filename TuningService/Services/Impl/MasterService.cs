@@ -49,7 +49,7 @@ public class MasterService : IMasterService
             await _sqlConnection.CloseAsync();
             return null;
         }
-        
+
         return await GetMasterByIdAsync(masterId);
     }
 
@@ -161,7 +161,7 @@ public class MasterService : IMasterService
         return masterId;
     }
 
-    public async Task InsertNewMasterAsync(Master master)
+    public async Task<bool> InsertNewMasterAsync(Master master)
     {
         try
         {
@@ -184,7 +184,10 @@ public class MasterService : IMasterService
         catch (NpgsqlException)
         {
             await _sqlConnection.CloseAsync();
+            return false;
         }
+
+        return true;
     }
 
     public async Task<bool> DeleteMasterByFullInfo(Master master)

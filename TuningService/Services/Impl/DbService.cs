@@ -15,29 +15,37 @@ namespace TuningService.Services.Impl
 
         public async Task<DataTable> ShowAllDataAsync()
         {
-            await _sqlConnection.OpenAsync();
             var dt = new DataTable();
 
-            using (var command = new NpgsqlCommand())
+            try
             {
-                command.Connection = _sqlConnection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT customer.customer_id,"
-                                      + "concat(customer.surname,' ', customer.name, ' ', customer.lastname), customer.phone,"
-                                      + "car.car_id, concat(car.name, ' ', car.model), tuning_box.box_id,"
-                                      + "concat(master.name, ' ', master.surname), master.phone "
-                                      + "FROM customer JOIN car ON customer.customer_id = car.customer_id "
-                                      + "JOIN tuning_box ON car.car_id = tuning_box.car_id "
-                                      + "JOIN master ON tuning_box.master_id = master.master_id";
-
-                await using (var reader = await command.ExecuteReaderAsync())
+                await _sqlConnection.OpenAsync();
+                using (var command = new NpgsqlCommand())
                 {
-                    if (reader.HasRows)
-                        dt.Load(reader);
+                    command.Connection = _sqlConnection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT customer.customer_id,"
+                                          + "concat(customer.surname,' ', customer.name, ' ', customer.lastname), customer.phone,"
+                                          + "car.car_id, concat(car.name, ' ', car.model), tuning_box.box_id,"
+                                          + "concat(master.name, ' ', master.surname), master.phone "
+                                          + "FROM customer JOIN car ON customer.customer_id = car.customer_id "
+                                          + "JOIN tuning_box ON car.car_id = tuning_box.car_id "
+                                          + "JOIN master ON tuning_box.master_id = master.master_id";
+
+                    await using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                            dt.Load(reader);
+                    }
                 }
+
+                await _sqlConnection.CloseAsync();
+            }
+            catch (NpgsqlException)
+            {
+                await _sqlConnection.CloseAsync();
             }
 
-            await _sqlConnection.CloseAsync();
             return dt;
         }
     }
