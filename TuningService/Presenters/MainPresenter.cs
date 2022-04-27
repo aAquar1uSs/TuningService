@@ -88,7 +88,7 @@ public class MainPresenter
 
     private async void RemoveData(int index)
     {
-        if (await _customerService.DeleteCustomerByIdAsync(index))
+        if (!await _customerService.DeleteCustomerByIdAsync(index))
         {
             MessageBox.Show("An unexpected error has occurred!",
                 "Error",

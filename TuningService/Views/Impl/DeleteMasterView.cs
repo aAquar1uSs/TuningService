@@ -92,7 +92,7 @@ namespace TuningService.Views.Impl
             var selectedMaster = comboBoxMasters.Text;
 
             var masterList = new List<string>();
-     
+
             for (var i = 0; i < _dataTable.Rows.Count; i++)
             {
                 var row = _dataTable.Rows[i];
@@ -102,6 +102,8 @@ namespace TuningService.Views.Impl
             }
 
             comboBoxMasterRep.DataSource = masterList;
+
+            buttonDelete.Enabled = true;
         }
     }
 }

@@ -76,12 +76,7 @@ public class NewOrderViewPresenter
 
     private async Task<int> CreateTuningBoxAsync(TuningBox tuningBox, int carId)
     {
-        try
-        {
-            await _tuningBoxService.InsertNewTuningBoxAsync(tuningBox);
-            return await _tuningBoxService.GetTuningBoxIdByCarIdAsync(carId);
-        }
-        catch (InvalidOperationException)
+        if (!await _tuningBoxService.InsertNewTuningBoxAsync(tuningBox))
         {
             MessageBox.Show("This room already taken.",
                 "Warning",
@@ -89,6 +84,8 @@ public class NewOrderViewPresenter
                 MessageBoxIcon.Warning);
             return 0;
         }
+
+        return await _tuningBoxService.GetTuningBoxIdByCarIdAsync(carId);
     }
 
     private async Task AddOrderAsync(Order order)

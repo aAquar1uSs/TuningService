@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TuningService.Models;
 using TuningService.Services;
 using TuningService.Services.Impl;
@@ -44,13 +45,23 @@ public class OrderInfoPresenter
             _order = await _orderService.GetOrderByTuningBoxIdAsync(boxId);
 
             if (_order is not null)
+            {
                 _order.TuningBox = await _tuningBoxService.GetFulInformationAboutTuningBoxById(boxId);
 
-            _orderInfoView.ShowInformationAboutOrder(_order);
+                if (_order.TuningBox is not null)
+                {
+                    _orderInfoView.ShowInformationAboutOrder(_order);
+                    return;
+                }
+            }
+
+            MessageBox.Show("Order could not be loaded!",
+            "Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
         }
         catch (InvalidOperationException)
         {
-            return;
         }
     }
 
