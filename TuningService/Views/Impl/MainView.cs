@@ -48,7 +48,7 @@ namespace TuningService.Views.Impl
                 SearchEvent?.Invoke(this, EventArgs.Empty);
             };
 
-            textBoxSearch.KeyDown += (s, e) =>
+            textBoxSearch.KeyDown += (_, e) =>
             {
                 if (e.KeyCode == Keys.Enter)
                     SearchEvent?.Invoke(this, EventArgs.Empty);

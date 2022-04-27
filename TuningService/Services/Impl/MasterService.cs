@@ -176,7 +176,7 @@ public class MasterService : IMasterService
                 command.Parameters.Add("@surname", NpgsqlDbType.Varchar).Value = master.Surname;
                 command.Parameters.Add("@phone", NpgsqlDbType.Varchar).Value = master.Phone;
 
-                await using (var reader = await command.ExecuteReaderAsync()) { };
+                await using (_ = await command.ExecuteReaderAsync()) { }
             }
 
             await _sqlConnection.CloseAsync();
@@ -204,7 +204,7 @@ public class MasterService : IMasterService
                 command.Parameters.Add("@name", NpgsqlDbType.Varchar).Value = master.Name;
                 command.Parameters.Add("@surname", NpgsqlDbType.Varchar).Value = master.Surname;
 
-                await using (var reader = await command.ExecuteReaderAsync()) { };
+                await using (_ = await command.ExecuteReaderAsync()) { }
             }
 
             await _sqlConnection.CloseAsync();

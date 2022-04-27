@@ -21,7 +21,7 @@ public class CustomerService : ICustomerService
                                                      + "JOIN master ON tuning_box.master_id = master.master_id "
                                                      + "WHERE customer.customer_id = @customerId or customer.name = @name "
                                                      + "or customer.surname = @surname or customer.lastname = @lastname "
-                                                     + "or customer.phone = @phone"; 
+                                                     + "or customer.phone = @phone";
 
     public CustomerService(string sqlConnectionString)
     {
@@ -40,7 +40,7 @@ public class CustomerService : ICustomerService
                 command.CommandText = "DELETE FROM customer WHERE customer_id = @id";
                 command.Parameters.Add("@id", NpgsqlDbType.Integer).Value = customerId;
 
-                await using (_ = await command.ExecuteReaderAsync()) { };
+                await using (_ = await command.ExecuteReaderAsync()) { }
             }
 
             await _sqlConnection.CloseAsync();
@@ -150,7 +150,7 @@ public class CustomerService : ICustomerService
                 command.Parameters.Add("@lastname", NpgsqlDbType.Varchar).Value = customer.Lastname;
                 command.Parameters.Add("@phone", NpgsqlDbType.Varchar).Value = customer.Phone;
 
-                await using (var reader = await command.ExecuteReaderAsync()) { };
+                await using (_ = await command.ExecuteReaderAsync()) { }
             }
 
             await _sqlConnection.CloseAsync();
@@ -255,7 +255,7 @@ public class CustomerService : ICustomerService
                 command.Parameters.Add("@phone", NpgsqlDbType.Varchar).Value = customer.Phone;
                 command.Parameters.Add("@customerId", NpgsqlDbType.Integer).Value = customer.Id;
 
-                await using (var reader = await command.ExecuteReaderAsync()) { };
+                await using (_ = await command.ExecuteReaderAsync()) { }
             }
 
             await _sqlConnection.CloseAsync();

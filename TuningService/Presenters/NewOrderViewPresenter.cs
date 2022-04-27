@@ -55,7 +55,7 @@ public class NewOrderViewPresenter
     private async Task<int> AddCustomerAsync(Customer customer)
     {
         await _customerService.InsertNewCustomerAsync(customer);
-        return await _customerService.GetCustomerIdByFullInformationAsync(customer); 
+        return await _customerService.GetCustomerIdByFullInformationAsync(customer);
     }
 
     private async Task<int> AddCarAsync(Car car)

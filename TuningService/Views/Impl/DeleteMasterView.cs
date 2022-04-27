@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
 using TuningService.Factories;
-using TuningService.Models;
 
 namespace TuningService.Views.Impl
 {

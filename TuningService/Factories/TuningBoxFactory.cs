@@ -21,8 +21,8 @@ public static class TuningBoxFactory
 
         var master = new Master(reader.GetString(5), reader.GetString(6),
             reader.GetString(7))
-        { 
-            Id = reader.GetInt32(4) 
+        {
+            Id = reader.GetInt32(4)
         };
 
         return new TuningBox(reader.GetInt32(3), master, car);

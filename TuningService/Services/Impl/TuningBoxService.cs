@@ -1,6 +1,5 @@
 using Npgsql;
 using NpgsqlTypes;
-using System;
 using System.Data;
 using System.Threading.Tasks;
 using TuningService.Factories;
@@ -105,7 +104,7 @@ public class TuningBoxService : ITuningBoxService
             command.Parameters.Add("@masterId", NpgsqlDbType.Integer).Value = box.MasterInfo.Id;
             command.Parameters.Add("@carId", NpgsqlDbType.Integer).Value = box.CarInfo.Id;
 
-            await using (_ = await command.ExecuteReaderAsync()) { };
+            await using (_ = await command.ExecuteReaderAsync()) { }
 
             await _sqlConnection.CloseAsync();
         }
@@ -131,7 +130,7 @@ public class TuningBoxService : ITuningBoxService
                 command.Parameters.Add("@newId", NpgsqlDbType.Integer).Value = newId;
                 command.Parameters.Add("@oldId", NpgsqlDbType.Integer).Value = oldId;
 
-                await using (var reader = await command.ExecuteReaderAsync()) { };
+                await using (_ = await command.ExecuteReaderAsync()) { }
             }
             await _sqlConnection.CloseAsync();
         }

@@ -108,7 +108,7 @@ public class CarService : ICarService
                 command.Parameters.Add("@model", NpgsqlDbType.Varchar).Value = car.Model;
                 command.Parameters.Add("@ownerId", NpgsqlDbType.Integer).Value = car.Owner.Id;
 
-                await using (var reader = await command.ExecuteReaderAsync()) { };
+                await using (_ = await command.ExecuteReaderAsync()) { }
             }
 
             await _sqlConnection.CloseAsync();
@@ -173,7 +173,7 @@ public class CarService : ICarService
                 command.Parameters.Add("@model", NpgsqlDbType.Varchar).Value = car.Model;
                 command.Parameters.Add("@carId", NpgsqlDbType.Integer).Value = car.Id;
 
-                await using (var reader = await command.ExecuteReaderAsync()) { };
+                await using (_ = await command.ExecuteReaderAsync()) { }
             }
 
             await _sqlConnection.CloseAsync();

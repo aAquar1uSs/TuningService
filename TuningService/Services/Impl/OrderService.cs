@@ -171,7 +171,7 @@ public class OrderService : IOrderService
                 command.Parameters.Add("@isDone", NpgsqlDbType.Boolean).Value = order.IsDone;
                 command.Parameters.Add("@orderId", NpgsqlDbType.Integer).Value = order.Id;
 
-                await using (var reader = await command.ExecuteReaderAsync()) { };
+                await using (_ = await command.ExecuteReaderAsync()) { }
             }
 
             await _sqlConnection.CloseAsync();
