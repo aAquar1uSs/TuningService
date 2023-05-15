@@ -23,6 +23,8 @@ public interface IMainView
 
     event EventHandler ShowDeleteMasterView;
 
+    event EventHandler ShowImportMenuView;
+
     string SearchValue { get; set; }
 
     void SetAllDataToDataGridView(DataTable dt);

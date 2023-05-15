@@ -17,13 +17,13 @@ namespace TuningService.Views.Impl
             InitializeComponent();
             WindowState = FormWindowState.Normal;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-
-            //SetEventHandlerForOrderButton();
+            
             SetSearchEvents();
             buttonDeleteMaster.Click += (_, _) => ShowDeleteMasterView?.Invoke(this, EventArgs.Empty);
             buttonAddNewOrder.Click += (_, _) => ShowNewOrderViewEvent?.Invoke(this, EventArgs.Empty);
             buttonUpdate.Click += (_, _) => UpdateAllDataEvent?.Invoke(this, EventArgs.Empty);
             buttonAddMaster.Click += (_, _) => ShowNewMasterView?.Invoke(this, EventArgs.Empty);
+            button_import.Click += (_, _) => ShowImportMenuView?.Invoke(this, EventArgs.Empty);
         }
 
         public event ShowOrderDelegate ShowOrderInfoViewEvent;
@@ -33,6 +33,8 @@ namespace TuningService.Views.Impl
         public event EventHandler SearchEvent;
         public event EventHandler ShowNewMasterView;
         public event EventHandler ShowDeleteMasterView;
+        public event EventHandler ShowImportMenuView; 
+
 
         public void SetAllDataToDataGridView(DataTable dt)
         {
@@ -120,15 +122,13 @@ namespace TuningService.Views.Impl
 
         private void buttonShowOrder_Click(object sender, EventArgs e)
         {
-
             try
             {
                 var index = Convert
                         .ToInt32(dataGridView1[5, dataGridView1.CurrentRow.Index]
                             .Value
                             .ToString());
-
-                //ButtonHandler
+                
                  ShowOrderInfoViewEvent?.Invoke(index);
             }
             catch (FormatException)
@@ -151,13 +151,11 @@ namespace TuningService.Views.Impl
         {
             try
             {
-
                 var index = Convert
                         .ToInt32(dataGridView1[5, dataGridView1.CurrentRow.Index]
                             .Value
                             .ToString());
-
-                //DataGridHandler
+                
                     ShowOrderInfoViewEvent?.Invoke(index);
             }
             catch (FormatException)
@@ -174,6 +172,16 @@ namespace TuningService.Views.Impl
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+        }
+
+        private void ExportToCSV(object sender, EventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void ImportFromCSV(object sender, EventArgs e)
+        {
+            ShowImportMenuView?.Invoke(this, e);
         }
     }
 }

@@ -22,8 +22,17 @@ public class Customer
     [RegularExpression("^(?!0+$)(\\+\\d{1,3}[- ]?)?(?!0+$)\\d{9}$")]
     public string Phone { get; set; }
 
-    public Customer(string name,
-        string lastname, string surname, string phone)
+    
+    public Customer(int id, string name, string lastname, string surname, string phone)
+    {
+        Id = id;
+        Name = name;
+        Lastname = lastname;
+        Surname = surname;
+        Phone = phone;
+    }
+    
+    public Customer(string name, string lastname, string surname, string phone)
     {
         Name = name;
         Lastname = lastname;

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Npgsql;
 using TuningService.Factories;
 using TuningService.Models;
 
@@ -67,7 +69,6 @@ namespace TuningService.Views.Impl
 
         private bool ConfigureCustomer()
         {
-            //Customer
             var customerName = textBoxCustomerName.Text;
             var customerSurname = textBoxCustomerSurname.Text;
             var customerLastname = textBoxCustomerLastname.Text;
@@ -95,11 +96,8 @@ namespace TuningService.Views.Impl
             var carName = textBoxCarName.Text;
             var carModel = textBoxCarModel.Text;
 
-            try
-            {
-                _car = CarFactory.GetCarInstance(carName, carModel, _customer);
-            }
-            catch (ValidationException)
+            var carResult = CarFactory.GetCarInstance(carName, carModel, _customer);
+            if (carResult.IsFailure)
             {
                 MessageBox.Show("Incorrect data entered!",
                     "Error",
@@ -108,6 +106,9 @@ namespace TuningService.Views.Impl
 
                 return false;
             }
+
+            _car = carResult.Value;
+
             return true;
         }
 
@@ -237,6 +238,7 @@ namespace TuningService.Views.Impl
             {
                 return;
             }
+            
             _customer.Id = await AddNewCustomerEvent?.Invoke(_customer);
 
             _car.Id = await AddNewCarEvent?.Invoke(_car);

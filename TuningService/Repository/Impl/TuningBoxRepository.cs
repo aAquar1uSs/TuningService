@@ -1,30 +1,31 @@
-using Npgsql;
-using NpgsqlTypes;
+using System;
 using System.Data;
 using System.Threading.Tasks;
+using Npgsql;
+using NpgsqlTypes;
 using TuningService.Factories;
 using TuningService.Models;
 
-namespace TuningService.Services.Impl;
+namespace TuningService.Repository.Impl;
 
-public class TuningBoxService : ITuningBoxService
+public class TuningBoxRepository : ITuningBoxRepository
 {
-    private readonly NpgsqlConnection _sqlConnection;
+    private readonly NpgsqlConnection _db;
 
-    public TuningBoxService(string sqlConnection)
+    public TuningBoxRepository(NpgsqlConnection db)
     {
-        _sqlConnection = new NpgsqlConnection(sqlConnection);
+        _db = db ?? throw new ArgumentNullException(nameof(db));
     }
 
-    public async Task<TuningBox> GetFulInformationAboutTuningBoxById(int tuningBoxId)
+    public async Task<TuningBox?> GetFulInformationAboutTuningBoxById(int tuningBoxId)
     {
         TuningBox tuningBox = null;
         try
         {
-            await _sqlConnection.OpenAsync();
+            await _db.OpenAsync();
             using (var command = new NpgsqlCommand())
             {
-                command.Connection = _sqlConnection;
+                command.Connection = _db;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "SELECT car.car_id, car.name, car.model, tb.box_number, m.master_id,m.name, "
                                       + "m.surname, m.phone, cus.customer_id, cus.name, cus.surname, cus.lastname, cus.phone "
@@ -47,11 +48,11 @@ public class TuningBoxService : ITuningBoxService
                 }
             }
 
-            await _sqlConnection.CloseAsync();
+            await _db.CloseAsync();
         }
         catch (NpgsqlException)
         {
-            await _sqlConnection.CloseAsync();
+            await _db.CloseAsync();
             return null;
         }
         return tuningBox;
@@ -63,10 +64,10 @@ public class TuningBoxService : ITuningBoxService
 
         try
         {
-            await _sqlConnection.OpenAsync();
+            await _db.OpenAsync();
             using (var command = new NpgsqlCommand())
             {
-                command.Connection = _sqlConnection;
+                command.Connection = _db;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "SELECT box_id FROM tuning_box WHERE car_id = @id";
                 command.Parameters.Add("@id", NpgsqlDbType.Integer).Value = carId;
@@ -81,23 +82,23 @@ public class TuningBoxService : ITuningBoxService
                 }
             }
 
-            await _sqlConnection.CloseAsync();
+            await _db.CloseAsync();
         }
         catch (NpgsqlException)
         {
-            await _sqlConnection.CloseAsync();
+            await _db.CloseAsync();
         }
 
         return boxId;
     }
 
-    public async Task<bool> InsertNewTuningBoxAsync(TuningBox box)
+    public async Task InsertAsync(TuningBox box)
     {
         try
         {
-            await _sqlConnection.OpenAsync();
+            await _db.OpenAsync();
             using var command = new NpgsqlCommand();
-            command.Connection = _sqlConnection;
+            command.Connection = _db;
             command.CommandType = CommandType.Text;
             command.CommandText = "INSERT INTO tuning_box(box_number, master_id, car_id) VALUES (@boxNum, @masterId, @carId)";
             command.Parameters.Add("@boxNum", NpgsqlDbType.Integer).Value = box.BoxNumber;
@@ -106,25 +107,22 @@ public class TuningBoxService : ITuningBoxService
 
             await using (_ = await command.ExecuteReaderAsync()) { }
 
-            await _sqlConnection.CloseAsync();
+            await _db.CloseAsync();
         }
         catch (NpgsqlException)
         {
-            await _sqlConnection.CloseAsync();
-            return false;
+            await _db.CloseAsync();
         }
-
-        return true;
     }
 
-    public async Task<bool> UpdateMasterIdAsync(int oldId, int newId)
+    public async Task UpdateMasterIdAsync(int oldId, int newId)
     {
         try
         {
-            await _sqlConnection.OpenAsync();
+            await _db.OpenAsync();
             using (var command = new NpgsqlCommand())
             {
-                command.Connection = _sqlConnection;
+                command.Connection = _db;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "UPDATE tuning_box SET master_id = @newId WHERE master_id = @oldId;";
                 command.Parameters.Add("@newId", NpgsqlDbType.Integer).Value = newId;
@@ -132,26 +130,24 @@ public class TuningBoxService : ITuningBoxService
 
                 await using (_ = await command.ExecuteReaderAsync()) { }
             }
-            await _sqlConnection.CloseAsync();
+            await _db.CloseAsync();
         }
         catch (NpgsqlException)
         {
-            await _sqlConnection.CloseAsync();
-            return false;
+            await _db.CloseAsync();
         }
-
-        return true;
     }
 
+    //ToDO remove in future
     public async Task<bool> VerifyBoxNumberAsync(int boxNumber)
     {
         var isExist = false;
         try
         {
-            await _sqlConnection.OpenAsync();
+            await _db.OpenAsync();
             using (var command = new NpgsqlCommand())
             {
-                command.Connection = _sqlConnection;
+                command.Connection = _db;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "SELECT EXISTS(SELECT box_number FROM tuning_box WHERE box_number = @number);";
                 command.Parameters.Add("@number", NpgsqlDbType.Integer).Value = boxNumber;
@@ -165,11 +161,11 @@ public class TuningBoxService : ITuningBoxService
                     }
                 }
             }
-            await _sqlConnection.CloseAsync();
+            await _db.CloseAsync();
         }
         catch (NpgsqlException)
         {
-            await _sqlConnection.CloseAsync();
+            await _db.CloseAsync();
         }
         return isExist;
     }

@@ -39,20 +39,18 @@ namespace TuningService.Views.Impl.EditMenu
 
         private async void buttonEditCar_ClickAsync(object sender, EventArgs e)
         {
-            try
-            {
-                _car = CarFactory.GetCarInstance(textBoxName.Text, textBoxModel.Text);
-                _car.Id = _id;
-            }
-            catch (ValidationException)
+            var carResult = CarFactory.GetCarInstance(textBoxName.Text, textBoxModel.Text);
+            if (carResult.IsFailure)
             {
                 MessageBox.Show("Incorrect data entered!",
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
-
                 return;
             }
+
+            _car = carResult.Value;
+            _car.Id = _id;
 
             await UpdateCarDataEvent?.Invoke(_car);
 

@@ -19,8 +19,15 @@ public sealed class Master
     [RegularExpression("^(?!0+$)(\\+\\d{1,3}[- ]?)?(?!0+$)\\d{9}$")]
     public string Phone { get; set; }
 
-    public Master( string name,
-        string surname, string phone)
+    public Master(int id, string name, string surname, string phone)
+    {
+        Id = id;
+        Name = name;
+        Surname = surname;
+        Phone = phone;
+    }
+    
+    public Master(string name, string surname, string phone)
     {
         Name = name;
         Surname = surname;

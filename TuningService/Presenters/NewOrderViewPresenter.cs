@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TuningService.Models;
-using TuningService.Services;
+using TuningService.Repository;
 using TuningService.Views;
 
 namespace TuningService.Presenters;
@@ -10,32 +10,26 @@ namespace TuningService.Presenters;
 public class NewOrderViewPresenter
 {
     private readonly INewOrderView _newOrder;
-
-    private readonly ICustomerService _customerService;
-
-    private readonly IOrderService _orderService;
-
-    private readonly IMasterService _masterService;
-
-    private readonly ICarService _carService;
-
-    private readonly ITuningBoxService _tuningBoxService;
-
-
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IOrderRepository _orderRepository;
+    private readonly IMasterRepository _masterRepository;
+    private readonly ICarRepository _carRepository;
+    private readonly ITuningBoxRepository _tuningBoxRepository;
+    
     public NewOrderViewPresenter(
         INewOrderView orderView,
-        ICarService carService,
-        ICustomerService customerService,
-        IMasterService masterService,
-        IOrderService orderService,
-        ITuningBoxService tuningBoxService)
+        ICarRepository carRepository,
+        ICustomerRepository customerRepository,
+        IMasterRepository masterRepository,
+        IOrderRepository orderRepository,
+        ITuningBoxRepository tuningBoxRepository)
     {
         _newOrder = orderView;
-        _customerService = customerService;
-        _masterService = masterService;
-        _orderService = orderService;
-        _carService = carService;
-        _tuningBoxService = tuningBoxService;
+        _customerRepository = customerRepository;
+        _masterRepository = masterRepository;
+        _orderRepository = orderRepository;
+        _carRepository = carRepository;
+        _tuningBoxRepository = tuningBoxRepository;
 
         _newOrder.UpdateListOfMasters += UpdateMastersAsync;
         _newOrder.AddNewCustomerEvent += AddCustomerAsync;
@@ -48,35 +42,36 @@ public class NewOrderViewPresenter
 
     private async void UpdateMastersAsync(object sender, EventArgs e)
     {
-        var dt = await _masterService.GetAllMastersAsync();
+        var dt = await _masterRepository.GetAllAsync();
         _newOrder.SetDataAboutMasters(dt);
     }
 
     private async Task<int> AddCustomerAsync(Customer customer)
     {
-        await _customerService.InsertNewCustomerAsync(customer);
-        return await _customerService.GetCustomerIdByFullInformationAsync(customer);
+        await _customerRepository.InsertAsync(customer);
+        return await _customerRepository.GetCustomerIdByFullInformationAsync(customer);
     }
 
     private async Task<int> AddCarAsync(Car car)
     {
-        await _carService.InsertNewCarAsync(car);
-        return await _carService.GetCarIdByFullInformationAsync(car);
+        await _carRepository.InsertAsync(car);
+        return await _carRepository.GetCarIdByFullInformationAsync(car);
     }
 
     private async Task<int> UploadMasterAsync(Master master)
     {
-         return await _masterService.GetMasterIdByFullInformation(master);
+         return await _masterRepository.GetMasterIdAsync(master);
     }
 
     private async Task<bool> VerifyTuningBoxNumberAsync(int boxId)
     {
-        return await _tuningBoxService.VerifyBoxNumberAsync(boxId);
+        return await _tuningBoxRepository.VerifyBoxNumberAsync(boxId);
     }
 
-    private async Task<int> CreateTuningBoxAsync(TuningBox tuningBox, int carId)
+    private async Task<int> CreateTuningBoxAsync(TuningBox newTuningBox, int carId)
     {
-        if (!await _tuningBoxService.InsertNewTuningBoxAsync(tuningBox))
+        var tuningBox = await _tuningBoxRepository.GetFulInformationAboutTuningBoxById(newTuningBox.BoxNumber);
+        if (tuningBox is not null)
         {
             MessageBox.Show("This room already taken.",
                 "Warning",
@@ -84,12 +79,13 @@ public class NewOrderViewPresenter
                 MessageBoxIcon.Warning);
             return 0;
         }
-
-        return await _tuningBoxService.GetTuningBoxIdByCarIdAsync(carId);
+        await _tuningBoxRepository.InsertAsync(newTuningBox);
+        
+        return await _tuningBoxRepository.GetTuningBoxIdByCarIdAsync(carId);
     }
 
     private async Task AddOrderAsync(Order order)
     {
-        await _orderService.InsertNewOrderAsync(order);
+        await _orderRepository.InsertAsync(order);
     }
 }

@@ -12,7 +12,7 @@ namespace TuningService.Views
 
         event UpdateOrderDataDelegate UpdateOrderDataEvent;
 
-        public void GetOldOrderData(int orderId);
+        public void GetOrderData(int orderId);
 
         public void ShowInformation(Order order);
     }

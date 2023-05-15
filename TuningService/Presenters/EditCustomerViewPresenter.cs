@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Forms;
 using TuningService.Models;
-using TuningService.Services;
+using TuningService.Repository;
 using TuningService.Views;
 
 namespace TuningService.Presenters
@@ -9,14 +9,13 @@ namespace TuningService.Presenters
     public class EditCustomerViewPresenter
     {
         private readonly IEditCustomerView _editCustomerView;
-
-        private readonly ICustomerService _customerService;
+        private readonly ICustomerRepository _customerRepository;
 
         public EditCustomerViewPresenter(IEditCustomerView editCustomerView,
-            ICustomerService customerService)
+            ICustomerRepository customerRepository)
         {
             _editCustomerView = editCustomerView;
-            _customerService = customerService;
+            _customerRepository = customerRepository;
 
             _editCustomerView.GetCustomerDataEvent += GetCustomerDataAsync;
             _editCustomerView.UpdateCustomerDataEvent += UpdateCustomerDataAsync;
@@ -24,19 +23,13 @@ namespace TuningService.Presenters
 
         private async Task GetCustomerDataAsync(int customerId)
         {
-            var customer = await _customerService.GetCustomerByIdAsync(customerId);
+            var customer = await _customerRepository.GetAsync(customerId);
             _editCustomerView.ShowCustomerInformation(customer);
         }
 
         private async Task UpdateCustomerDataAsync(Customer customer)
         {
-            if (!await _customerService.UpdateCustomerByFullInfoAsync(customer))
-            {
-                MessageBox.Show("An unexpected error has occurred!",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
+            await _customerRepository.UpdateAsync(customer);
         }
     }
 }

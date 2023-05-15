@@ -8,9 +8,7 @@ namespace TuningService.Views.Impl
 {
     public partial class DeleteMasterView : Form, IDeleteMasterView
     {
-
         private static DeleteMasterView _deleteMasterViewInstance;
-
         private DataTable _dataTable;
 
         private DeleteMasterView()

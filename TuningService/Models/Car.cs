@@ -16,8 +16,14 @@ public class Car
 
     public Customer Owner { get; set; }
 
-    public Car(string name,
-        string model)
+    public Car(int id, string name, string model)
+    {
+        Id = id;
+        Name = name;
+        Model = model;
+    }
+    
+    public Car(string name, string model)
     {
         Name = name;
         Model = model;

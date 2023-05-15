@@ -21,7 +21,7 @@ namespace TuningService.Views.Impl.EditMenu
         public event GetOrderDataDelegate GetOrderDataEvent;
         public event UpdateOrderDataDelegate UpdateOrderDataEvent;
 
-        public async void GetOldOrderData(int orderId)
+        public async void GetOrderData(int orderId)
         {
             _orderId = orderId;
             await GetOrderDataEvent?.Invoke(orderId)!;

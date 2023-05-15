@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Configuration;
 using System.Windows.Forms;
+using Npgsql;
 using TuningService.Presenters;
-using TuningService.Services.Impl;
+using TuningService.Repository.Impl;
 using TuningService.Views.Impl;
 
 namespace TuningService
@@ -14,16 +15,18 @@ namespace TuningService
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
+            
             var sqlConnectionString = ConfigurationManager
                 .ConnectionStrings["ConnectionString"].ConnectionString;
 
-            var dbService = new DbService(sqlConnectionString);
-            var customerService = new CustomerService(sqlConnectionString);
+            var db = new NpgsqlConnection(sqlConnectionString);
+
+            var dbService = new CommonService(db);
+            var customerService = new CustomerRepository(db);
             var view = new MainView();
 
-            _ = new MainPresenter(view, sqlConnectionString, dbService, customerService);
-            Application.Run((Form) view);
+            _ = new MainPresenter(view, dbService, customerService, db);
+            Application.Run(view);
         }
     }
 }

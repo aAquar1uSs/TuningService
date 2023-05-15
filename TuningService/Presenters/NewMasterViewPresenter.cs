@@ -1,32 +1,25 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Forms;
 using TuningService.Models;
-using TuningService.Services;
+using TuningService.Repository;
 using TuningService.Views;
 
 namespace TuningService.Presenters
 {
     public class NewMasterViewPresenter
     {
-        private readonly IMasterService _masterService;
+        private readonly IMasterRepository _masterRepository;
 
-        public NewMasterViewPresenter(INewMasterView masterView,
-            IMasterService masterService)
+        public NewMasterViewPresenter(INewMasterView masterView, IMasterRepository masterRepository)
         {
-            _masterService = masterService;
+            _masterRepository = masterRepository;
 
             masterView.AddNewMasterEvent += AddNewMasterEvent;
         }
 
         private async Task AddNewMasterEvent(Master master)
         {
-            if (!await _masterService.InsertNewMasterAsync(master))
-            {
-                MessageBox.Show("An unexpected error has occurred!",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
+            await _masterRepository.InsertAsync(master);
         }
     }
 }
