@@ -10,17 +10,17 @@ namespace TuningService.Presenters;
 public class MainPresenter
 {
     private readonly IMainView _mainView;
-    private readonly ICommonService _commonService;
+    private readonly ICommonRepository _commonRepository;
     private readonly ICustomerRepository _customerRepository;
     private readonly NpgsqlConnection _db;
 
     public MainPresenter(IMainView mainView,
-        ICommonService commonService,
+        ICommonRepository commonRepository,
         ICustomerRepository customerRepository,
         NpgsqlConnection db)
     {
         _mainView = mainView;
-        _commonService = commonService;
+        _commonRepository = commonRepository;
         _customerRepository = customerRepository;
         _db = db;
 
@@ -80,7 +80,8 @@ public class MainPresenter
 
     private async void ShowAllDataEvent(object sender, EventArgs e)
     {
-        var compareData = await _commonService.ShowAllDataAsync();
+        var compareData = await _commonRepository.ShowAllDataAsync();
+        
         _mainView.SetAllDataToDataGridView(compareData);
     }
 
@@ -91,14 +92,14 @@ public class MainPresenter
 
     private async void SearchCustomer(object sender, EventArgs e)
     {
-        var dt = await _commonService.SearchCustomerByValueAsync(_mainView.SearchValue);
-        _mainView.SetAllDataToDataGridView(dt);
+        var comparedDataViews = await _commonRepository.SearchCustomerByValueAsync(_mainView.SearchValue);
+        _mainView.SetAllDataToDataGridView(comparedDataViews);
     }
 
     private void ShowImportMenuView(object sender, EventArgs e)
     {
         var importMenuView = ImportMenuView.GetInstance();
-        _ = new ImportViewPresenter(importMenuView, _commonService);
+        _ = new ImportViewPresenter(importMenuView, _commonRepository);
         
         importMenuView.ShowDialog();
     }

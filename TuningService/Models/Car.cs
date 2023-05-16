@@ -4,6 +4,7 @@ namespace TuningService.Models;
 
 public class Car
 {
+    [Key]
     public int CarId { get; set; }
 
     [Required]

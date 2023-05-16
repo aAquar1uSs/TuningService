@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using Npgsql;
 using NpgsqlTypes;
+using TuningService.Models.ViewModels;
 
 namespace TuningService.Repository.Impl
 {
-    public sealed class CommonService : ICommonService
+    public sealed class CommonRepository : ICommonRepository
     {
         private readonly NpgsqlConnection _db;
         
         private const string SqlRequestSearchInfo = "SELECT customer.customer_id,"
                                                         + "concat(customer.surname,' ', customer.name, ' ', customer.lastname), customer.phone,"
-                                                        + "car.car_id, concat(car.name, ' ', car.model), tuning_box.box_id,"
+                                                        + "car.car_id, concat(car.brand, ' ', car.model), tuning_box.box_id,"
                                                         + "concat(master.name, ' ', master.surname), master.phone "
                                                         + "FROM customer JOIN car ON customer.customer_id = car.customer_id "
                                                         + "JOIN tuning_box ON car.car_id = tuning_box.car_id "
@@ -23,49 +25,32 @@ namespace TuningService.Repository.Impl
                                                         + "or customer.surname = @surname or customer.lastname = @lastname "
                                                         + "or customer.phone = @phone";
 
-        public CommonService(NpgsqlConnection db)
+        public CommonRepository(NpgsqlConnection db)
         {
             _db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
-        public async Task<DataTable> ShowAllDataAsync()
+        public async Task<IReadOnlyCollection<ComparedDataView>> ShowAllDataAsync()
         {
-            var dt = new DataTable();
+            if (_db.State == ConnectionState.Closed)
+                _db.Open();
 
-            try
-            {
-                await _db.OpenAsync();
-                using (var command = new NpgsqlCommand())
-                {
-                    command.Connection = _db;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = "SELECT customer.customer_id,"
-                                          + "concat(customer.surname,' ', customer.name, ' ', customer.lastname), customer.phone,"
-                                          + "car.car_id, concat(car.brand, ' ', car.model), tuning_box.box_id,"
-                                          + "concat(master.name, ' ', master.surname), master.phone "
-                                          + "FROM customer JOIN car ON customer.customer_id = car.customer_id "
-                                          + "JOIN tuning_box ON car.car_id = tuning_box.car_id "
-                                          + "JOIN master ON tuning_box.master_id = master.master_id";
+            var sqlQuery = "SELECT customer.customer_id AS CustomerId, " +
+                           "concat(customer.surname, ' ', customer.name, ' ', customer.lastname) AS CustomerName, customer.phone AS CustomerPhone, " +
+                           "car.car_id AS CarId, concat(car.brand, ' ', car.model) AS CarModel, " +
+                           "tuning_box.box_id AS BoxId, " +
+                           "master.master_id AS MasterId, concat(master.name, ' ', master.surname) AS MasterName, master.phone AS MasterPhone " +
+                           "FROM customer " +
+                           "JOIN car ON customer.customer_id = car.customer_id " +
+                           "JOIN tuning_box ON car.car_id = tuning_box.car_id " +
+                           "JOIN master ON tuning_box.master_id = master.master_id";
 
-                    await using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        if (reader.HasRows)
-                            dt.Load(reader);
-                    }
-                }
-
-                await _db.CloseAsync();
-            }
-            catch (NpgsqlException)
-            {
-                await _db.CloseAsync();
-            }
-
-            return dt;
+            var result = await _db.QueryAsync<ComparedDataView>(sqlQuery, commandType: CommandType.Text);
+            return result.ToArray();
         }
         
         //ToDo add new model for view this data
-        public async Task<DataTable> SearchCustomerByValueAsync(string value)
+        public async Task<IReadOnlyCollection<ComparedDataView>> SearchCustomerByValueAsync(string value)
         {
             var dataTable = new DataTable();
 
@@ -121,7 +106,7 @@ namespace TuningService.Repository.Impl
             };
         
 
-            return dataTable;
+            return null;
         }
 
         public async Task Insert(DataTable dataTable)

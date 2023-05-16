@@ -21,7 +21,7 @@ namespace TuningService
 
             var db = new NpgsqlConnection(sqlConnectionString);
 
-            var dbService = new CommonService(db);
+            var dbService = new CommonRepository(db);
             var customerService = new CustomerRepository(db);
             var view = new MainView();
 

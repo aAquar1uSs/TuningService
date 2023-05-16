@@ -7,12 +7,12 @@ namespace TuningService.Presenters;
 public class ImportViewPresenter
 {
     private readonly IImportMenuView _importMenuView;
-    private readonly ICommonService _commonService;
+    private readonly ICommonRepository _commonRepository;
 
-    public ImportViewPresenter(IImportMenuView importMenuView, ICommonService commonService)
+    public ImportViewPresenter(IImportMenuView importMenuView, ICommonRepository commonRepository)
     {
         _importMenuView = importMenuView;
-        _commonService = commonService;
+        _commonRepository = commonRepository;
 
         _importMenuView.GetDataFromCSVFile += GetDataFromCsvFile;
         _importMenuView.SaveDataFromCSVFile += SaveDataFromCSVFile;
@@ -54,6 +54,6 @@ public class ImportViewPresenter
 
     private async void SaveDataFromCSVFile(DataTable dataTable)
     {
-        await _commonService.Insert(dataTable);
+        await _commonRepository.Insert(dataTable);
     }
 }

@@ -1,5 +1,6 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
+using TuningService.Models.ViewModels;
 
 namespace TuningService.Views;
 
@@ -27,5 +28,5 @@ public interface IMainView
 
     string SearchValue { get; set; }
 
-    void SetAllDataToDataGridView(DataTable dt);
+    void SetAllDataToDataGridView(IReadOnlyCollection<ComparedDataView> comparedDataViews);
 }

@@ -5,6 +5,7 @@ namespace TuningService.Models;
 
 public sealed class Master
 {
+    [Key]
     public int MasterId { get; set; }
 
     [Required]

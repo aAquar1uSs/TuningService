@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
 using Npgsql;
+using TuningService.Models.ViewModels;
 
 namespace TuningService.Views.Impl
 {
@@ -36,11 +38,48 @@ namespace TuningService.Views.Impl
         public event EventHandler ShowImportMenuView; 
 
 
-        public void SetAllDataToDataGridView(DataTable dt)
+        public void SetAllDataToDataGridView(IReadOnlyCollection<ComparedDataView> comparedDataViews)
         {
-            dataGridView1.DataSource = dt;
-            if (dataGridView1.Columns.Count == 8)
-                InitHeadersInTable();
+            var dataTable = new DataTable();
+            dataTable.Columns.Add("Customer Id", typeof(int));
+            dataTable.Columns.Add("Customer full name", typeof(string));
+            dataTable.Columns.Add("Customer phone", typeof(string));
+            dataTable.Columns.Add("Car id", typeof(int));
+            dataTable.Columns.Add("Car", typeof(string));
+            dataTable.Columns.Add("Tuning box", typeof(int));
+            dataTable.Columns.Add("Master full name", typeof(string));
+            dataTable.Columns.Add("Master phone", typeof(string));
+            
+            foreach (var comparedData in comparedDataViews)
+            {
+                dataTable.LoadDataRow(new object[]
+                {
+                    comparedData.CustomerId,
+                    comparedData.CustomerName,
+                    comparedData.CustomerPhone,
+                    comparedData.CarId,
+                    comparedData.CarModel,
+                    comparedData.BoxId,
+                    comparedData.MasterName,
+                    comparedData.MasterPhone
+                }, true);
+            }
+            
+            dataGridView1.DataSource = dataTable;
+           // if (dataGridView1.Columns.Count == 8)
+             //   InitHeadersInTable();
+        }
+        
+        private void InitHeadersInTable()
+        {
+            dataGridView1.Columns[0].HeaderText = "Customer Id";
+            dataGridView1.Columns[1].HeaderText = "Customer full name";
+            dataGridView1.Columns[2].HeaderText = "Customer phone";
+            dataGridView1.Columns[3].HeaderText = "Car id";
+            dataGridView1.Columns[4].HeaderText = "Car";
+            dataGridView1.Columns[5].HeaderText = "Tuning box";
+            dataGridView1.Columns[6].HeaderText = "Master full name";
+            dataGridView1.Columns[7].HeaderText = "Master phone";
         }
 
         private void SetSearchEvents()
@@ -106,18 +145,6 @@ namespace TuningService.Views.Impl
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
-        }
-
-        private void InitHeadersInTable()
-        {
-            dataGridView1.Columns[0].HeaderText = "Id";
-            dataGridView1.Columns[1].HeaderText = "Full name";
-            dataGridView1.Columns[2].HeaderText = "Customer phone";
-            dataGridView1.Columns[3].HeaderText = "Car id";
-            dataGridView1.Columns[4].HeaderText = "Car";
-            dataGridView1.Columns[5].HeaderText = "Tuning box";
-            dataGridView1.Columns[6].HeaderText = "Master full name";
-            dataGridView1.Columns[7].HeaderText = "Master phone";
         }
 
         private void buttonShowOrder_Click(object sender, EventArgs e)

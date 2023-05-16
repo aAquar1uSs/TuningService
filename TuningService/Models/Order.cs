@@ -5,6 +5,7 @@ namespace TuningService.Models
 {
     public sealed class Order
     {
+        [Key]
         public int OrderId { get; set; }
 
         public DateTime StartDate { get; set; }

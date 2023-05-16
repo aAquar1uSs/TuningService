@@ -23,10 +23,7 @@ public class CarRepository : ICarRepository
             _db.Open();
 
         var sqlQuery = "SELECT car_id as id, brand, model FROM car WHERE car.car_id = @carId";
-        var parameters = new Dictionary<string, object>
-        {
-            ["carId"] = carId
-        };
+        var parameters = new { carId = carId };
         
         return await _db.QueryFirstOrDefaultAsync<Car>(sqlQuery, parameters, commandType: CommandType.Text);
     }
@@ -37,7 +34,7 @@ public class CarRepository : ICarRepository
             _db.Open();
 
         var sqlQuery = "INSERT INTO car(brand, model, customer_id) VALUES(@brand, @model, @owner) RETURNING car_id;";
-        var parameters = new Dictionary<string, object>()
+        var parameters = new Dictionary<string, object>
         {
             ["brand"] = car.Brand,
             ["model"] = car.Brand,
