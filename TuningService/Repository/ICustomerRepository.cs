@@ -5,13 +5,11 @@ namespace TuningService.Repository;
 
 public interface ICustomerRepository
 {
-    Task DeleteByIdAsync(int customerId);
+    Task DeleteAsync(int customerId);
 
     Task<Customer?> GetAsync(int customerId);
 
-    Task InsertAsync(Customer customer);
-
-    Task<int> GetCustomerIdByFullInformationAsync(Customer customer);
+    Task<int> InsertAsync(Customer customer);
 
     Task UpdateAsync(Customer customer);
 }

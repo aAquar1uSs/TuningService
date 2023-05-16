@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Npgsql;
@@ -23,48 +22,29 @@ public class CarRepository : ICarRepository
         if (_db.State == ConnectionState.Closed)
             _db.Open();
 
-        var sqlQuery = "SELECT car_id as id, name, model FROM car WHERE car.car_id = @carId";
-        var parameters = new Dictionary<string, object>()
+        var sqlQuery = "SELECT car_id as id, brand, model FROM car WHERE car.car_id = @carId";
+        var parameters = new Dictionary<string, object>
         {
             ["carId"] = carId
         };
-        var car = await _db.QueryAsync<Car>(sqlQuery, parameters, commandType: CommandType.Text);
         
-        return car.FirstOrDefault();
+        return await _db.QueryFirstOrDefaultAsync<Car>(sqlQuery, parameters, commandType: CommandType.Text);
     }
 
-    public async Task InsertAsync(Car car)
+    public async Task<int> InsertAsync(Car car)
     {
         if (_db.State == ConnectionState.Closed)
             _db.Open();
 
-        var sqlQuery = "INSERT INTO car(name, model, customer_id) VALUES(@name, @model, @owner);";
+        var sqlQuery = "INSERT INTO car(brand, model, customer_id) VALUES(@brand, @model, @owner) RETURNING car_id;";
         var parameters = new Dictionary<string, object>()
         {
-            ["name"] = car.Name,
-            ["model"] = car.Name,
-            ["owner"] = car.Owner.Id
+            ["brand"] = car.Brand,
+            ["model"] = car.Brand,
+            ["owner"] = car.Owner.CustomerId
         };
         
-        await _db.QueryAsync(sqlQuery, parameters, commandType: CommandType.Text);
-    }
-
-    public async Task<int> GetCarIdByFullInformationAsync(Car car)
-    {
-        if (_db.State == ConnectionState.Closed)
-            _db.Open();
-
-        var sqlQuery = "SELECT car_id FROM car WHERE name = @name AND model = @model AND customer_id = @ownerId";
-        var parameters = new Dictionary<string, object>
-        {
-            ["name"] = car.Name,
-            ["model"] = car.Name,
-            ["ownerId"] = car.Owner.Id
-        };
-        
-        var carId = await _db.QueryAsync<int>(sqlQuery, parameters, commandType: CommandType.Text);
-
-        return carId.FirstOrDefault();
+        return await _db.QueryFirstOrDefaultAsync<int>(sqlQuery, parameters, commandType: CommandType.Text);
     }
 
     public async Task UpdateAsync(Car car)
@@ -72,12 +52,12 @@ public class CarRepository : ICarRepository
         if (_db.State == ConnectionState.Closed)
             _db.Open();
 
-        var sqlQuery = "UPDATE car SET name = @name, model = @model WHERE car_id = @carId;";;
+        var sqlQuery = "UPDATE car SET brand = @brand, model = @model WHERE car_id = @carId;";;
         var parameters = new Dictionary<string, object>
         {
-            ["name"] = car.Name,
-            ["model"] = car.Name,
-            ["carId"] = car.Id
+            ["brand"] = car.Brand,
+            ["model"] = car.Brand,
+            ["carId"] = car.CarId
         };
         
         await _db.QueryAsync(sqlQuery, parameters, commandType: CommandType.Text);

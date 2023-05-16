@@ -86,7 +86,7 @@ public class MainPresenter
 
     private async void RemoveCustomer(int index)
     {
-        await _customerRepository.DeleteByIdAsync(index);
+        await _customerRepository.DeleteAsync(index);
     }
 
     private async void SearchCustomer(object sender, EventArgs e)

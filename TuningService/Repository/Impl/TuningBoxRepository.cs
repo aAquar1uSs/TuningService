@@ -1,9 +1,9 @@
 using System;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using Npgsql;
-using NpgsqlTypes;
-using TuningService.Factories;
 using TuningService.Models;
 
 namespace TuningService.Repository.Impl;
@@ -17,156 +17,75 @@ public class TuningBoxRepository : ITuningBoxRepository
         _db = db ?? throw new ArgumentNullException(nameof(db));
     }
 
-    public async Task<TuningBox?> GetFulInformationAboutTuningBoxById(int tuningBoxId)
+    public async Task<TuningBox?> GetAsync(int tuningBoxId)
     {
-        TuningBox tuningBox = null;
-        try
-        {
-            await _db.OpenAsync();
-            using (var command = new NpgsqlCommand())
+        if (_db.State == ConnectionState.Closed)
+            _db.Open();
+        
+        var sqlQuery = "SELECT car.car_id AS CarId, car.brand, car.model, car.customer_id AS CustomerId, tb.box_number, m.master_id AS MasterId, m.name, "
+                       + "m.surname, m.phone, cus.customer_id as CustomerId, cus.name, cus.surname, cus.lastname, cus.phone "
+                       + "FROM tuning_box tb "
+                       + "INNER JOIN car ON car.car_id = tb.car_id "
+                       + "INNER JOIN master m ON m.master_id = tb.master_id "
+                       + "INNER JOIN customer cus ON car.customer_id = cus.customer_id "
+                       + "WHERE tb.box_id = @id;";
+        
+        var parameters = new { id = tuningBoxId };
+
+        var results = await _db.QueryAsync<Car, int, Master, Customer, TuningBox>(
+            sqlQuery,
+            (car, boxNumber, master, customer) =>
             {
-                command.Connection = _db;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT car.car_id, car.name, car.model, tb.box_number, m.master_id,m.name, "
-                                      + "m.surname, m.phone, cus.customer_id, cus.name, cus.surname, cus.lastname, cus.phone "
-                                      + "FROM tuning_box tb "
-                                      + "INNER JOIN car ON car.car_id = tb.car_id "
-                                      + "INNER JOIN master m on m.master_id = tb.master_id "
-                                      + "INNER JOIN customer cus ON car.customer_id = cus.customer_id "
-                                      + "WHERE tb.box_id = @id";
+                if (car is not null)
+                    car.Owner = customer;
 
-                command.Parameters.Add("@id", NpgsqlDbType.Integer).Value = tuningBoxId;
-
-                await using (var reader = await command.ExecuteReaderAsync())
+                return new TuningBox
                 {
-                    if (reader.HasRows)
-                    {
-                        await reader.ReadAsync();
+                    BoxNumber = boxNumber,
+                    Car = car,
+                    Master = master,
+                };
+            },
+            splitOn: "CarId,brand,model,CustomerId,box_number,MasterId,CustomerId",
+            param: parameters,
+            commandType: CommandType.Text);
 
-                        tuningBox = TuningBoxFactory.GetTuningBoxInstance(reader);
-                    }
-                }
-            }
-
-            await _db.CloseAsync();
-        }
-        catch (NpgsqlException)
-        {
-            await _db.CloseAsync();
-            return null;
-        }
-        return tuningBox;
+        return results.FirstOrDefault();
     }
 
     public async Task<int> GetTuningBoxIdByCarIdAsync(int carId)
     {
-        var boxId = 0;
+        if (_db.State == ConnectionState.Closed)
+            _db.Open();
+        
+        var sqlQuery = "SELECT box_id FROM tuning_box WHERE car_id = @id";
+        
+        var parameters = new { id = carId };
 
-        try
-        {
-            await _db.OpenAsync();
-            using (var command = new NpgsqlCommand())
-            {
-                command.Connection = _db;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT box_id FROM tuning_box WHERE car_id = @id";
-                command.Parameters.Add("@id", NpgsqlDbType.Integer).Value = carId;
-
-                await using (var reader = await command.ExecuteReaderAsync())
-                {
-                    if (reader.HasRows)
-                    {
-                        await reader.ReadAsync();
-                        boxId = reader.GetInt32(0);
-                    }
-                }
-            }
-
-            await _db.CloseAsync();
-        }
-        catch (NpgsqlException)
-        {
-            await _db.CloseAsync();
-        }
-
-        return boxId;
+        return await _db.QueryFirstOrDefaultAsync<int>(sqlQuery, parameters, commandType: CommandType.Text);
     }
 
     public async Task InsertAsync(TuningBox box)
     {
-        try
-        {
-            await _db.OpenAsync();
-            using var command = new NpgsqlCommand();
-            command.Connection = _db;
-            command.CommandType = CommandType.Text;
-            command.CommandText = "INSERT INTO tuning_box(box_number, master_id, car_id) VALUES (@boxNum, @masterId, @carId)";
-            command.Parameters.Add("@boxNum", NpgsqlDbType.Integer).Value = box.BoxNumber;
-            command.Parameters.Add("@masterId", NpgsqlDbType.Integer).Value = box.MasterInfo.Id;
-            command.Parameters.Add("@carId", NpgsqlDbType.Integer).Value = box.CarInfo.Id;
+        if (_db.State == ConnectionState.Closed)
+            _db.Open();
+        
+        var sqlQuery = "INSERT INTO tuning_box(box_number, master_id, car_id) VALUES (@boxNum, @masterId, @carId)";
 
-            await using (_ = await command.ExecuteReaderAsync()) { }
-
-            await _db.CloseAsync();
-        }
-        catch (NpgsqlException)
-        {
-            await _db.CloseAsync();
-        }
+        var parameters = new { boxNum = box.BoxNumber, masterId = box.Master.MasterId, carId = box.Car.CarId };
+        
+        await _db.QueryAsync(sqlQuery, parameters, commandType: CommandType.Text);
     }
 
     public async Task UpdateMasterIdAsync(int oldId, int newId)
     {
-        try
-        {
-            await _db.OpenAsync();
-            using (var command = new NpgsqlCommand())
-            {
-                command.Connection = _db;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "UPDATE tuning_box SET master_id = @newId WHERE master_id = @oldId;";
-                command.Parameters.Add("@newId", NpgsqlDbType.Integer).Value = newId;
-                command.Parameters.Add("@oldId", NpgsqlDbType.Integer).Value = oldId;
-
-                await using (_ = await command.ExecuteReaderAsync()) { }
-            }
-            await _db.CloseAsync();
-        }
-        catch (NpgsqlException)
-        {
-            await _db.CloseAsync();
-        }
-    }
-
-    //ToDO remove in future
-    public async Task<bool> VerifyBoxNumberAsync(int boxNumber)
-    {
-        var isExist = false;
-        try
-        {
-            await _db.OpenAsync();
-            using (var command = new NpgsqlCommand())
-            {
-                command.Connection = _db;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT EXISTS(SELECT box_number FROM tuning_box WHERE box_number = @number);";
-                command.Parameters.Add("@number", NpgsqlDbType.Integer).Value = boxNumber;
-
-                await using (var reader = await command.ExecuteReaderAsync())
-                {
-                    if (reader.HasRows)
-                    {
-                        await reader.ReadAsync();
-                        isExist = reader.GetBoolean(0);
-                    }
-                }
-            }
-            await _db.CloseAsync();
-        }
-        catch (NpgsqlException)
-        {
-            await _db.CloseAsync();
-        }
-        return isExist;
+        if (_db.State == ConnectionState.Closed)
+            _db.Open();
+        
+        var sqlQuery = "UPDATE tuning_box SET master_id = @newId WHERE master_id = @oldId;";
+        
+        var parameters = new { newId = newId, oldId = oldId };
+        
+        await _db.QueryAsync(sqlQuery, parameters, commandType: CommandType.Text);
     }
 }

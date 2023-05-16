@@ -5,13 +5,11 @@ namespace TuningService.Repository;
 
 public interface ITuningBoxRepository
 {
-    Task<TuningBox?> GetFulInformationAboutTuningBoxById(int tuningBoxId);
+    Task<TuningBox?> GetAsync(int tuningBoxId);
 
     Task InsertAsync(TuningBox box);
 
     Task<int> GetTuningBoxIdByCarIdAsync(int carId);
-
-    Task<bool> VerifyBoxNumberAsync(int boxNumber);
 
     Task UpdateMasterIdAsync(int oldId, int newId);
 }

@@ -239,13 +239,13 @@ namespace TuningService.Views.Impl
                 return;
             }
             
-            _customer.Id = await AddNewCustomerEvent?.Invoke(_customer);
+            _customer.CustomerId = await AddNewCustomerEvent?.Invoke(_customer);
 
-            _car.Id = await AddNewCarEvent?.Invoke(_car);
+            _car.CarId = await AddNewCarEvent?.Invoke(_car);
 
-            _master.Id = await UploadMasterEvent?.Invoke(_master);
+            _master.MasterId = await UploadMasterEvent?.Invoke(_master);
 
-            _tuningBox.Id = await CreateTuningBoxEvent?.Invoke(_tuningBox, _car.Id);
+            _tuningBox.BoxId = await CreateTuningBoxEvent?.Invoke(_tuningBox, _car.CarId);
 
             await AddNewOrderEvent?.Invoke(_order);
 

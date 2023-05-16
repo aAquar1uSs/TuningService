@@ -2,18 +2,11 @@
 
 public sealed class TuningBox
 {
-    public int Id { get; set; }
+    public int BoxId { get; set; }
 
     public int BoxNumber { get; set; }
 
-    public Car CarInfo { get; set; }
+    public Car Car { get; set; }
 
-    public Master MasterInfo { get; set; }
-
-    public TuningBox(int boxNumber, Master master, Car carInfo)
-    {
-        CarInfo = carInfo;
-        MasterInfo = master;
-        BoxNumber = boxNumber;
-    }
+    public Master Master { get; set; }
 }

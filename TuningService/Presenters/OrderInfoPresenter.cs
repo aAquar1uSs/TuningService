@@ -52,7 +52,7 @@ public class OrderInfoPresenter
                 MessageBoxIcon.Error);
             }
 
-            _order.TuningBox = await _tuningBoxRepository.GetFulInformationAboutTuningBoxById(boxId);
+            _order.TuningBox = await _tuningBoxRepository.GetAsync(boxId);
 
             if (_order.TuningBox is null)
             {

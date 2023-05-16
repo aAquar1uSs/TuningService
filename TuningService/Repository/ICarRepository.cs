@@ -7,9 +7,7 @@ public interface ICarRepository
 {
     Task<Car> GetAsync(int carId);
 
-    Task InsertAsync(Car car);
-
-    Task<int> GetCarIdByFullInformationAsync(Car car);
+    Task<int> InsertAsync(Car car);
 
     Task UpdateAsync(Car car);
 }

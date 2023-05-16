@@ -5,7 +5,7 @@ namespace TuningService.Models
 {
     public sealed class Order
     {
-        public int Id { get; set; }
+        public int OrderId { get; set; }
 
         public DateTime StartDate { get; set; }
 
@@ -22,16 +22,5 @@ namespace TuningService.Models
         public bool IsDone { get; set; }
 
         public TuningBox TuningBox { get; set; }
-
-        public Order(DateTime startDate,
-            DateTime endDate, string description,
-            decimal price, bool inWork)
-        {
-            StartDate = startDate;
-            EndDate = endDate;
-            Description = description;
-            Price = price;
-            IsDone = inWork;
-        }
     }
 }

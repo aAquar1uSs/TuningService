@@ -50,7 +50,7 @@ namespace TuningService.Views.Impl.EditMenu
             try
             {
                 _customer = CustomerFactory.GetCustomerInstance(name, lastName, surname, phone);
-                _customer.Id = _customerId;
+                _customer.CustomerId = _customerId;
             }
             catch (ValidationException)
             {

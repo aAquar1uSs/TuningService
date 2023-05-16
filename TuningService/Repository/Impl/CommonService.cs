@@ -41,7 +41,7 @@ namespace TuningService.Repository.Impl
                     command.CommandType = CommandType.Text;
                     command.CommandText = "SELECT customer.customer_id,"
                                           + "concat(customer.surname,' ', customer.name, ' ', customer.lastname), customer.phone,"
-                                          + "car.car_id, concat(car.name, ' ', car.model), tuning_box.box_id,"
+                                          + "car.car_id, concat(car.brand, ' ', car.model), tuning_box.box_id,"
                                           + "concat(master.name, ' ', master.surname), master.phone "
                                           + "FROM customer JOIN car ON customer.customer_id = car.customer_id "
                                           + "JOIN tuning_box ON car.car_id = tuning_box.car_id "

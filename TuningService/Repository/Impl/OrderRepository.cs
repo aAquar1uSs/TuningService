@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Npgsql;
 using TuningService.Models;
+
 namespace TuningService.Repository.Impl;
 
 public class OrderRepository : IOrderRepository
@@ -22,16 +23,38 @@ public class OrderRepository : IOrderRepository
         if (_db.State == ConnectionState.Closed)
             _db.Open();
 
-        var sqlQuery = "SELECT tuning_order.order_id, tuning_order.start_date, tuning_order.end_date,"
-                       + " tuning_order.description, tuning_order.price, tuning_order.is_done "
-                       + " FROM tuning_order JOIN tuning_box ON"
-                       + " tuning_order.tuning_box_id = @box_id";
-        var parameters = new Dictionary<string, object>
-        {
-            ["box_id"] = tuningBoxId
-        };
+        var sqlQuery = "SELECT tuning_order.order_id as OrderId, tuning_order.start_date, tuning_order.end_date, "
+                       + "tuning_order.description, tuning_order.price, tuning_order.is_done, "
+                       + "tuning_box.box_id AS TuningBoxId, tuning_box.box_number "
+                       + "FROM tuning_order "
+                       + "JOIN tuning_box ON tuning_order.tuning_box_id = tuning_box.box_id "
+                       + "WHERE tuning_box.box_id = @id";
 
-        return (await _db.QueryAsync<Order>(sqlQuery, parameters, commandType: CommandType.Text)).FirstOrDefault();
+        var parameters = new { id = tuningBoxId };
+
+        var dynamicResults = await _db.QueryAsync<dynamic>(sqlQuery, parameters);
+
+        var results = dynamicResults.Select(result =>
+        {
+            var tuningOrder = new Order
+            {
+                OrderId = result.orderid ?? 0,
+                StartDate = ((DateTime)result.start_date).Date,
+                EndDate = ((DateTime)result.end_date).Date,
+                Description = result.description,
+                Price = result.price,
+                IsDone = result.is_done,
+                TuningBox = new TuningBox
+                {
+                    BoxId = result.tuningboxid ?? 0,
+                    BoxNumber = result.box_number
+                }
+            };
+
+            return tuningOrder;
+        });
+
+        return results.FirstOrDefault();
     }
 
     public async Task ChangeStateAsync(Order order)
@@ -40,11 +63,8 @@ public class OrderRepository : IOrderRepository
             _db.Open();
         
         var sqlQuery = "UPDATE tuning_order SET is_done = @isDone WHERE order_id = @id;";
-        var parameters = new Dictionary<string, object>
-        {
-            ["id"] = order.Id,
-            ["isDone"] = order.IsDone
-        };
+
+        var parameters = new { id = order.OrderId, isDone = order.IsDone };
 
         await _db.QueryAsync(sqlQuery, parameters, commandType: CommandType.Text);
     }
@@ -62,7 +82,7 @@ public class OrderRepository : IOrderRepository
             ["desc"] = order.Description,
             ["price"] = order.Price,
             ["isDone"] = order.IsDone,
-            ["boxId"] = order.TuningBox.Id
+            ["boxId"] = order.TuningBox.BoxId
         };
 
         await _db.QueryAsync(sqlQuery, parameters, commandType: CommandType.Text);
@@ -81,7 +101,7 @@ public class OrderRepository : IOrderRepository
             ["orderId"] = id,
         };
 
-        return (await _db.QueryAsync<Order>(sqlQuery, parameters, commandType: CommandType.Text)).FirstOrDefault();
+        return await _db.QueryFirstOrDefaultAsync<Order>(sqlQuery, parameters, commandType: CommandType.Text);
     }
 
     public async Task UpdateAsync(Order order)
@@ -98,7 +118,7 @@ public class OrderRepository : IOrderRepository
             ["desc"] = order.Description,
             ["price"] = order.Price,
             ["isDone"] = order.IsDone,
-            ["orderId"] = order.Id
+            ["orderId"] = order.OrderId
         };
 
         await _db.QueryAsync(sqlQuery, parameters, commandType: CommandType.Text);

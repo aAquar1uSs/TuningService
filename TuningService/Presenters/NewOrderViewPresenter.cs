@@ -37,7 +37,6 @@ public class NewOrderViewPresenter
         _newOrder.UploadMasterEvent += UploadMasterAsync;
         _newOrder.AddNewOrderEvent += AddOrderAsync;
         _newOrder.CreateTuningBoxEvent += CreateTuningBoxAsync;
-        _newOrder.VerifyBoxNumberEvent += VerifyTuningBoxNumberAsync;
     }
 
     private async void UpdateMastersAsync(object sender, EventArgs e)
@@ -48,14 +47,12 @@ public class NewOrderViewPresenter
 
     private async Task<int> AddCustomerAsync(Customer customer)
     {
-        await _customerRepository.InsertAsync(customer);
-        return await _customerRepository.GetCustomerIdByFullInformationAsync(customer);
+        return await _customerRepository.InsertAsync(customer);
     }
 
     private async Task<int> AddCarAsync(Car car)
     {
-        await _carRepository.InsertAsync(car);
-        return await _carRepository.GetCarIdByFullInformationAsync(car);
+        return await _carRepository.InsertAsync(car);
     }
 
     private async Task<int> UploadMasterAsync(Master master)
@@ -63,14 +60,9 @@ public class NewOrderViewPresenter
          return await _masterRepository.GetMasterIdAsync(master);
     }
 
-    private async Task<bool> VerifyTuningBoxNumberAsync(int boxId)
-    {
-        return await _tuningBoxRepository.VerifyBoxNumberAsync(boxId);
-    }
-
     private async Task<int> CreateTuningBoxAsync(TuningBox newTuningBox, int carId)
     {
-        var tuningBox = await _tuningBoxRepository.GetFulInformationAboutTuningBoxById(newTuningBox.BoxNumber);
+        var tuningBox = await _tuningBoxRepository.GetAsync(newTuningBox.BoxNumber);
         if (tuningBox is not null)
         {
             MessageBox.Show("This room already taken.",

@@ -53,7 +53,7 @@ namespace TuningService.Views.Impl.EditMenu
                 var desc = orderDescription.Text;
 
                 _order = OrderFactory.GetOrderInstance(finishData, price, inWork, desc);
-                _order.Id = _orderId;
+                _order.OrderId = _orderId;
             }
             catch (ValidationException)
             {

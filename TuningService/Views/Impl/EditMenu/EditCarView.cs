@@ -33,7 +33,7 @@ namespace TuningService.Views.Impl.EditMenu
 
         public void ShowOldData(Car car)
         {
-            textBoxName.Text = car.Name;
+            textBoxName.Text = car.Brand;
             textBoxModel.Text = car.Model;
         }
 
@@ -50,7 +50,7 @@ namespace TuningService.Views.Impl.EditMenu
             }
 
             _car = carResult.Value;
-            _car.Id = _id;
+            _car.CarId = _id;
 
             await UpdateCarDataEvent?.Invoke(_car);
 

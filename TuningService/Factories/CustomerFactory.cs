@@ -9,7 +9,14 @@ public static class CustomerFactory
     public static Customer GetCustomerInstance(string customerName, string customerLastname,
         string customerSurname, string customerPhone)
     {
-        var customer = new Customer(customerName, customerLastname, customerSurname, customerPhone);
+        var customer = new Customer
+        {
+            Name = customerName,
+            Lastname = customerLastname,
+            Phone = customerPhone,
+            Surname = customerSurname
+        };
+        
         var results = new List<ValidationResult>();
         var context = new ValidationContext(customer);
 

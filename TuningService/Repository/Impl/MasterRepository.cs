@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Npgsql;
@@ -64,7 +63,7 @@ public class MasterRepository : IMasterRepository
             ["surname"] = master.Surname,
         };
         
-        return (await _db.QueryAsync<int>(sqlQuery, parameters, commandType: CommandType.Text)).FirstOrDefault();
+        return await _db.QueryFirstOrDefaultAsync<int>(sqlQuery, parameters, commandType: CommandType.Text);
     }
 
     public async Task InsertAsync(Master master)

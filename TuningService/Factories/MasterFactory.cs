@@ -8,7 +8,12 @@ public static class MasterFactory
 {
     public static Master GetMasterInstance(string name, string surname, string phone = "+111111111111")
     {
-        var master = new Master(name, surname, phone);
+        var master = new Master
+        {
+            Name = name,
+            Surname = surname,
+            Phone = phone
+        };
         var results = new List<ValidationResult>();
         var context = new ValidationContext(master);
 
