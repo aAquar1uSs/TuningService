@@ -93,15 +93,29 @@ public class OrderRepository : IOrderRepository
         if (_db.State == ConnectionState.Closed)
             _db.Open();
         
-        var sqlQuery = "SELECT tuning_order.order_id, tuning_order.start_date, tuning_order.end_date,"
-                       + " tuning_order.description, tuning_order.price, tuning_order.is_done FROM tuning_order "
-                       + " WHERE tuning_order.order_id = @orderId";
-        var parameters = new Dictionary<string, object>
+        var sqlQuery = "SELECT tuning_order.order_id, tuning_order.start_date, tuning_order.end_date, " +
+                       "tuning_order.description, tuning_order.price, tuning_order.is_done " +
+                       "FROM tuning_order " +
+                       "WHERE tuning_order.order_id = @orderId";
+
+        var parameters = new { orderId = id };
+
+        var result = await _db.QueryFirstOrDefaultAsync(sqlQuery, parameters, commandType: CommandType.Text);
+
+        if (result == null) return null;
+        
+        var order = new Order
         {
-            ["orderId"] = id,
+            OrderId = result.order_id,
+            StartDate = Convert.ToDateTime(result.start_date),
+            EndDate = Convert.ToDateTime(result.end_date),
+            Description = result.description,
+            Price = result.price,
+            IsDone = result.is_done
         };
 
-        return await _db.QueryFirstOrDefaultAsync<Order>(sqlQuery, parameters, commandType: CommandType.Text);
+        return order;
+
     }
 
     public async Task UpdateAsync(Order order)

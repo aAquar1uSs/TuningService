@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Configuration;
 using System.Windows.Forms;
+using Dapper;
 using Npgsql;
+using Npgsql.Internal.TypeHandlers.DateTimeHandlers;
 using TuningService.Presenters;
 using TuningService.Repository.Impl;
 using TuningService.Views.Impl;
