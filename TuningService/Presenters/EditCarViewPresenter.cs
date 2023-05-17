@@ -11,8 +11,7 @@ namespace TuningService.Presenters
         private readonly IEditCarView _editCarView;
         private readonly ICarRepository _carRepository;
 
-        public EditCarViewPresenter(IEditCarView editCarView,
-            ICarRepository carRepository)
+        public EditCarViewPresenter(IEditCarView editCarView, ICarRepository carRepository)
         {
             _editCarView = editCarView;
             _carRepository = carRepository;

@@ -51,7 +51,7 @@ public class CustomerRepository : ICustomerRepository
         if (_db.State == ConnectionState.Closed)
             _db.Open();
 
-        var sqlQuery = "INSERT INTO customer(name, surname, lastname, phone) VALUES (@name, @surname, @lastname, @phone) RETURNING cutomer_id";
+        var sqlQuery = "INSERT INTO customer(name, surname, lastname, phone) VALUES (@name, @surname, @lastname, @phone) RETURNING customer_id";
         var parameters = new Dictionary<string, object>
         {
             ["name"] = customer.Name,
@@ -60,7 +60,7 @@ public class CustomerRepository : ICustomerRepository
             ["phone"] = customer.Phone
         };
 
-        return await _db.QueryFirstOrDefaultAsync<int>(sqlQuery, parameters, commandType: CommandType.Text);
+        return await _db.QuerySingleAsync<int>(sqlQuery, parameters);
     }
 
     public async Task UpdateAsync(Customer customer)

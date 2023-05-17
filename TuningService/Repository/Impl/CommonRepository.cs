@@ -14,10 +14,10 @@ namespace TuningService.Repository.Impl
     {
         private readonly NpgsqlConnection _db;
         
-        private const string SqlRequestSearchInfo = "SELECT customer.customer_id,"
-                                                        + "concat(customer.surname,' ', customer.name, ' ', customer.lastname), customer.phone,"
-                                                        + "car.car_id, concat(car.brand, ' ', car.model), tuning_box.box_id,"
-                                                        + "concat(master.name, ' ', master.surname), master.phone "
+        private const string SqlRequestSearchInfo = "SELECT customer.customer_id AS CustomerId,"
+                                                        + "concat(customer.surname,' ', customer.name, ' ', customer.lastname) AS CustomerName, customer.phone AS CustomerPhone,"
+                                                        + "car.car_id  AS CarId, concat(car.brand, ' ', car.model) AS CarModel, tuning_box.box_id AS BoxId,"
+                                                        + "master.master_id AS MasterId, concat(master.name, ' ', master.surname) AS MasterName, master.phone AS MasterPhone "
                                                         + "FROM customer JOIN car ON customer.customer_id = car.customer_id "
                                                         + "JOIN tuning_box ON car.car_id = tuning_box.car_id "
                                                         + "JOIN master ON tuning_box.master_id = master.master_id "
@@ -49,53 +49,20 @@ namespace TuningService.Repository.Impl
             return result.ToArray();
         }
         
-        //ToDo add new model for view this data
         public async Task<IReadOnlyCollection<ComparedDataView>> SearchCustomerByValueAsync(string value)
         {
-            var dataTable = new DataTable();
-
+            if (_db.State == ConnectionState.Closed)
+                _db.Open();
+            
             var customerId = int.TryParse(value, out _) ? Convert.ToInt32(value) : 0;
             var name = value;
             var surname = value;
             var lastname = value;
             var phone = value;
-
-            /*try
-            {
-                await _db.OpenAsync();
-    
-                using (var command = new NpgsqlCommand())
-                {
-                    command.Connection = _db;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = SqlRequestSearchCustomer;
-    
-                    command.Parameters.Add("@customerId", NpgsqlDbType.Integer).Value = customerId;
-                    command.Parameters.Add("@name", NpgsqlDbType.Varchar).Value = name;
-                    command.Parameters.Add("@surname", NpgsqlDbType.Varchar).Value = surname;
-                    command.Parameters.Add("@lastname", NpgsqlDbType.Varchar).Value = lastname;
-                    command.Parameters.Add("@phone", NpgsqlDbType.Varchar).Value = phone;
-    
-                    await using (var reader = await command.ExecuteReaderAsync())
-                    {
-                        if (reader.HasRows)
-                        {
-                            dataTable.Load(reader);
-                        }
-                    }
-                }
-    
-                await _db.CloseAsync();
-            }
-            catch (NpgsqlException)
-            {
-                await _db.CloseAsync();
-                return dataTable;
-            }*/
-        
+            
             if (_db.State == ConnectionState.Closed)
                 _db.Open();
-        
+
             var parameters = new Dictionary<string, object>
             {
                 ["customerId"] = customerId,
@@ -104,9 +71,10 @@ namespace TuningService.Repository.Impl
                 ["lastname"] = lastname,
                 ["phone"] = phone
             };
-        
+            
+            var result = await _db.QueryAsync<ComparedDataView>(SqlRequestSearchInfo, parameters, commandType: CommandType.Text);
 
-            return null;
+            return result.ToArray();
         }
 
         public async Task Insert(DataTable dataTable)

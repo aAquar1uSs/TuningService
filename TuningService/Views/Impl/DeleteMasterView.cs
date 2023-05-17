@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Windows.Forms;
 using TuningService.Factories;
+using TuningService.Models.ViewModels;
 
 namespace TuningService.Views.Impl
 {
@@ -38,10 +40,13 @@ namespace TuningService.Views.Impl
             return _deleteMasterViewInstance;
         }
 
-        public void SetDataAboutMasters(DataTable dt)
+        public void SetDataAboutMasters(IEnumerable<MasterViewModel> masterViewModels)
         {
-            _dataTable = dt;
-            comboBoxMasters.DataSource = _dataTable;
+            if (!masterViewModels.Any())
+                return;
+            
+            comboBoxMasters.Items.AddRange(masterViewModels.Select(x => x.MasterInfo).ToArray());
+            
             comboBoxMasters.DisplayMember = "concat";
             comboBoxMasters.ValueMember = "concat";
         }
@@ -88,18 +93,15 @@ namespace TuningService.Views.Impl
         {
             var selectedMaster = comboBoxMasters.Text;
 
-            var masterList = new List<string>();
+            comboBoxMasterRep.Items.Clear();
 
-            for (var i = 0; i < _dataTable.Rows.Count; i++)
+            for (var i = 0; i < comboBoxMasters.Items.Count; i++)
             {
-                var row = _dataTable.Rows[i];
-                var item = (string)row.ItemArray.GetValue(0);
+                var item = comboBoxMasters.Items[i].ToString();
                 if (!item.Equals(selectedMaster, StringComparison.InvariantCulture))
-                    masterList.Add(item);
+                    comboBoxMasterRep.Items.Add(item);
             }
-
-            comboBoxMasterRep.DataSource = masterList;
-
+            
             buttonDelete.Enabled = true;
         }
     }

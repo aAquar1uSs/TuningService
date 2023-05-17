@@ -54,7 +54,7 @@ public class MainPresenter
         var carService = new CarRepository(_db);
         var tuningBoxService = new TuningBoxRepository(_db);
 
-        _ = new NewOrderViewPresenter(newOrderView,carService, _customerRepository, masterService, orderService, tuningBoxService);
+        _ = new NewOrderViewPresenter(_db, newOrderView,carService, _customerRepository, masterService, orderService, tuningBoxService);
 
         newOrderView.ShowDialog();
     }

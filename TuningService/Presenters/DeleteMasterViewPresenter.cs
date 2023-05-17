@@ -34,8 +34,8 @@ namespace TuningService.Presenters
         }
         private async void UpdateDataAboutMastersAsync(object sender, EventArgs e)
         {
-            var dt = await _masterRepository.GetAllAsync();
-            _deleteMasterView.SetDataAboutMasters(dt);
+            var masterViewModels = await _masterRepository.GetAllAsync();
+            _deleteMasterView.SetDataAboutMasters(masterViewModels);
         }
     }
 }

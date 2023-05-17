@@ -65,16 +65,16 @@ public class TuningBoxRepository : ITuningBoxRepository
         return await _db.QueryFirstOrDefaultAsync<int>(sqlQuery, parameters, commandType: CommandType.Text);
     }
 
-    public async Task InsertAsync(TuningBox box)
+    public async Task<int> InsertAsync(TuningBox box)
     {
         if (_db.State == ConnectionState.Closed)
             _db.Open();
         
-        var sqlQuery = "INSERT INTO tuning_box(box_number, master_id, car_id) VALUES (@boxNum, @masterId, @carId)";
+        var sqlQuery = "INSERT INTO tuning_box(box_number, master_id, car_id) VALUES (@boxNum, @masterId, @carId) RETURNING box_id";
 
         var parameters = new { boxNum = box.BoxNumber, masterId = box.Master.MasterId, carId = box.Car.CarId };
         
-        await _db.QueryAsync(sqlQuery, parameters, commandType: CommandType.Text);
+        return await _db.QuerySingleAsync<int>(sqlQuery, parameters);
     }
 
     public async Task UpdateMasterIdAsync(int oldId, int newId)

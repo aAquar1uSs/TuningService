@@ -41,7 +41,7 @@ public class CarRepository : ICarRepository
             ["owner"] = car.Owner.CustomerId
         };
         
-        return await _db.QueryFirstOrDefaultAsync<int>(sqlQuery, parameters, commandType: CommandType.Text);
+        return await _db.QuerySingleAsync<int>(sqlQuery, parameters);
     }
 
     public async Task UpdateAsync(Car car)

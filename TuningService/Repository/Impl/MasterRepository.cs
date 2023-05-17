@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Npgsql;
 using TuningService.Models;
+using TuningService.Models.ViewModels;
 
 namespace TuningService.Repository.Impl;
 
@@ -16,39 +18,17 @@ public class MasterRepository : IMasterRepository
     {
         _db = db ?? throw new ArgumentNullException(nameof(db));
     }
-
-    //ToDo refactor it
-    public async Task<DataTable> GetAllAsync()
+    
+    public async Task<IReadOnlyCollection<MasterViewModel>> GetAllAsync()
     {
-        var dt = new DataTable();
+        if (_db.State == ConnectionState.Closed)
+           _db.Open();
 
-        try
-        {
-            await _db.OpenAsync();
+        var sqlQuery = "SELECT concat(name, ' ',  surname) AS MasterInfo FROM master";;
 
-            using (var command = new NpgsqlCommand())
-            {
-                command.Connection = _db;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT concat(name, ' ',  surname) FROM master";
+        var result = await _db.QueryAsync<MasterViewModel>(sqlQuery, commandType: CommandType.Text);
 
-                await using (var reader = await command.ExecuteReaderAsync())
-                {
-                    if (reader.HasRows)
-                    {
-                        dt.Load(reader);
-                    }
-                }
-            }
-            await _db.CloseAsync();
-        }
-        catch (NpgsqlException)
-        {
-            await _db.CloseAsync();
-            return dt;
-        }
-
-        return dt;
+        return result.ToArray();
     }
 
     public async Task<int> GetMasterIdAsync(Master master)
@@ -66,12 +46,12 @@ public class MasterRepository : IMasterRepository
         return await _db.QueryFirstOrDefaultAsync<int>(sqlQuery, parameters, commandType: CommandType.Text);
     }
 
-    public async Task InsertAsync(Master master)
+    public async Task<int> InsertAsync(Master master)
     {
         if (_db.State == ConnectionState.Closed)
             _db.Open();
 
-        var sqlQuery = "INSERT INTO master (name, surname, phone) VALUES (@name, @surname, @phone)";
+        var sqlQuery = "INSERT INTO master (name, surname, phone) VALUES (@name, @surname, @phone) RETURNING master_id";
         var parameters = new Dictionary<string, object>
         {
             ["name"] = master.Name,
@@ -79,7 +59,7 @@ public class MasterRepository : IMasterRepository
             ["phone"] = master.Phone
         };
 
-        await _db.QueryAsync(sqlQuery, parameters, commandType: CommandType.Text);
+       return await _db.QueryFirstOrDefaultAsync<int>(sqlQuery, parameters, commandType: CommandType.Text);
     }
 
     public async Task DeleteAsync(Master master)

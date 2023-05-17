@@ -1,6 +1,7 @@
 using System;
+using System.Data;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using Npgsql;
 using TuningService.Models;
 using TuningService.Repository;
 using TuningService.Views;
@@ -15,8 +16,10 @@ public class NewOrderViewPresenter
     private readonly IMasterRepository _masterRepository;
     private readonly ICarRepository _carRepository;
     private readonly ITuningBoxRepository _tuningBoxRepository;
+    private readonly NpgsqlConnection _db;
     
     public NewOrderViewPresenter(
+        NpgsqlConnection db,
         INewOrderView orderView,
         ICarRepository carRepository,
         ICustomerRepository customerRepository,
@@ -24,6 +27,7 @@ public class NewOrderViewPresenter
         IOrderRepository orderRepository,
         ITuningBoxRepository tuningBoxRepository)
     {
+        _db = db;
         _newOrder = orderView;
         _customerRepository = customerRepository;
         _masterRepository = masterRepository;
@@ -32,52 +36,33 @@ public class NewOrderViewPresenter
         _tuningBoxRepository = tuningBoxRepository;
 
         _newOrder.UpdateListOfMasters += UpdateMastersAsync;
-        _newOrder.AddNewCustomerEvent += AddCustomerAsync;
-        _newOrder.AddNewCarEvent += AddCarAsync;
-        _newOrder.UploadMasterEvent += UploadMasterAsync;
         _newOrder.AddNewOrderEvent += AddOrderAsync;
-        _newOrder.CreateTuningBoxEvent += CreateTuningBoxAsync;
     }
 
     private async void UpdateMastersAsync(object sender, EventArgs e)
     {
-        var dt = await _masterRepository.GetAllAsync();
-        _newOrder.SetDataAboutMasters(dt);
+        var masterViewModels = await _masterRepository.GetAllAsync();
+        _newOrder.SetDataAboutMasters(masterViewModels);
     }
-
-    private async Task<int> AddCustomerAsync(Customer customer)
+    
+    private async Task AddOrderAsync(Car car, Master master, Customer customer, TuningBox tuningBox, Order order)
     {
-        return await _customerRepository.InsertAsync(customer);
-    }
+        await using var transaction = _db.BeginTransaction(IsolationLevel.ReadCommitted);
 
-    private async Task<int> AddCarAsync(Car car)
-    {
-        return await _carRepository.InsertAsync(car);
-    }
+        var customerId = await _customerRepository.InsertAsync(customer);
 
-    private async Task<int> UploadMasterAsync(Master master)
-    {
-         return await _masterRepository.GetMasterIdAsync(master);
-    }
+        car.Owner.CustomerId = customerId;
+        var carId = await _carRepository.InsertAsync(car);
 
-    private async Task<int> CreateTuningBoxAsync(TuningBox newTuningBox, int carId)
-    {
-        var tuningBox = await _tuningBoxRepository.GetAsync(newTuningBox.BoxNumber);
-        if (tuningBox is not null)
-        {
-            MessageBox.Show("This room already taken.",
-                "Warning",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
-            return 0;
-        }
-        await _tuningBoxRepository.InsertAsync(newTuningBox);
+        var masterId = await _masterRepository.GetMasterIdAsync(master);
         
-        return await _tuningBoxRepository.GetTuningBoxIdByCarIdAsync(carId);
-    }
+        tuningBox.Car.CarId = carId;
+        tuningBox.Master.MasterId = masterId;
+        var boxId = await _tuningBoxRepository.InsertAsync(tuningBox);
 
-    private async Task AddOrderAsync(Order order)
-    {
+        order.TuningBox.BoxId = boxId;
         await _orderRepository.InsertAsync(order);
+        
+        await transaction.CommitAsync();
     }
 }

@@ -7,7 +7,7 @@ public interface ITuningBoxRepository
 {
     Task<TuningBox?> GetAsync(int tuningBoxId);
 
-    Task InsertAsync(TuningBox box);
+    Task<int> InsertAsync(TuningBox box);
 
     Task<int> GetTuningBoxIdByCarIdAsync(int carId);
 

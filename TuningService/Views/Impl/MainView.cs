@@ -66,22 +66,8 @@ namespace TuningService.Views.Impl
             }
             
             dataGridView1.DataSource = dataTable;
-           // if (dataGridView1.Columns.Count == 8)
-             //   InitHeadersInTable();
         }
         
-        private void InitHeadersInTable()
-        {
-            dataGridView1.Columns[0].HeaderText = "Customer Id";
-            dataGridView1.Columns[1].HeaderText = "Customer full name";
-            dataGridView1.Columns[2].HeaderText = "Customer phone";
-            dataGridView1.Columns[3].HeaderText = "Car id";
-            dataGridView1.Columns[4].HeaderText = "Car";
-            dataGridView1.Columns[5].HeaderText = "Tuning box";
-            dataGridView1.Columns[6].HeaderText = "Master full name";
-            dataGridView1.Columns[7].HeaderText = "Master phone";
-        }
-
         private void SetSearchEvents()
         {
             buttonSearch.Click += delegate
