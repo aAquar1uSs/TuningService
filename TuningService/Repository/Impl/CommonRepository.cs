@@ -60,9 +60,6 @@ namespace TuningService.Repository.Impl
             var lastname = value;
             var phone = value;
             
-            if (_db.State == ConnectionState.Closed)
-                _db.Open();
-
             var parameters = new Dictionary<string, object>
             {
                 ["customerId"] = customerId,

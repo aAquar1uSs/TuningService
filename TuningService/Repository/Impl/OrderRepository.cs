@@ -109,7 +109,7 @@ public class OrderRepository : IOrderRepository
             OrderId = result.order_id,
             StartDate = Convert.ToDateTime(result.start_date),
             EndDate = Convert.ToDateTime(result.end_date),
-            Description = result.description,
+            Description = result.description, 
             Price = result.price,
             IsDone = result.is_done
         };
