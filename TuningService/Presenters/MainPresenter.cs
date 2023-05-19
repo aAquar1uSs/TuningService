@@ -2,6 +2,7 @@ using System;
 using Npgsql;
 using TuningService.Repository;
 using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 using TuningService.Views.Impl;
 
@@ -14,15 +15,12 @@ public class MainPresenter
     private readonly ICustomerRepository _customerRepository;
     private readonly NpgsqlConnection _db;
 
-    public MainPresenter(IMainView mainView,
-        ICommonRepository commonRepository,
-        ICustomerRepository customerRepository,
-        NpgsqlConnection db)
+    public MainPresenter(IMainView mainView)
     {
         _mainView = mainView;
-        _commonRepository = commonRepository;
-        _customerRepository = customerRepository;
-        _db = db;
+        _commonRepository = new CommonRepository(new NpgsqlConnection(AppConnection.ConnectionString));
+        _customerRepository = new CustomerRepository(new NpgsqlConnection(AppConnection.ConnectionString));
+        _db = new NpgsqlConnection(AppConnection.ConnectionString);
 
         _mainView.ShowOrderInfoViewEvent += ShowOrderInfoViewEvent;
         _mainView.UpdateAllDataEvent += ShowAllDataEvent;
@@ -48,13 +46,7 @@ public class MainPresenter
     private void ShowNewOrderViewEvent(object sender, EventArgs e)
     {
         var newOrderView = NewOrderView.GetInstance();
-
-        var orderService = new OrderRepository(_db);
-        var masterService = new MasterRepository(_db);
-        var carService = new CarRepository(_db);
-        var tuningBoxService = new TuningBoxRepository(_db);
-
-        _ = new NewOrderViewPresenter(_db, newOrderView,carService, _customerRepository, masterService, orderService, tuningBoxService);
+        _ = new NewOrderViewPresenter(newOrderView);
 
         newOrderView.ShowDialog();
     }
@@ -62,8 +54,7 @@ public class MainPresenter
     private void ShowNewMasterViewEvent(object sender, EventArgs e)
     {
         var newMasterView = NewMasterView.GetInstance();
-        var masterService = new MasterRepository(_db);
-        _ = new NewMasterViewPresenter(newMasterView, masterService);
+        _ = new NewMasterViewPresenter(newMasterView);
 
         newMasterView.ShowDialog();
     }
@@ -71,9 +62,7 @@ public class MainPresenter
     private void ShowDeleteMasterViewEvent(object sender, EventArgs e)
     {
         var deleteMasterView = DeleteMasterView.GetInstance();
-        var masterService = new MasterRepository(_db);
-        var tuningBoxService = new TuningBoxRepository(_db);
-        _ = new DeleteMasterViewPresenter(deleteMasterView, tuningBoxService, masterService);
+        _ = new DeleteMasterViewPresenter(deleteMasterView);
 
         deleteMasterView.ShowDialog();
     }
@@ -99,7 +88,7 @@ public class MainPresenter
     private void ShowImportMenuView(object sender, EventArgs e)
     {
         var importMenuView = ImportMenuView.GetInstance();
-        _ = new ImportViewPresenter(importMenuView, _commonRepository);
+        _ = new ImportViewPresenter(importMenuView);
         
         importMenuView.ShowDialog();
     }

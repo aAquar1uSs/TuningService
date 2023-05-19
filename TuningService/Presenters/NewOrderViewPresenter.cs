@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Npgsql;
 using TuningService.Models;
 using TuningService.Repository;
+using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 
 namespace TuningService.Presenters;
@@ -18,22 +20,15 @@ public class NewOrderViewPresenter
     private readonly ITuningBoxRepository _tuningBoxRepository;
     private readonly NpgsqlConnection _db;
     
-    public NewOrderViewPresenter(
-        NpgsqlConnection db,
-        INewOrderView orderView,
-        ICarRepository carRepository,
-        ICustomerRepository customerRepository,
-        IMasterRepository masterRepository,
-        IOrderRepository orderRepository,
-        ITuningBoxRepository tuningBoxRepository)
+    public NewOrderViewPresenter(INewOrderView orderView)
     {
-        _db = db;
+        _db = new NpgsqlConnection(AppConnection.ConnectionString);
         _newOrder = orderView;
-        _customerRepository = customerRepository;
-        _masterRepository = masterRepository;
-        _orderRepository = orderRepository;
-        _carRepository = carRepository;
-        _tuningBoxRepository = tuningBoxRepository;
+        _customerRepository = new CustomerRepository(_db);
+        _masterRepository = new MasterRepository(_db);
+        _orderRepository = new OrderRepository(_db);
+        _carRepository = new CarRepository(_db);
+        _tuningBoxRepository = new TuningBoxRepository(_db);
 
         _newOrder.UpdateListOfMasters += UpdateMastersAsync;
         _newOrder.AddNewOrderEvent += AddOrderAsync;

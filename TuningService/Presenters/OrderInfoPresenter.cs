@@ -83,9 +83,8 @@ public class OrderInfoPresenter
     private void ShowEditCarView(int carId)
     {
         var editCarView = new EditCarView();
-        var carService = new CarRepository(_db);
 
-        _ = new EditCarViewPresenter(editCarView, carService);
+        _ = new EditCarViewPresenter(editCarView);
         editCarView.GetCarDataAsync(carId);
         editCarView.ShowDialog();
     }
@@ -93,9 +92,8 @@ public class OrderInfoPresenter
     private void ShowEditCustomerView(int customerId)
     {
         var editCustomerView = new EditCustomerView();
-        var customerService = new CustomerRepository(_db);
 
-        _ = new EditCustomerViewPresenter(editCustomerView, customerService);
+        _ = new EditCustomerViewPresenter(editCustomerView);
         editCustomerView.GetDataAsync(customerId);
         editCustomerView.ShowDialog();
     }
@@ -103,9 +101,8 @@ public class OrderInfoPresenter
     private void ShowEditOrderView(int orderId)
     {
         var editOrderView = new EditOrderView();
-        var orderService = new OrderRepository(_db);
 
-        _ = new EditOrderViewPresenter(editOrderView, orderService);
+        _ = new EditOrderViewPresenter(editOrderView);
         editOrderView.GetOrderData(orderId);
         editOrderView.ShowDialog();
     }

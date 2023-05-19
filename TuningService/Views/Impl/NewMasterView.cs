@@ -40,6 +40,19 @@ namespace TuningService.Views.Impl
         {
 
         }
+        
+        protected override void WndProc(ref Message m)
+        {
+            const int WM_CLOSE = 0x0010;
+
+            if (m.Msg == WM_CLOSE)
+            {
+                Dispose();
+                return;
+            }
+
+            base.WndProc(ref m);
+        }
 
         private void buttonClose_Click(object sender, EventArgs e)
         {

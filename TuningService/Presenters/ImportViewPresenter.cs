@@ -1,5 +1,8 @@
 using System.Data;
+using Npgsql;
 using TuningService.Repository;
+using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 
 namespace TuningService.Presenters;
@@ -9,10 +12,10 @@ public class ImportViewPresenter
     private readonly IImportMenuView _importMenuView;
     private readonly ICommonRepository _commonRepository;
 
-    public ImportViewPresenter(IImportMenuView importMenuView, ICommonRepository commonRepository)
+    public ImportViewPresenter(IImportMenuView importMenuView)
     {
         _importMenuView = importMenuView;
-        _commonRepository = commonRepository;
+        _commonRepository = new CommonRepository(new NpgsqlConnection(AppConnection.ConnectionString));
 
         _importMenuView.GetDataFromCSVFile += GetDataFromCsvFile;
         _importMenuView.SaveDataFromCSVFile += SaveDataFromCSVFile;

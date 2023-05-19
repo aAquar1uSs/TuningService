@@ -1,7 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Forms;
+using Npgsql;
 using TuningService.Models;
 using TuningService.Repository;
+using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 
 namespace TuningService.Presenters
@@ -11,10 +14,10 @@ namespace TuningService.Presenters
         private readonly IEditCarView _editCarView;
         private readonly ICarRepository _carRepository;
 
-        public EditCarViewPresenter(IEditCarView editCarView, ICarRepository carRepository)
+        public EditCarViewPresenter(IEditCarView editCarView)
         {
             _editCarView = editCarView;
-            _carRepository = carRepository;
+            _carRepository = new CarRepository(new NpgsqlConnection(AppConnection.ConnectionString));
 
             _editCarView.GetCarDataEvent += UploadCarData;
             _editCarView.UpdateCarDataEvent += UpdateOldCarData;

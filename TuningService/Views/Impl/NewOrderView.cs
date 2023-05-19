@@ -48,7 +48,20 @@ namespace TuningService.Views.Impl
 
             return _newOrderView;
         }
+        
+        protected override void WndProc(ref Message m)
+        {
+            const int WM_CLOSE = 0x0010;
 
+            if (m.Msg == WM_CLOSE)
+            {
+                Dispose();
+                return;
+            }
+
+            base.WndProc(ref m);
+        }
+        
         public void SetDataAboutMasters(IEnumerable<MasterViewModel> masterViewModels)
         {
             if (!masterViewModels.Any())

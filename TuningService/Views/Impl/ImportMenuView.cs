@@ -41,6 +41,19 @@ public partial class ImportMenuView : Form, IImportMenuView
     {
         
     }
+    
+    protected override void WndProc(ref Message m)
+    {
+        const int WM_CLOSE = 0x0010;
+
+        if (m.Msg == WM_CLOSE)
+        {
+            Dispose();
+            return;
+        }
+
+        base.WndProc(ref m);
+    }
 
     private void buttonSelectFile_Click(object sender, System.EventArgs e)
     {

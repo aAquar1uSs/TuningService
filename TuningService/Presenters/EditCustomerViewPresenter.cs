@@ -1,7 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Forms;
+using Npgsql;
 using TuningService.Models;
 using TuningService.Repository;
+using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 
 namespace TuningService.Presenters
@@ -11,11 +14,10 @@ namespace TuningService.Presenters
         private readonly IEditCustomerView _editCustomerView;
         private readonly ICustomerRepository _customerRepository;
 
-        public EditCustomerViewPresenter(IEditCustomerView editCustomerView,
-            ICustomerRepository customerRepository)
+        public EditCustomerViewPresenter(IEditCustomerView editCustomerView)
         {
             _editCustomerView = editCustomerView;
-            _customerRepository = customerRepository;
+            _customerRepository = new CustomerRepository(new NpgsqlConnection(AppConnection.ConnectionString));
 
             _editCustomerView.GetCustomerDataEvent += GetCustomerDataAsync;
             _editCustomerView.UpdateCustomerDataEvent += UpdateCustomerDataAsync;

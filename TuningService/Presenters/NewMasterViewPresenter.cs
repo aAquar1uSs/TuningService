@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
-using System.Windows.Forms;
+using Npgsql;
 using TuningService.Models;
 using TuningService.Repository;
+using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 
 namespace TuningService.Presenters
@@ -10,9 +12,9 @@ namespace TuningService.Presenters
     {
         private readonly IMasterRepository _masterRepository;
 
-        public NewMasterViewPresenter(INewMasterView masterView, IMasterRepository masterRepository)
+        public NewMasterViewPresenter(INewMasterView masterView)
         {
-            _masterRepository = masterRepository;
+            _masterRepository = new MasterRepository(new NpgsqlConnection(AppConnection.ConnectionString));
 
             masterView.AddNewMasterEvent += AddNewMasterEvent;
         }

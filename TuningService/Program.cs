@@ -20,14 +20,10 @@ namespace TuningService
             
             var sqlConnectionString = ConfigurationManager
                 .ConnectionStrings["ConnectionString"].ConnectionString;
-
-            var db = new NpgsqlConnection(sqlConnectionString);
-
-            var dbService = new CommonRepository(db);
-            var customerService = new CustomerRepository(db);
+            
             var view = new MainView();
 
-            _ = new MainPresenter(view, dbService, customerService, db);
+            _ = new MainPresenter(view);
             Application.Run(view);
         }
     }

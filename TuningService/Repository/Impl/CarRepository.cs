@@ -53,7 +53,7 @@ public class CarRepository : ICarRepository
         var parameters = new Dictionary<string, object>
         {
             ["brand"] = car.Brand,
-            ["model"] = car.Brand,
+            ["model"] = car.Model,
             ["carId"] = car.CarId
         };
         

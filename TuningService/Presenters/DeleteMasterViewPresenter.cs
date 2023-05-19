@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Npgsql;
 using TuningService.Models;
 using TuningService.Repository;
+using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 
 namespace TuningService.Presenters
@@ -12,13 +15,11 @@ namespace TuningService.Presenters
         private readonly IMasterRepository _masterRepository;
         private readonly ITuningBoxRepository _tuningBoxRepository;
 
-        public DeleteMasterViewPresenter(IDeleteMasterView deleteMasterView,
-            ITuningBoxRepository tuningBoxRepository,
-            IMasterRepository masterRepository)
+        public DeleteMasterViewPresenter(IDeleteMasterView deleteMasterView)
         {
             _deleteMasterView = deleteMasterView;
-            _masterRepository = masterRepository;
-            _tuningBoxRepository = tuningBoxRepository;
+            _masterRepository = new MasterRepository(new NpgsqlConnection(AppConnection.ConnectionString));
+            _tuningBoxRepository = new TuningBoxRepository(new NpgsqlConnection(AppConnection.ConnectionString));
 
             _deleteMasterView.DeleteAndReplaceMasterEvent += DeleteMasterAsync;
             _deleteMasterView.UpdateListOfMastersEvent += UpdateDataAboutMastersAsync;
