@@ -78,6 +78,7 @@ public partial class ImportMenuView : Form, IImportMenuView
 
     private void buttonClose_Click(object sender, System.EventArgs e)
     {
-        this.DialogResult = DialogResult.Cancel;
+        Dispose();
+        Close();
     }
 }

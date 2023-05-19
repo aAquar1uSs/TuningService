@@ -25,7 +25,6 @@ namespace TuningService.Views.Impl
             buttonAddNewOrder.Click += (_, _) => ShowNewOrderViewEvent?.Invoke(this, EventArgs.Empty);
             buttonUpdate.Click += (_, _) => UpdateAllDataEvent?.Invoke(this, EventArgs.Empty);
             buttonAddMaster.Click += (_, _) => ShowNewMasterView?.Invoke(this, EventArgs.Empty);
-            button_import.Click += (_, _) => ShowImportMenuView?.Invoke(this, EventArgs.Empty);
         }
 
         public event ShowOrderDelegate ShowOrderInfoViewEvent;

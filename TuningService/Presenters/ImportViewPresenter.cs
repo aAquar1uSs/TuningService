@@ -23,7 +23,7 @@ public class ImportViewPresenter
 
     private void GetDataFromCsvFile(string csvFile)
     {
-        DataTable csvData = new DataTable();
+        var csvData = new DataTable();
 
         if (csvFile.EndsWith(".csv"))
         {
