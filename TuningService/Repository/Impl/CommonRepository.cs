@@ -81,42 +81,24 @@ namespace TuningService.Repository.Impl
             
             foreach (var model in data)
             {
-                /*command.CommandText = "with first_customer_insert as ( " +
-                    "insert into customer(name,lastname,surname,phone) " + 
-                    "values(@name,@lastname,@surname,@phone)" + 
-                    "RETURNING customer_id ), " + 
-                "second_car_insert as ( " +
-                "insert into car(brand ,model,customer_id) " +
-                "values " +
-                "(@car,@carModel,(select customer_id from first_customer_insert)) " +
-                "RETURNING car_id), " +
-                "third_tuning_box_insert as ( " +
-                "insert into tuning_box(box_number,master_id,car_id) " +
-                "values (@tuningBox,(select master_id from master limit 1),(select car_id from second_car_insert)) " +
-                "RETURNING tuning_box_id), " +
-                "insert into tuning_order(start_date,end_date,description,price,is_done,tuning_box_id) " + 
-                "values " +
-                "(@startDate,@endDate,@description,@price,@isDone,(select tuning_box_id from third_tuning_box_insert));";*/
-                
                 string query = @"
                     with first_customer_insert as (
-        insert into customer(name, lastname, surname, phone)
-        values (@name, @lastname, @surname, @phone)
-        returning customer_id
-    ),
-    second_car_insert as (
-        insert into car(name, model, customer_id)
-        values (@car, @carModel, (select customer_id from first_customer_insert))
-        returning car_id
-    ),
-    third_tuning_box_insert as (
-        insert into tuning_box(box_number, master_id, car_id)
-        values (@tuningBox, (select master_id from master limit 1), (select car_id from second_car_insert))
-        returning tuning_box_id
-    )
-    insert into tuning_order(start_date, end_date, description, price, is_done, tuning_box_id)
-    values (@startDate, @endDate, @description, @price, @isDone, (select tuning_box_id from third_tuning_box_insert));
-";
+                    insert into customer(name, lastname, surname, phone)
+                    values (@name, @lastname, @surname, @phone)
+                    returning customer_id
+                ),
+                    second_car_insert as (
+                    insert into car(brand, model, customer_id)
+                    values (@brand, @model, (select customer_id from first_customer_insert))
+                    returning car_id
+                ),
+                    third_tuning_box_insert as (
+                    insert into tuning_box(box_number, master_id, car_id)
+                    values (@tuningBox, (select master_id from master limit 1), (select car_id from second_car_insert))
+                    returning box_id
+                )
+                insert into tuning_order(start_date, end_date, description, price, is_done, tuning_box_id)
+                values (@startDate, @endDate, @description, @price, @isDone, (select box_id from third_tuning_box_insert));";
                 
                 var parameters = new
                 {

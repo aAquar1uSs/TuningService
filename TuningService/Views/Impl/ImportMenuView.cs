@@ -12,7 +12,6 @@ public partial class ImportMenuView : Form, IImportMenuView
     public ImportMenuView()
     {
         InitializeComponent();
-        buttonAccept.Click += (_, _) => SaveDataFromCSVFile((DataTable)dtgView.DataSource);
     }
 
     public event GetDataFromCSV GetDataFromCSVFile;
@@ -102,6 +101,13 @@ public partial class ImportMenuView : Form, IImportMenuView
     private void buttonAccept_Click(object sender, System.EventArgs e)
     {
         SaveDataFromCSVFile?.Invoke((DataTable)dtgView.DataSource);
+
+        buttonAccept.Enabled = false;
+        
+        MessageBox.Show("Data has been successfully addded.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        
+        Dispose();
+        Close();
     }
 
     private void buttonClose_Click(object sender, System.EventArgs e)
