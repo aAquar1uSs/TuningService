@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
+using TuningService.Models.ViewModels;
 
 namespace TuningService.Views.Impl;
 
@@ -32,9 +34,35 @@ public partial class ImportMenuView : Form, IImportMenuView
         return _importMenuView;
     }
 
-    public void SetAllDataToDataGridView(DataTable dt)
+    public void SetAllDataToDataGridView(IReadOnlyCollection<DataForImport> dataForImports)
     {
-        dtgView.DataSource = dt;
+        var dataTable = new DataTable();
+        var properties = typeof(DataForImport).GetProperties();
+
+        foreach (var property in properties)
+        {
+            dataTable.Columns.Add(property.Name, property.PropertyType);
+        }
+        
+        foreach (var data in dataForImports)
+        {
+            dataTable.LoadDataRow(new object[]
+            {
+                data.CustomerName,
+                data.CustomerSurname,
+                data.CustomerLastname,
+                data.CustomerPhone,
+                data.CarBrand,
+                data.CarModel,
+                data.BoxNumber,
+                data.StartDate,
+                data.EndDate,
+                data.Description,
+                data.Price,
+            }, true);
+        }
+
+        dtgView.DataSource = dataTable;
     }
 
     private void ImportMenuView_Load(object sender, System.EventArgs e)

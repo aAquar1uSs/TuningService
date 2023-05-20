@@ -14,8 +14,6 @@ public class ComparedDataView
     
     public int BoxId { get; set; }
     
-    public int MasterId { get; set; }
-    
     public string MasterName { get; set; }
     
     public string MasterPhone { get; set; }

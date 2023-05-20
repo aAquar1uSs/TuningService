@@ -1,5 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
+using System.IO;
 using Npgsql;
+using TuningService.Models.ViewModels;
 using TuningService.Repository;
 using TuningService.Repository.Impl;
 using TuningService.Utilites.Settings;
@@ -23,40 +28,66 @@ public class ImportViewPresenter
 
     private void GetDataFromCsvFile(string csvFile)
     {
-        var csvData = new DataTable();
+        var dataForImports = new List<DataForImport>();
 
         if (csvFile.EndsWith(".csv"))
         {
-            using var csvReader = new Microsoft.VisualBasic.FileIO.TextFieldParser(csvFile);
-            csvReader.SetDelimiters(",");
-            csvReader.HasFieldsEnclosedInQuotes = false;
-            //read column
-            var colFields = csvReader.ReadFields();
-            foreach (string column in colFields)
+            using var reader = new StreamReader(csvFile);
+            while (!reader.EndOfStream)
             {
-                csvData.Columns.Add(new DataColumn(column));
-            }
-
-            while (!csvReader.EndOfData)
-            {
-                string[] fieldData = csvReader.ReadFields();
-                for (int i = 0; i < fieldData.Length; i++)
+                var line = reader.ReadLine().TrimEnd('"');
+                var fields = line?.Split(',');
+                var dataForImport = new DataForImport
                 {
-                    if (fieldData[i] == "")
-                    {
-                        fieldData[i] = null;
-                    }
-                }
+                    CustomerName = fields[0],
+                    CustomerSurname = fields[1],
+                    CustomerLastname = fields[2],
+                    CustomerPhone = fields[3],
+                    CarBrand = fields[4],
+                    CarModel = fields[5],
+                    BoxNumber = Convert.ToInt32(fields[6]),
+                    StartDate = Convert.ToDateTime(fields[7]),
+                    EndDate = Convert.ToDateTime(fields[8]),
+                    Description = fields[9],
+                    Price = decimal.Parse(fields[10], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture)
+                };
 
-                csvData.Rows.Add(fieldData);
+                dataForImports.Add(dataForImport);
             }
         }
 
-        _importMenuView.SetAllDataToDataGridView(csvData);
+        _importMenuView.SetAllDataToDataGridView(dataForImports);
     }
 
     private async void SaveDataFromCSVFile(DataTable dataTable)
     {
-        await _commonRepository.Insert(dataTable);
+        var dataFroImport = ExtractDataForImports(dataTable);
+        
+        await _commonRepository.Insert(dataFroImport);
+    }
+
+    private static List<DataForImport> ExtractDataForImports(DataTable dataTable)
+    {
+        List<DataForImport> dataForImports = new List<DataForImport>();
+
+        foreach (DataRow row in dataTable.Rows)
+        {
+            DataForImport dataForImport = new DataForImport();
+            dataForImport.CustomerName = row["CustomerName"].ToString();
+            dataForImport.CustomerSurname = row["CustomerSurname"].ToString();
+            dataForImport.CustomerLastname = row["CustomerLastname"].ToString();
+            dataForImport.CustomerPhone = row["CustomerPhone"].ToString();
+            dataForImport.CarBrand = row["CarBrand"].ToString();
+            dataForImport.CarModel = row["CarModel"].ToString();
+            dataForImport.BoxNumber = Convert.ToInt32(row["BoxNumber"]);
+            dataForImport.StartDate = Convert.ToDateTime(row["StartDate"]);
+            dataForImport.EndDate = Convert.ToDateTime(row["EndDate"]);
+            dataForImport.Description = row["Description"].ToString();
+            dataForImport.Price = Convert.ToDecimal(row["Price"]);
+
+            dataForImports.Add(dataForImport);
+        }
+
+        return dataForImports;
     }
 }

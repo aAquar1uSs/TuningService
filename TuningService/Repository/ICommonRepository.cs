@@ -11,6 +11,6 @@ namespace TuningService.Repository
 
         Task<IReadOnlyCollection<ComparedDataView>> SearchCustomerByValueAsync(string value);
 
-        Task Insert(DataTable dataTable);
+        Task Insert(IReadOnlyCollection<DataForImport> data);
     }
 }

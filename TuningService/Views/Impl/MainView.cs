@@ -40,14 +40,12 @@ namespace TuningService.Views.Impl
         public void SetAllDataToDataGridView(IReadOnlyCollection<ComparedDataView> comparedDataViews)
         {
             var dataTable = new DataTable();
-            dataTable.Columns.Add("Customer Id", typeof(int));
-            dataTable.Columns.Add("Customer full name", typeof(string));
-            dataTable.Columns.Add("Customer phone", typeof(string));
-            dataTable.Columns.Add("Car id", typeof(int));
-            dataTable.Columns.Add("Car", typeof(string));
-            dataTable.Columns.Add("Tuning box", typeof(int));
-            dataTable.Columns.Add("Master full name", typeof(string));
-            dataTable.Columns.Add("Master phone", typeof(string));
+            var properties = typeof(ComparedDataView).GetProperties();
+
+            foreach (var property in properties)
+            {
+                dataTable.Columns.Add(property.Name, property.PropertyType);
+            }
             
             foreach (var comparedData in comparedDataViews)
             {

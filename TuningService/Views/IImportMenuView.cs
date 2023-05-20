@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Data;
+using TuningService.Models.ViewModels;
 
 namespace TuningService.Views;
 
@@ -12,5 +14,5 @@ public interface IImportMenuView
 
     event SaveDataFromCSV SaveDataFromCSVFile;
     
-    void SetAllDataToDataGridView(DataTable dt);
+    void SetAllDataToDataGridView(IReadOnlyCollection<DataForImport> dataForImports);
 }

@@ -181,7 +181,7 @@ namespace TuningService.Views.Impl
 
         private bool ConfigureOrder()
         {
-            string pattern = "yyyy-mm-dd";
+            var pattern = "yyyy-mm-dd";
             try
             {
                 var finishData = DateTime.ParseExact(textBoxFinishDate.Text, pattern, CultureInfo.InvariantCulture);

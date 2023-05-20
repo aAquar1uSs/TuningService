@@ -74,33 +74,19 @@ namespace TuningService.Repository.Impl
             return result.ToArray();
         }
 
-        public async Task Insert(DataTable dataTable)
+        public async Task Insert(IReadOnlyCollection<DataForImport> data)
         {
-            foreach (DataRow row in dataTable.Rows)
+            if (_db.State == ConnectionState.Closed)
+                _db.Open();
+            
+            foreach (var model in data)
             {
-                var rowsArray = row.ItemArray.Select(x => x.ToString()).ToArray();
-                var name = rowsArray[0];
-                var surname = rowsArray[1];
-                var lastname = rowsArray[2];
-                var phone = rowsArray[3];
-                var car = rowsArray[4];
-                var carModel = rowsArray[5];
-                var tuningBox = rowsArray[6];
-                var startDate = DateTime.Parse(rowsArray[7]);
-                var endDate = DateTime.Parse(rowsArray[8]);
-                var description = rowsArray[9];
-                var price = Decimal.Parse(rowsArray[10]);
-
-                await _db.OpenAsync();
-                using var command = new NpgsqlCommand();
-                command.Connection = _db;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "with first_customer_insert as ( " +
+                /*command.CommandText = "with first_customer_insert as ( " +
                     "insert into customer(name,lastname,surname,phone) " + 
                     "values(@name,@lastname,@surname,@phone)" + 
                     "RETURNING customer_id ), " + 
                 "second_car_insert as ( " +
-                "insert into car(name ,model,customer_id) " +
+                "insert into car(brand ,model,customer_id) " +
                 "values " +
                 "(@car,@carModel,(select customer_id from first_customer_insert)) " +
                 "RETURNING car_id), " +
@@ -110,27 +96,45 @@ namespace TuningService.Repository.Impl
                 "RETURNING tuning_box_id), " +
                 "insert into tuning_order(start_date,end_date,description,price,is_done,tuning_box_id) " + 
                 "values " +
-                "(@startDate,@endDate,@description,@price,@isDone,(select tuning_box_id from third_tuning_box_insert));";
+                "(@startDate,@endDate,@description,@price,@isDone,(select tuning_box_id from third_tuning_box_insert));";*/
                 
-                command.Parameters.Add("@name", NpgsqlDbType.Varchar).Value = name;
-                command.Parameters.Add("@surname", NpgsqlDbType.Varchar).Value = surname;
-                command.Parameters.Add("@lastname", NpgsqlDbType.Varchar).Value = lastname;
-                command.Parameters.Add("@phone", NpgsqlDbType.Varchar).Value = phone;
-                command.Parameters.Add("@car", NpgsqlDbType.Varchar).Value = car;
-                command.Parameters.Add("@carModel", NpgsqlDbType.Varchar).Value = carModel;
-                command.Parameters.Add("@tuningBox", NpgsqlDbType.Integer).Value = int.Parse(tuningBox);
-                command.Parameters.Add("@startDate", NpgsqlDbType.Date).Value = startDate;
-                command.Parameters.Add("@endDate", NpgsqlDbType.Date).Value = endDate;
-                command.Parameters.Add("@description", NpgsqlDbType.Text).Value = description;
-                command.Parameters.Add("@price", NpgsqlDbType.Numeric).Value = price;
-                command.Parameters.Add("@IsDone", NpgsqlDbType.Boolean).Value = false;
+                string query = @"
+                    with first_customer_insert as (
+        insert into customer(name, lastname, surname, phone)
+        values (@name, @lastname, @surname, @phone)
+        returning customer_id
+    ),
+    second_car_insert as (
+        insert into car(name, model, customer_id)
+        values (@car, @carModel, (select customer_id from first_customer_insert))
+        returning car_id
+    ),
+    third_tuning_box_insert as (
+        insert into tuning_box(box_number, master_id, car_id)
+        values (@tuningBox, (select master_id from master limit 1), (select car_id from second_car_insert))
+        returning tuning_box_id
+    )
+    insert into tuning_order(start_date, end_date, description, price, is_done, tuning_box_id)
+    values (@startDate, @endDate, @description, @price, @isDone, (select tuning_box_id from third_tuning_box_insert));
+";
                 
-                var transaction = _db.BeginTransaction(IsolationLevel.ReadCommitted);
-
-                _ = await command.ExecuteNonQueryAsync();
+                var parameters = new
+                {
+                    name = model.CustomerName,
+                    lastname = model.CustomerLastname,
+                    surname = model.CustomerSurname,
+                    phone = model.CustomerPhone,
+                    brand = model.CarBrand,
+                    model = model.CarModel,
+                    tuningBox = model.BoxNumber,
+                    startDate = model.StartDate,
+                    endDate = model.EndDate,
+                    description = model.Description,
+                    price = model.Price,
+                    isDone = false
+                };
                 
-                await transaction.CommitAsync();
-                await _db.CloseAsync();
+                await _db.ExecuteAsync(query, parameters);
             }
         }
     }
