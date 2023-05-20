@@ -19,7 +19,6 @@ namespace TuningService.Views.Impl
         }
 
         public event LoadFullInformationAboutOrderDelegate LoadFullInformationOrderEvent;
-        public event EventHandler ChangeStateOrderEvent;
         public event ShowEditCarDelegate ShowEditCarEvent;
         public event ShowEditCustomerDelegate ShowEditCustomerEvent;
         public event ShowEditOrderDelegate ShowEditOrderEvent;
@@ -41,7 +40,7 @@ namespace TuningService.Views.Impl
 
         private void OrderInfoView_Load(object sender, EventArgs e)
         {
-            buttonChange.Click += ChangeStateOrderEvent;
+            
         }
 
         protected override void WndProc(ref Message m)

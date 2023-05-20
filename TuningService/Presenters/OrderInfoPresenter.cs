@@ -5,6 +5,7 @@ using Npgsql;
 using TuningService.Models;
 using TuningService.Repository;
 using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 using TuningService.Views.Impl.EditMenu;
 
@@ -17,21 +18,13 @@ public class OrderInfoPresenter
     private readonly IOrderRepository _orderRepository;
     private Order _order;
 
-    private readonly NpgsqlConnection _db;
-
-
-    public OrderInfoPresenter(IOrderInfoView orderInfoView,
-        IOrderRepository orderRepository,
-        TuningBoxRepository boxRepository,
-        NpgsqlConnection db)
+    public OrderInfoPresenter(IOrderInfoView orderInfoView)
     {
         _orderInfoView = orderInfoView;
-        _orderRepository = orderRepository;
-        _tuningBoxRepository = boxRepository;
-        _db = db;
+        _orderRepository = new OrderRepository(new NpgsqlConnection(AppConnection.ConnectionString));
+        _tuningBoxRepository = new TuningBoxRepository(new NpgsqlConnection(AppConnection.ConnectionString));
 
         _orderInfoView.LoadFullInformationOrderEvent += GetFullInformationAboutOrderEvent;
-        _orderInfoView.ChangeStateOrderEvent += ChangeStateOrderAsync;
         _orderInfoView.ShowEditCarEvent += ShowEditCarView;
         _orderInfoView.ShowEditCustomerEvent += ShowEditCustomerView;
         _orderInfoView.ShowEditOrderEvent += ShowEditOrderView;
@@ -63,21 +56,10 @@ public class OrderInfoPresenter
             }
 
             _orderInfoView.ShowInformationAboutOrder(_order);
-
-
         }
         catch (InvalidOperationException)
         {
         }
-    }
-
-    private async void ChangeStateOrderAsync(object sender, EventArgs e)
-    {
-        if (_order is null)
-            return;
-
-        await _orderRepository.ChangeStateAsync(_order);
-        _orderInfoView.ShowInformationAboutOrder(_order);
     }
 
     private void ShowEditCarView(int carId)

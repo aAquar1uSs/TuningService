@@ -238,6 +238,14 @@ namespace TuningService.Views.Impl
                 }
             }
             sw.Write(sb.ToString());
+            
+            MessageBox.Show("Data has been successfully exported",
+                "Success",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+
+            progressBar.Value = 0;
+            labelStatus.Text = "Processing...0%";
         }
 
         private void backgroundWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
@@ -245,8 +253,6 @@ namespace TuningService.Views.Impl
             progressBar.Value = e.ProgressPercentage;
             labelStatus.Text = string.Format("Processing...{0}%", e.ProgressPercentage);
             progressBar.Update();
-
-
         }
     }
 }

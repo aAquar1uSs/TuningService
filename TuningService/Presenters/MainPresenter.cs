@@ -16,14 +16,12 @@ public class MainPresenter
     private readonly IMainView _mainView;
     private readonly ICommonRepository _commonRepository;
     private readonly ICustomerRepository _customerRepository;
-    private readonly NpgsqlConnection _db;
 
     public MainPresenter(IMainView mainView)
     {
         _mainView = mainView;
         _commonRepository = new CommonRepository(new NpgsqlConnection(AppConnection.ConnectionString));
         _customerRepository = new CustomerRepository(new NpgsqlConnection(AppConnection.ConnectionString));
-        _db = new NpgsqlConnection(AppConnection.ConnectionString);
 
         _mainView.ShowOrderInfoViewEvent += ShowOrderInfoViewEvent;
         _mainView.UpdateAllDataEvent += ShowAllDataEvent;
@@ -38,11 +36,8 @@ public class MainPresenter
 
     private void ShowOrderInfoViewEvent(int index)
     {
-        var orderService = new OrderRepository(_db);
-        var tuningBoxService = new TuningBoxRepository(_db);
-
         var orderInfoView = OrderInfoView.GetInstance();
-        _ = new OrderInfoPresenter(orderInfoView, orderService, tuningBoxService, _db);
+        _ = new OrderInfoPresenter(orderInfoView);
         orderInfoView.LoadOrderAsync(index);
         orderInfoView.Show();
     }
