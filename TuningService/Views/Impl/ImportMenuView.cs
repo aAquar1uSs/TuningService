@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
@@ -12,6 +13,8 @@ public partial class ImportMenuView : Form, IImportMenuView
     public ImportMenuView()
     {
         InitializeComponent();
+
+        buttonAccept.Enabled = false;
     }
 
     public event GetDataFromCSV GetDataFromCSVFile;
@@ -82,23 +85,31 @@ public partial class ImportMenuView : Form, IImportMenuView
         base.WndProc(ref m);
     }
 
-    private void buttonSelectFile_Click(object sender, System.EventArgs e)
+    private void buttonSelectFile_Click(object sender, EventArgs e)
     {
         var dialog = new OpenFileDialog();
         dialog.ShowDialog();
         
-        if (dialog.FileName != "" && dialog.FileName.EndsWith(".csv"))
+        try
         {
-            GetDataFromCSVFile?.Invoke(dialog.FileName);
+            if (dialog.FileName != "" && dialog.FileName.EndsWith(".csv"))
+            {
+                GetDataFromCSVFile?.Invoke(dialog.FileName);
+                buttonAccept.Enabled = true;
+            }
+            else
+            {
+                MessageBox.Show("Selected File is Invalid, Please Select valid csv file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
-        else
+        catch (Exception exception)
         {
-            MessageBox.Show("Selected File is Invalid, Please Select valid csv file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show($"Failed import data due to errror.Wrong data format. Reason: {exception.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
 
-    private void buttonAccept_Click(object sender, System.EventArgs e)
+    private void buttonAccept_Click(object sender, EventArgs e)
     {
         SaveDataFromCSVFile?.Invoke((DataTable)dtgView.DataSource);
 

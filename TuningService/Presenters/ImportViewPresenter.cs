@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using CsvHelper;
 using Npgsql;
 using TuningService.Models.ViewModels;
 using TuningService.Repository;
@@ -28,35 +30,10 @@ public class ImportViewPresenter
 
     private void GetDataFromCsvFile(string csvFile)
     {
-        var dataForImports = new List<DataForImport>();
-
-        if (csvFile.EndsWith(".csv"))
-        {
-            using var reader = new StreamReader(csvFile);
-            while (!reader.EndOfStream)
-            {
-                var line = reader.ReadLine().TrimEnd('"');
-                var fields = line?.Split(',');
-                var dataForImport = new DataForImport
-                {
-                    CustomerName = fields[0],
-                    CustomerSurname = fields[1],
-                    CustomerLastname = fields[2],
-                    CustomerPhone = fields[3],
-                    CarBrand = fields[4],
-                    CarModel = fields[5],
-                    BoxNumber = Convert.ToInt32(fields[6]),
-                    StartDate = Convert.ToDateTime(fields[7]),
-                    EndDate = Convert.ToDateTime(fields[8]),
-                    Description = fields[9],
-                    Price = decimal.Parse(fields[10], NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture)
-                };
-
-                dataForImports.Add(dataForImport);
-            }
-        }
-
-        _importMenuView.SetAllDataToDataGridView(dataForImports);
+        using var reader = new StreamReader(csvFile);
+        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        var records = csv.GetRecords<DataForImport>();
+        _importMenuView.SetAllDataToDataGridView(records.ToArray());
     }
 
     private async void SaveDataFromCSVFile(DataTable dataTable)
@@ -68,22 +45,24 @@ public class ImportViewPresenter
 
     private static List<DataForImport> ExtractDataForImports(DataTable dataTable)
     {
-        List<DataForImport> dataForImports = new List<DataForImport>();
+        var dataForImports = new List<DataForImport>();
 
         foreach (DataRow row in dataTable.Rows)
         {
-            DataForImport dataForImport = new DataForImport();
-            dataForImport.CustomerName = row["CustomerName"].ToString();
-            dataForImport.CustomerSurname = row["CustomerSurname"].ToString();
-            dataForImport.CustomerLastname = row["CustomerLastname"].ToString();
-            dataForImport.CustomerPhone = row["CustomerPhone"].ToString();
-            dataForImport.CarBrand = row["CarBrand"].ToString();
-            dataForImport.CarModel = row["CarModel"].ToString();
-            dataForImport.BoxNumber = Convert.ToInt32(row["BoxNumber"]);
-            dataForImport.StartDate = Convert.ToDateTime(row["StartDate"]);
-            dataForImport.EndDate = Convert.ToDateTime(row["EndDate"]);
-            dataForImport.Description = row["Description"].ToString();
-            dataForImport.Price = Convert.ToDecimal(row["Price"]);
+            var dataForImport = new DataForImport
+            {
+                CustomerName = row["CustomerName"].ToString(),
+                CustomerSurname = row["CustomerSurname"].ToString(),
+                CustomerLastname = row["CustomerLastname"].ToString(),
+                CustomerPhone = row["CustomerPhone"].ToString(),
+                CarBrand = row["CarBrand"].ToString(),
+                CarModel = row["CarModel"].ToString(),
+                BoxNumber = Convert.ToInt32(row["BoxNumber"]),
+                StartDate = Convert.ToDateTime(row["StartDate"]),
+                EndDate = Convert.ToDateTime(row["EndDate"]),
+                Description = row["Description"].ToString(),
+                Price = Convert.ToDecimal(row["Price"])
+            };
 
             dataForImports.Add(dataForImport);
         }
