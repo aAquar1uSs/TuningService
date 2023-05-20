@@ -104,7 +104,7 @@ public partial class ImportMenuView : Form, IImportMenuView
         }
         catch (Exception exception)
         {
-            MessageBox.Show($"Failed import data due to errror.Wrong data format. Reason: {exception.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Failed to import data due to error.Wrong data format. Reason: {exception.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 

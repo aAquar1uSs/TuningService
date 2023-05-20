@@ -27,11 +27,11 @@ public class DataForProcessing
     public int BoxNumber { get; set; }
     
     [Name("StartDate")]
-    [Format("dd/MM/yyyy")]
+    [Format("dd.MM.yyyy")]
     public DateTime StartDate { get; set; }
     
     [Name("EndDate")]
-    [Format("dd/MM/yyyy")]
+    [Format("dd.MM.yyyy")]
     public DateTime EndDate { get; set; }
     
     [Name("Description")]
