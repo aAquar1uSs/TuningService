@@ -36,10 +36,10 @@ public partial class ImportMenuView : Form, IImportMenuView
         return _importMenuView;
     }
 
-    public void SetAllDataToDataGridView(IReadOnlyCollection<DataForImport> dataForImports)
+    public void SetAllDataToDataGridView(IReadOnlyCollection<DataForProcessing> dataForImports)
     {
         var dataTable = new DataTable();
-        var properties = typeof(DataForImport).GetProperties();
+        var properties = typeof(DataForProcessing).GetProperties();
 
         foreach (var property in properties)
         {

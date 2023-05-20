@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Npgsql;
+using TuningService.Models.ExportModel;
 using TuningService.Models.ViewModels;
 
 namespace TuningService.Views.Impl
@@ -14,6 +19,9 @@ namespace TuningService.Views.Impl
             get => textBoxSearch.Text;
             set => textBoxSearch.Text = value;
         }
+
+        private ExportModel _exportModel { get; set; }
+
         public MainView()
         {
             InitializeComponent();
@@ -34,7 +42,8 @@ namespace TuningService.Views.Impl
         public event EventHandler SearchEvent;
         public event EventHandler ShowNewMasterView;
         public event EventHandler ShowDeleteMasterView;
-        public event EventHandler ShowImportMenuView; 
+        public event EventHandler ShowImportMenuView;
+        public event Func<Task<IReadOnlyCollection<DataForProcessing>>> GetDataForExport; 
 
 
         public void SetAllDataToDataGridView(IReadOnlyCollection<ComparedDataView> comparedDataViews)
@@ -118,8 +127,7 @@ namespace TuningService.Views.Impl
                 if (result == DialogResult.No)
                     return;
 
-                RemoveDataFromTableEvent?.Invoke(customerId);
-                UpdateAllDataEvent?.Invoke(this, EventArgs.Empty);
+                RemoveDataFromTableEvent?.Invoke(customerId); 
             }
             catch (FormatException)
             {
@@ -184,14 +192,61 @@ namespace TuningService.Views.Impl
             }
         }
 
-        private void ExportToCSV(object sender, EventArgs e)
+        private async void ExportToCSV(object sender, EventArgs e)
         {
-            throw new System.NotImplementedException();
+            if (backgroundWorker.IsBusy)
+                return;
+
+            using var sfd = new SaveFileDialog { Filter = "CSV files (*.csv)|*.csv", ValidateNames = true };
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                _exportModel = new ExportModel
+                {
+                    Data = (await GetDataForExport?.Invoke()).ToArray(),
+                    FileName = sfd.FileName
+                };
+                
+                progressBar.Minimum = 0;
+                progressBar.Value = 0;
+                backgroundWorker.RunWorkerAsync(_exportModel);
+            }
+
         }
 
         private void ImportFromCSV(object sender, EventArgs e)
         {
             ShowImportMenuView?.Invoke(this, e);
+        }
+
+        private void backgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            var list = ((ExportModel)e.Argument).Data;
+            var fileName = ((ExportModel)e.Argument).FileName;
+            var index = 1;
+            var process = list.Length;
+            using var sw = new StreamWriter(new FileStream(fileName, FileMode.Create), Encoding.UTF8);
+            var sb = new StringBuilder();
+            sb.AppendLine("CustomerName, CustomerSurname, CustomerLastname, CustomerPhone, CarBrand, CarModel, BoxNumber, StartDate, EndDate, Description, Price");
+                
+            foreach (DataForProcessing p in list)
+            {
+                if (!backgroundWorker.CancellationPending)
+                {
+                    backgroundWorker.ReportProgress(index++ * 100 / process);
+                    sb.AppendLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", p.CustomerName, p.CustomerSurname, p.CustomerLastname, p.CustomerPhone,
+                        p.CarBrand, p.CarModel, p.BoxNumber, p.StartDate, p.EndDate, p.Description, p.Price));
+                }
+            }
+            sw.Write(sb.ToString());
+        }
+
+        private void backgroundWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            progressBar.Value = e.ProgressPercentage;
+            labelStatus.Text = string.Format("Processing...{0}%", e.ProgressPercentage);
+            progressBar.Update();
+
+
         }
     }
 }

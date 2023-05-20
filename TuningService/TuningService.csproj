@@ -111,11 +111,12 @@
     <Compile Include="Factories\OrderFactory.cs" />
     <Compile Include="Models\Car.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\ExportModel\ExportModel.cs" />
     <Compile Include="Models\Master.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\TuningBox.cs" />
     <Compile Include="Models\ViewModels\ComparedDataView.cs" />
-    <Compile Include="Models\ViewModels\DataForImport.cs" />
+    <Compile Include="Models\ViewModels\DataForProcessing.cs" />
     <Compile Include="Models\ViewModels\MasterViewModel.cs" />
     <Compile Include="Presenters\DeleteMasterViewPresenter.cs" />
     <Compile Include="Presenters\EditCarViewPresenter.cs" />

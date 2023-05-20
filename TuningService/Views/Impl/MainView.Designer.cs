@@ -43,6 +43,9 @@
             this.buttonDeleteMaster = new System.Windows.Forms.Button();
             this.button_export = new System.Windows.Forms.Button();
             this.button_import = new System.Windows.Forms.Button();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.labelStatus = new System.Windows.Forms.Label();
+            this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -141,7 +144,7 @@
             // 
             this.textBoxSearch.Location = new System.Drawing.Point(201, 105);
             this.textBoxSearch.Name = "textBoxSearch";
-            this.textBoxSearch.Size = new System.Drawing.Size(549, 23);
+            this.textBoxSearch.Size = new System.Drawing.Size(549, 20);
             this.textBoxSearch.TabIndex = 7;
             // 
             // groupBox2
@@ -186,12 +189,38 @@
             this.button_import.UseVisualStyleBackColor = true;
             this.button_import.Click += new System.EventHandler(this.ImportFromCSV);
             // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(128, 696);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(709, 23);
+            this.progressBar.TabIndex = 11;
+            // 
+            // labelStatus
+            // 
+            this.labelStatus.AutoSize = true;
+            this.labelStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelStatus.Location = new System.Drawing.Point(416, 722);
+            this.labelStatus.Name = "labelStatus";
+            this.labelStatus.Size = new System.Drawing.Size(122, 20);
+            this.labelStatus.TabIndex = 12;
+            this.labelStatus.Text = "Processing...0%";
+            // 
+            // backgroundWorker
+            // 
+            this.backgroundWorker.WorkerReportsProgress = true;
+            this.backgroundWorker.WorkerSupportsCancellation = true;
+            this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
+            this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
+            // 
             // MainView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(882, 753);
+            this.ClientSize = new System.Drawing.Size(884, 761);
+            this.Controls.Add(this.labelStatus);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.button_import);
             this.Controls.Add(this.button_export);
             this.Controls.Add(this.groupBox2);
@@ -211,6 +240,7 @@
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         private System.Windows.Forms.Button button_import;
@@ -232,5 +262,8 @@
         private System.Windows.Forms.Button buttonAddMaster;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button buttonDeleteMaster;
+        private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.Label labelStatus;
+        private System.ComponentModel.BackgroundWorker backgroundWorker;
     }
 }

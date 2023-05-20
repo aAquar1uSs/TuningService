@@ -14,5 +14,5 @@ public interface IImportMenuView
 
     event SaveDataFromCSV SaveDataFromCSVFile;
     
-    void SetAllDataToDataGridView(IReadOnlyCollection<DataForImport> dataForImports);
+    void SetAllDataToDataGridView(IReadOnlyCollection<DataForProcessing> dataForImports);
 }

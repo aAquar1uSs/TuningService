@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Npgsql;
-using NpgsqlTypes;
 using TuningService.Models.ViewModels;
 
 namespace TuningService.Repository.Impl
@@ -74,7 +73,7 @@ namespace TuningService.Repository.Impl
             return result.ToArray();
         }
 
-        public async Task Insert(IReadOnlyCollection<DataForImport> data)
+        public async Task Insert(IReadOnlyCollection<DataForProcessing> data)
         {
             if (_db.State == ConnectionState.Closed)
                 _db.Open();
@@ -118,6 +117,27 @@ namespace TuningService.Repository.Impl
                 
                 await _db.ExecuteAsync(query, parameters);
             }
+        }
+
+        public async Task<IReadOnlyCollection<DataForProcessing>> GetAllDataForProcessing()
+        {
+            if (_db.State == ConnectionState.Closed)
+                _db.Open();
+
+            var sqlQuery =
+                @"SELECT customer.customer_id AS CustomerId, customer.surname AS CustomerSurname, customer.name AS CustomerName, customer.lastname AS CustomerLastname, customer.phone AS CustomerPhone,
+        car.car_id AS CarId, car.brand AS CarBrand, car.model AS CarModel,
+        tuning_box.box_id AS BoxId, tuning_box.box_number AS BoxNumber,
+        tuning_order.order_id AS OrderId, tuning_order.start_date AS StartDate, tuning_order.end_date AS EndDate,
+        tuning_order.description AS Description, tuning_order.price AS Price
+        FROM customer
+        JOIN car ON customer.customer_id = car.customer_id
+        JOIN tuning_box ON car.car_id = tuning_box.car_id
+        JOIN tuning_order ON tuning_order.tuning_box_id = tuning_box.box_id;";
+            
+            var result = await _db.QueryAsync<DataForProcessing>(sqlQuery, commandType: CommandType.Text);
+
+            return result.ToArray();
         }
     }
 }

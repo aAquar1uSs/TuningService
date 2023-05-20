@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Npgsql;
+using TuningService.Models.ViewModels;
 using TuningService.Repository;
 using TuningService.Repository.Impl;
 using TuningService.Utilites.Settings;
@@ -29,7 +32,8 @@ public class MainPresenter
         _mainView.ShowNewOrderViewEvent += ShowNewOrderViewEvent;
         _mainView.ShowNewMasterView += ShowNewMasterViewEvent;
         _mainView.ShowDeleteMasterView += ShowDeleteMasterViewEvent;
-        _mainView.ShowImportMenuView += ShowImportMenuView; 
+        _mainView.ShowImportMenuView += ShowImportMenuView;
+        _mainView.GetDataForExport += GetDataForExport;
     }
 
     private void ShowOrderInfoViewEvent(int index)
@@ -91,5 +95,12 @@ public class MainPresenter
         _ = new ImportViewPresenter(importMenuView);
         
         importMenuView.ShowDialog();
+    }
+
+    private async Task<IReadOnlyCollection<DataForProcessing>> GetDataForExport()
+    {
+        var results = await _commonRepository.GetAllDataForProcessing();
+
+        return results;
     }
 }

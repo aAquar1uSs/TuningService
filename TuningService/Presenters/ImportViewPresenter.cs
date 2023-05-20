@@ -32,7 +32,7 @@ public class ImportViewPresenter
     {
         using var reader = new StreamReader(csvFile);
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-        var records = csv.GetRecords<DataForImport>();
+        var records = csv.GetRecords<DataForProcessing>();
         _importMenuView.SetAllDataToDataGridView(records.ToArray());
     }
 
@@ -43,13 +43,13 @@ public class ImportViewPresenter
         await _commonRepository.Insert(dataFroImport);
     }
 
-    private static List<DataForImport> ExtractDataForImports(DataTable dataTable)
+    private static List<DataForProcessing> ExtractDataForImports(DataTable dataTable)
     {
-        var dataForImports = new List<DataForImport>();
+        var dataForImports = new List<DataForProcessing>();
 
         foreach (DataRow row in dataTable.Rows)
         {
-            var dataForImport = new DataForImport
+            var dataForImport = new DataForProcessing
             {
                 CustomerName = row["CustomerName"].ToString(),
                 CustomerSurname = row["CustomerSurname"].ToString(),

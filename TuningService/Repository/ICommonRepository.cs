@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.Threading.Tasks;
 using TuningService.Models.ViewModels;
 
@@ -11,6 +10,8 @@ namespace TuningService.Repository
 
         Task<IReadOnlyCollection<ComparedDataView>> SearchCustomerByValueAsync(string value);
 
-        Task Insert(IReadOnlyCollection<DataForImport> data);
+        Task Insert(IReadOnlyCollection<DataForProcessing> data);
+
+        Task<IReadOnlyCollection<DataForProcessing>> GetAllDataForProcessing();
     }
 }
