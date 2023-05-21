@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Data.SqlClient;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Npgsql;
 using TuningService.Factories;
 using TuningService.Models;
+using TuningService.Models.ViewModels;
 
 namespace TuningService.Views.Impl
 {
@@ -20,20 +25,13 @@ namespace TuningService.Views.Impl
         private TuningBox _tuningBox;
         private int _boxId;
 
-        private bool _isBoxNumberExist;
-
         private NewOrderView()
         {
             InitializeComponent();
         }
 
         public event EventHandler UpdateListOfMasters;
-        public event AddNewCarDelegate AddNewCarEvent;
-        public event AddNewCustomerDelegate AddNewCustomerEvent;
         public event AddNewOrderDelegate AddNewOrderEvent;
-        public event UploadMasterDelegate UploadMasterEvent;
-        public event CreateTuningBoxDelegate CreateTuningBoxEvent;
-        public event VerifyBoxNumberDelegate VerifyBoxNumberEvent;
 
         public static NewOrderView GetInstance()
         {
@@ -50,12 +48,27 @@ namespace TuningService.Views.Impl
 
             return _newOrderView;
         }
-
-        public void SetDataAboutMasters(DataTable dt)
+        
+        protected override void WndProc(ref Message m)
         {
-            if (dt.Columns.Count == 0)
+            const int WM_CLOSE = 0x0010;
+
+            if (m.Msg == WM_CLOSE)
+            {
+                Dispose();
                 return;
-            comboBoxMasters.DataSource = dt;
+            }
+
+            base.WndProc(ref m);
+        }
+        
+        public void SetDataAboutMasters(IEnumerable<MasterViewModel> masterViewModels)
+        {
+            if (!masterViewModels.Any())
+                return;
+
+            comboBoxMasters.Items.AddRange(masterViewModels.Select(x => x.MasterInfo).ToArray());
+            
             comboBoxMasters.DisplayMember = "concat";
             comboBoxMasters.ValueMember = "concat";
         }
@@ -67,7 +80,6 @@ namespace TuningService.Views.Impl
 
         private bool ConfigureCustomer()
         {
-            //Customer
             var customerName = textBoxCustomerName.Text;
             var customerSurname = textBoxCustomerSurname.Text;
             var customerLastname = textBoxCustomerLastname.Text;
@@ -95,11 +107,8 @@ namespace TuningService.Views.Impl
             var carName = textBoxCarName.Text;
             var carModel = textBoxCarModel.Text;
 
-            try
-            {
-                _car = CarFactory.GetCarInstance(carName, carModel, _customer);
-            }
-            catch (ValidationException)
+            var carResult = CarFactory.GetCarInstance(carName, carModel, _customer);
+            if (carResult.IsFailure)
             {
                 MessageBox.Show("Incorrect data entered!",
                     "Error",
@@ -108,6 +117,9 @@ namespace TuningService.Views.Impl
 
                 return false;
             }
+
+            _car = carResult.Value;
+
             return true;
         }
 
@@ -169,7 +181,7 @@ namespace TuningService.Views.Impl
 
         private bool ConfigureOrder()
         {
-            string pattern = "yyyy-mm-dd";
+            var pattern = "yyyy-mm-dd";
             try
             {
                 var finishData = DateTime.ParseExact(textBoxFinishDate.Text, pattern, CultureInfo.InvariantCulture);
@@ -198,37 +210,10 @@ namespace TuningService.Views.Impl
 
             return true;
         }
-
-        private async Task VerifyBoxNumberAsync()
-        {
-            try
-            {
-                _boxId = Convert.ToInt32(textBoxBoxNumber.Text);
-            }
-            catch (FormatException)
-            {
-                MessageBox.Show("Please enter the box number!",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-                return;
-            }
-            _isBoxNumberExist = await VerifyBoxNumberEvent?.Invoke(_boxId);
-        }
+        
 
         private async void buttonAddOrder_Click(object sender, EventArgs e)
         {
-            await VerifyBoxNumberAsync();
-
-            if (_isBoxNumberExist)
-            {
-                MessageBox.Show("Box has already taken!",
-                    "Warning",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                return;
-            }
-
             if (!ConfigureCustomer() 
                 || !ConfigureCar()
                 || !ConfigureMaster()
@@ -237,15 +222,8 @@ namespace TuningService.Views.Impl
             {
                 return;
             }
-            _customer.Id = await AddNewCustomerEvent?.Invoke(_customer);
 
-            _car.Id = await AddNewCarEvent?.Invoke(_car);
-
-            _master.Id = await UploadMasterEvent?.Invoke(_master);
-
-            _tuningBox.Id = await CreateTuningBoxEvent?.Invoke(_tuningBox, _car.Id);
-
-            await AddNewOrderEvent?.Invoke(_order);
+            await AddNewOrderEvent?.Invoke(_car, _master, _customer, _tuningBox,_order);
 
             var result = MessageBox.Show("New order successfully added!",
                 "Information",

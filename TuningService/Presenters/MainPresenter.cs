@@ -1,7 +1,11 @@
 using System;
-using System.Windows.Forms;
-using TuningService.Services;
-using TuningService.Services.Impl;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Npgsql;
+using TuningService.Models.ViewModels;
+using TuningService.Repository;
+using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 using TuningService.Views.Impl;
 
@@ -10,39 +14,30 @@ namespace TuningService.Presenters;
 public class MainPresenter
 {
     private readonly IMainView _mainView;
+    private readonly ICommonRepository _commonRepository;
+    private readonly ICustomerRepository _customerRepository;
 
-    private readonly IDbService _dbService;
-
-    private readonly ICustomerService _customerService;
-
-    private readonly string _connectionString;
-
-    public MainPresenter(IMainView mainView, string sqlConnection,
-        IDbService dbService, ICustomerService customerService)
+    public MainPresenter(IMainView mainView)
     {
         _mainView = mainView;
-        _dbService = dbService;
-        _customerService = customerService;
-        _connectionString = sqlConnection;
+        _commonRepository = new CommonRepository(new NpgsqlConnection(AppConnection.ConnectionString));
+        _customerRepository = new CustomerRepository(new NpgsqlConnection(AppConnection.ConnectionString));
 
         _mainView.ShowOrderInfoViewEvent += ShowOrderInfoViewEvent;
         _mainView.UpdateAllDataEvent += ShowAllDataEvent;
-        _mainView.RemoveDataFromTableEvent += RemoveData;
+        _mainView.RemoveDataFromTableEvent += RemoveCustomer;
         _mainView.SearchEvent += SearchCustomer;
         _mainView.ShowNewOrderViewEvent += ShowNewOrderViewEvent;
         _mainView.ShowNewMasterView += ShowNewMasterViewEvent;
         _mainView.ShowDeleteMasterView += ShowDeleteMasterViewEvent;
+        _mainView.ShowImportMenuView += ShowImportMenuView;
+        _mainView.GetDataForExport += GetDataForExport;
     }
 
     private void ShowOrderInfoViewEvent(int index)
     {
-        var orderService = new OrderService(_connectionString);
-
-        var tuningBoxService = new TuningBoxService(_connectionString);
-
         var orderInfoView = OrderInfoView.GetInstance();
-        _ = new OrderInfoPresenter(orderInfoView, orderService,
-            tuningBoxService,_connectionString);
+        _ = new OrderInfoPresenter(orderInfoView);
         orderInfoView.LoadOrderAsync(index);
         orderInfoView.Show();
     }
@@ -50,14 +45,7 @@ public class MainPresenter
     private void ShowNewOrderViewEvent(object sender, EventArgs e)
     {
         var newOrderView = NewOrderView.GetInstance();
-
-        var orderService = new OrderService(_connectionString);
-        var masterService = new MasterService(_connectionString);
-        var carService = new CarService(_connectionString);
-        var tuningBoxService = new TuningBoxService(_connectionString);
-
-        _ = new NewOrderViewPresenter(newOrderView,carService,
-            _customerService, masterService, orderService, tuningBoxService);
+        _ = new NewOrderViewPresenter(newOrderView);
 
         newOrderView.ShowDialog();
     }
@@ -65,8 +53,7 @@ public class MainPresenter
     private void ShowNewMasterViewEvent(object sender, EventArgs e)
     {
         var newMasterView = NewMasterView.GetInstance();
-        var masterService = new MasterService(_connectionString);
-        _ = new NewMasterViewPresenter(newMasterView, masterService);
+        _ = new NewMasterViewPresenter(newMasterView);
 
         newMasterView.ShowDialog();
     }
@@ -74,32 +61,41 @@ public class MainPresenter
     private void ShowDeleteMasterViewEvent(object sender, EventArgs e)
     {
         var deleteMasterView = DeleteMasterView.GetInstance();
-        var masterService = new MasterService(_connectionString);
-        var tuningBoxService = new TuningBoxService(_connectionString);
-        _ = new DeleteMasterViewPresenter(deleteMasterView, tuningBoxService, masterService);
+        _ = new DeleteMasterViewPresenter(deleteMasterView);
 
         deleteMasterView.ShowDialog();
     }
 
     private async void ShowAllDataEvent(object sender, EventArgs e)
     {
-        _mainView.SetAllDataToDataGridView(await _dbService.ShowAllDataAsync());
+        var compareData = await _commonRepository.ShowAllDataAsync();
+        
+        _mainView.SetAllDataToDataGridView(compareData);
     }
 
-    private async void RemoveData(int index)
+    private async void RemoveCustomer(int index)
     {
-        if (!await _customerService.DeleteCustomerByIdAsync(index))
-        {
-            MessageBox.Show("An unexpected error has occurred!",
-                "Error",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
-        }
+        await _customerRepository.DeleteAsync(index);
     }
 
     private async void SearchCustomer(object sender, EventArgs e)
     {
-        var dt = await _customerService.SearchCustomerByValueAsync(_mainView.SearchValue);
-        _mainView.SetAllDataToDataGridView(dt);
+        var comparedDataViews = await _commonRepository.SearchCustomerByValueAsync(_mainView.SearchValue);
+        _mainView.SetAllDataToDataGridView(comparedDataViews);
+    }
+
+    private void ShowImportMenuView(object sender, EventArgs e)
+    {
+        var importMenuView = ImportMenuView.GetInstance();
+        _ = new ImportViewPresenter(importMenuView);
+        
+        importMenuView.ShowDialog();
+    }
+
+    private async Task<IReadOnlyCollection<DataForProcessing>> GetDataForExport()
+    {
+        var results = await _commonRepository.GetAllDataForProcessing();
+
+        return results;
     }
 }

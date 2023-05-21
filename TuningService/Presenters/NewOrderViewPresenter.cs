@@ -1,8 +1,11 @@
 using System;
+using System.Data;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using Npgsql;
 using TuningService.Models;
-using TuningService.Services;
+using TuningService.Repository;
+using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 
 namespace TuningService.Presenters;
@@ -10,86 +13,51 @@ namespace TuningService.Presenters;
 public class NewOrderViewPresenter
 {
     private readonly INewOrderView _newOrder;
-
-    private readonly ICustomerService _customerService;
-
-    private readonly IOrderService _orderService;
-
-    private readonly IMasterService _masterService;
-
-    private readonly ICarService _carService;
-
-    private readonly ITuningBoxService _tuningBoxService;
-
-
-    public NewOrderViewPresenter(
-        INewOrderView orderView,
-        ICarService carService,
-        ICustomerService customerService,
-        IMasterService masterService,
-        IOrderService orderService,
-        ITuningBoxService tuningBoxService)
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IOrderRepository _orderRepository;
+    private readonly IMasterRepository _masterRepository;
+    private readonly ICarRepository _carRepository;
+    private readonly ITuningBoxRepository _tuningBoxRepository;
+    private readonly NpgsqlConnection _db;
+    
+    public NewOrderViewPresenter(INewOrderView orderView)
     {
+        _db = new NpgsqlConnection(AppConnection.ConnectionString);
         _newOrder = orderView;
-        _customerService = customerService;
-        _masterService = masterService;
-        _orderService = orderService;
-        _carService = carService;
-        _tuningBoxService = tuningBoxService;
+        _customerRepository = new CustomerRepository(_db);
+        _masterRepository = new MasterRepository(_db);
+        _orderRepository = new OrderRepository(_db);
+        _carRepository = new CarRepository(_db);
+        _tuningBoxRepository = new TuningBoxRepository(_db);
 
         _newOrder.UpdateListOfMasters += UpdateMastersAsync;
-        _newOrder.AddNewCustomerEvent += AddCustomerAsync;
-        _newOrder.AddNewCarEvent += AddCarAsync;
-        _newOrder.UploadMasterEvent += UploadMasterAsync;
         _newOrder.AddNewOrderEvent += AddOrderAsync;
-        _newOrder.CreateTuningBoxEvent += CreateTuningBoxAsync;
-        _newOrder.VerifyBoxNumberEvent += VerifyTuningBoxNumberAsync;
     }
 
     private async void UpdateMastersAsync(object sender, EventArgs e)
     {
-        var dt = await _masterService.GetAllMastersAsync();
-        _newOrder.SetDataAboutMasters(dt);
+        var masterViewModels = await _masterRepository.GetAllAsync();
+        _newOrder.SetDataAboutMasters(masterViewModels);
     }
-
-    private async Task<int> AddCustomerAsync(Customer customer)
+    
+    private async Task AddOrderAsync(Car car, Master master, Customer customer, TuningBox tuningBox, Order order)
     {
-        await _customerService.InsertNewCustomerAsync(customer);
-        return await _customerService.GetCustomerIdByFullInformationAsync(customer);
-    }
+        await using var transaction = _db.BeginTransaction(IsolationLevel.ReadCommitted);
 
-    private async Task<int> AddCarAsync(Car car)
-    {
-        await _carService.InsertNewCarAsync(car);
-        return await _carService.GetCarIdByFullInformationAsync(car);
-    }
+        var customerId = await _customerRepository.InsertAsync(customer);
 
-    private async Task<int> UploadMasterAsync(Master master)
-    {
-         return await _masterService.GetMasterIdByFullInformation(master);
-    }
+        car.Owner.CustomerId = customerId;
+        var carId = await _carRepository.InsertAsync(car);
 
-    private async Task<bool> VerifyTuningBoxNumberAsync(int boxId)
-    {
-        return await _tuningBoxService.VerifyBoxNumberAsync(boxId);
-    }
+        var masterId = await _masterRepository.GetMasterIdAsync(master);
+        
+        tuningBox.Car.CarId = carId;
+        tuningBox.Master.MasterId = masterId;
+        var boxId = await _tuningBoxRepository.InsertAsync(tuningBox);
 
-    private async Task<int> CreateTuningBoxAsync(TuningBox tuningBox, int carId)
-    {
-        if (!await _tuningBoxService.InsertNewTuningBoxAsync(tuningBox))
-        {
-            MessageBox.Show("This room already taken.",
-                "Warning",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
-            return 0;
-        }
-
-        return await _tuningBoxService.GetTuningBoxIdByCarIdAsync(carId);
-    }
-
-    private async Task AddOrderAsync(Order order)
-    {
-        await _orderService.InsertNewOrderAsync(order);
+        order.TuningBox.BoxId = boxId;
+        await _orderRepository.InsertAsync(order);
+        
+        await transaction.CommitAsync();
     }
 }

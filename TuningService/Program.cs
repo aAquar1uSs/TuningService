@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Configuration;
 using System.Windows.Forms;
+using Dapper;
+using Npgsql;
+using Npgsql.Internal.TypeHandlers.DateTimeHandlers;
 using TuningService.Presenters;
-using TuningService.Services.Impl;
+using TuningService.Repository.Impl;
 using TuningService.Views.Impl;
 
 namespace TuningService
@@ -14,16 +17,14 @@ namespace TuningService
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
+            
             var sqlConnectionString = ConfigurationManager
                 .ConnectionStrings["ConnectionString"].ConnectionString;
-
-            var dbService = new DbService(sqlConnectionString);
-            var customerService = new CustomerService(sqlConnectionString);
+            
             var view = new MainView();
 
-            _ = new MainPresenter(view, sqlConnectionString, dbService, customerService);
-            Application.Run((Form) view);
+            _ = new MainPresenter(view);
+            Application.Run(view);
         }
     }
 }

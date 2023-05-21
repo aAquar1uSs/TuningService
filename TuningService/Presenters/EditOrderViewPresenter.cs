@@ -1,7 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Forms;
+using Npgsql;
 using TuningService.Models;
-using TuningService.Services;
+using TuningService.Repository;
+using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 
 namespace TuningService.Presenters
@@ -9,14 +12,12 @@ namespace TuningService.Presenters
     public class EditOrderViewPresenter
     {
         private readonly IEditOrderView _editOrderView;
+        private readonly IOrderRepository _orderRepository;
 
-        private readonly IOrderService _orderService;
-
-        public EditOrderViewPresenter(IEditOrderView editOrderView,
-            IOrderService orderService)
+        public EditOrderViewPresenter(IEditOrderView editOrderView)
         {
             _editOrderView = editOrderView;
-            _orderService = orderService;
+            _orderRepository = new OrderRepository(new NpgsqlConnection(AppConnection.ConnectionString));
 
             _editOrderView.GetOrderDataEvent += GetOrderDataAsync;
             _editOrderView.UpdateOrderDataEvent += UpdateOrderDataAsync;
@@ -24,19 +25,13 @@ namespace TuningService.Presenters
 
         private async Task GetOrderDataAsync(int orderId)
         {
-            var order = await _orderService.GetOrderByIdAsync(orderId);
+            var order = await _orderRepository.GetAsync(orderId);
             _editOrderView.ShowInformation(order);
         }
 
         private async Task UpdateOrderDataAsync(Order order)
         {
-            if (!await _orderService.UpdateOrderDataByFullInfo(order))
-            {
-                MessageBox.Show("An unexpected error has occurred!",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
+            await _orderRepository.UpdateAsync(order);
         }
     }
 }

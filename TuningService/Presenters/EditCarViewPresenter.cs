@@ -1,7 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Forms;
+using Npgsql;
 using TuningService.Models;
-using TuningService.Services;
+using TuningService.Repository;
+using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 
 namespace TuningService.Presenters
@@ -9,14 +12,12 @@ namespace TuningService.Presenters
     public class EditCarViewPresenter
     {
         private readonly IEditCarView _editCarView;
+        private readonly ICarRepository _carRepository;
 
-        private readonly ICarService _carService;
-
-        public EditCarViewPresenter(IEditCarView editCarView,
-            ICarService carService)
+        public EditCarViewPresenter(IEditCarView editCarView)
         {
             _editCarView = editCarView;
-            _carService = carService;
+            _carRepository = new CarRepository(new NpgsqlConnection(AppConnection.ConnectionString));
 
             _editCarView.GetCarDataEvent += UploadCarData;
             _editCarView.UpdateCarDataEvent += UpdateOldCarData;
@@ -24,19 +25,13 @@ namespace TuningService.Presenters
 
         private async Task UploadCarData(int carId)
         {
-            var car = await _carService.GetCarByIdAsync(carId);
+            var car = await _carRepository.GetAsync(carId);
             _editCarView.ShowOldData(car);
         }
 
         private async Task UpdateOldCarData(Car car)
         {
-            if (!await _carService.UpdateCarDataAsync(car))
-            {
-                MessageBox.Show("An unexpected error has occurred!",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
+            await _carRepository.UpdateAsync(car);
         }
 
     }

@@ -5,7 +5,8 @@ namespace TuningService.Models;
 
 public sealed class Master
 {
-    public int Id { get; set; }
+    [Key]
+    public int MasterId { get; set; }
 
     [Required]
     [StringLength(30, MinimumLength = 1, ErrorMessage = "Master name must be between 2 and 30 characters")]
@@ -18,12 +19,4 @@ public sealed class Master
     [Required]
     [RegularExpression("^(?!0+$)(\\+\\d{1,3}[- ]?)?(?!0+$)\\d{9}$")]
     public string Phone { get; set; }
-
-    public Master( string name,
-        string surname, string phone)
-    {
-        Name = name;
-        Surname = surname;
-        Phone = phone;
-    }
 }

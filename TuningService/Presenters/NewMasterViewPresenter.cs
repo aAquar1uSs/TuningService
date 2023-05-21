@@ -1,32 +1,27 @@
 ﻿using System.Threading.Tasks;
-using System.Windows.Forms;
+using Npgsql;
 using TuningService.Models;
-using TuningService.Services;
+using TuningService.Repository;
+using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 
 namespace TuningService.Presenters
 {
     public class NewMasterViewPresenter
     {
-        private readonly IMasterService _masterService;
+        private readonly IMasterRepository _masterRepository;
 
-        public NewMasterViewPresenter(INewMasterView masterView,
-            IMasterService masterService)
+        public NewMasterViewPresenter(INewMasterView masterView)
         {
-            _masterService = masterService;
+            _masterRepository = new MasterRepository(new NpgsqlConnection(AppConnection.ConnectionString));
 
             masterView.AddNewMasterEvent += AddNewMasterEvent;
         }
 
         private async Task AddNewMasterEvent(Master master)
         {
-            if (!await _masterService.InsertNewMasterAsync(master))
-            {
-                MessageBox.Show("An unexpected error has occurred!",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
+            await _masterRepository.InsertAsync(master);
         }
     }
 }

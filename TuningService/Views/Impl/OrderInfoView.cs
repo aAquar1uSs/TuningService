@@ -19,7 +19,6 @@ namespace TuningService.Views.Impl
         }
 
         public event LoadFullInformationAboutOrderDelegate LoadFullInformationOrderEvent;
-        public event EventHandler ChangeStateOrderEvent;
         public event ShowEditCarDelegate ShowEditCarEvent;
         public event ShowEditCustomerDelegate ShowEditCustomerEvent;
         public event ShowEditOrderDelegate ShowEditOrderEvent;
@@ -41,9 +40,22 @@ namespace TuningService.Views.Impl
 
         private void OrderInfoView_Load(object sender, EventArgs e)
         {
-            buttonChange.Click += ChangeStateOrderEvent;
+            
         }
 
+        protected override void WndProc(ref Message m)
+        {
+            const int WM_CLOSE = 0x0010;
+
+            if (m.Msg == WM_CLOSE)
+            {
+                Dispose();
+                return;
+            }
+
+            base.WndProc(ref m);
+        }
+        
         public void LoadOrderAsync(int tuningBoxId)
         {
             _tuningBoxId = tuningBoxId;
@@ -73,7 +85,7 @@ namespace TuningService.Views.Impl
             }
 
             //Information about order
-            labelOrderId.Text = order.Id.ToString();
+            labelOrderId.Text = order.OrderId.ToString();
             labelStartDate.Text = order.StartDate.ToString(CultureInfo.InvariantCulture);
             labelEndDate.Text = order.EndDate.ToString(CultureInfo.InvariantCulture);
             orderDescription.Text = order.Description;
@@ -83,21 +95,21 @@ namespace TuningService.Views.Impl
             checkBoxInWork.AutoCheck = false;
 
             //Information about master
-            labelMasterName.Text = order.TuningBox.MasterInfo.Name;
-            labelMasterSurname.Text = order.TuningBox.MasterInfo.Surname;
-            labelMasterPhone.Text = order.TuningBox.MasterInfo.Phone;
+            labelMasterName.Text = order.TuningBox.Master.Name;
+            labelMasterSurname.Text = order.TuningBox.Master.Surname;
+            labelMasterPhone.Text = order.TuningBox.Master.Phone;
 
             //Information about car
-            labelCarId.Text = order.TuningBox.CarInfo.Id.ToString();
-            lableCarName.Text = order.TuningBox.CarInfo.Name;
-            labelCarModel.Text = order.TuningBox.CarInfo.Model;
+            labelCarId.Text = order.TuningBox.Car.CarId.ToString();
+            lableCarName.Text = order.TuningBox.Car.Brand;
+            labelCarModel.Text = order.TuningBox.Car.Model;
 
             //Information about customer
-            labelCustomerId.Text = order.TuningBox.CarInfo.Owner.Id.ToString();
-            labelCustomerName.Text = order.TuningBox.CarInfo.Owner.Name;
-            labelCustomerSurname.Text = order.TuningBox.CarInfo.Owner.Surname;
-            labelCustomerLastname.Text = order.TuningBox.CarInfo.Owner.Lastname;
-            labelCustomerPhone.Text = order.TuningBox.CarInfo.Owner.Phone;
+            labelCustomerId.Text = order.TuningBox.Car.Owner.CustomerId.ToString();
+            labelCustomerName.Text = order.TuningBox.Car.Owner.Name;
+            labelCustomerSurname.Text = order.TuningBox.Car.Owner.Surname;
+            labelCustomerLastname.Text = order.TuningBox.Car.Owner.Lastname;
+            labelCustomerPhone.Text = order.TuningBox.Car.Owner.Phone;
         }
 
         private async void buttonEditCar_Click(object sender, EventArgs e)

@@ -21,7 +21,7 @@ namespace TuningService.Views.Impl.EditMenu
         public event GetOrderDataDelegate GetOrderDataEvent;
         public event UpdateOrderDataDelegate UpdateOrderDataEvent;
 
-        public async void GetOldOrderData(int orderId)
+        public async void GetOrderData(int orderId)
         {
             _orderId = orderId;
             await GetOrderDataEvent?.Invoke(orderId)!;
@@ -53,7 +53,7 @@ namespace TuningService.Views.Impl.EditMenu
                 var desc = orderDescription.Text;
 
                 _order = OrderFactory.GetOrderInstance(finishData, price, inWork, desc);
-                _order.Id = _orderId;
+                _order.OrderId = _orderId;
             }
             catch (ValidationException)
             {

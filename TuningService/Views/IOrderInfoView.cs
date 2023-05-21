@@ -14,8 +14,6 @@ public interface IOrderInfoView
 {
     event LoadFullInformationAboutOrderDelegate LoadFullInformationOrderEvent;
 
-    event EventHandler ChangeStateOrderEvent;
-
     event ShowEditCarDelegate ShowEditCarEvent;
 
     event ShowEditCustomerDelegate ShowEditCustomerEvent;

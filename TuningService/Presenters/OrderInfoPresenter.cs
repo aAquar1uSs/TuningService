@@ -1,9 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Npgsql;
 using TuningService.Models;
-using TuningService.Services;
-using TuningService.Services.Impl;
+using TuningService.Repository;
+using TuningService.Repository.Impl;
+using TuningService.Utilites.Settings;
 using TuningService.Views;
 using TuningService.Views.Impl.EditMenu;
 
@@ -12,27 +14,17 @@ namespace TuningService.Presenters;
 public class OrderInfoPresenter
 {
     private readonly IOrderInfoView _orderInfoView;
-
-    private readonly TuningBoxService _tuningBoxService;
-
-    private readonly IOrderService _orderService;
-
+    private readonly TuningBoxRepository _tuningBoxRepository;
+    private readonly IOrderRepository _orderRepository;
     private Order _order;
 
-    private readonly string _connectionString;
-
-    public OrderInfoPresenter(IOrderInfoView orderInfoView,
-        IOrderService orderService,
-        TuningBoxService boxService,
-        string connectionString)
+    public OrderInfoPresenter(IOrderInfoView orderInfoView)
     {
         _orderInfoView = orderInfoView;
-        _orderService = orderService;
-        _tuningBoxService = boxService;
-        _connectionString = connectionString;
+        _orderRepository = new OrderRepository(new NpgsqlConnection(AppConnection.ConnectionString));
+        _tuningBoxRepository = new TuningBoxRepository(new NpgsqlConnection(AppConnection.ConnectionString));
 
         _orderInfoView.LoadFullInformationOrderEvent += GetFullInformationAboutOrderEvent;
-        _orderInfoView.ChangeStateOrderEvent += ChangeStateOrderAsync;
         _orderInfoView.ShowEditCarEvent += ShowEditCarView;
         _orderInfoView.ShowEditCustomerEvent += ShowEditCustomerView;
         _orderInfoView.ShowEditOrderEvent += ShowEditOrderView;
@@ -42,45 +34,39 @@ public class OrderInfoPresenter
     {
         try
         {
-            _order = await _orderService.GetOrderByTuningBoxIdAsync(boxId);
+            _order = await _orderRepository.GetOrderByTuningBoxIdAsync(boxId);
 
-            if (_order is not null)
+
+            if (_order is null)
             {
-                _order.TuningBox = await _tuningBoxService.GetFulInformationAboutTuningBoxById(boxId);
-
-                if (_order.TuningBox is not null)
-                {
-                    _orderInfoView.ShowInformationAboutOrder(_order);
-                    return;
-                }
-            }
-
-            MessageBox.Show("Order could not be loaded!",
-            "Error",
+                MessageBox.Show("Order could not be loaded!",
+                "Error",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
+            }
+
+            _order.TuningBox = await _tuningBoxRepository.GetAsync(boxId);
+
+            if (_order.TuningBox is null)
+            {
+                MessageBox.Show("Order could not be loaded!",
+                "Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+            }
+
+            _orderInfoView.ShowInformationAboutOrder(_order);
         }
         catch (InvalidOperationException)
         {
         }
     }
 
-    private async void ChangeStateOrderAsync(object sender, EventArgs e)
-    {
-        if (_order is null)
-            return;
-
-        await _orderService.ChangeStateOrderByInstance(_order);
-        _orderInfoView.ShowInformationAboutOrder(_order);
-    }
-
     private void ShowEditCarView(int carId)
     {
         var editCarView = new EditCarView();
 
-        var carService = new CarService(_connectionString);
-
-        _ = new EditCarViewPresenter(editCarView, carService);
+        _ = new EditCarViewPresenter(editCarView);
         editCarView.GetCarDataAsync(carId);
         editCarView.ShowDialog();
     }
@@ -88,9 +74,8 @@ public class OrderInfoPresenter
     private void ShowEditCustomerView(int customerId)
     {
         var editCustomerView = new EditCustomerView();
-        var customerService = new CustomerService(_connectionString);
 
-        _ = new EditCustomerViewPresenter(editCustomerView, customerService);
+        _ = new EditCustomerViewPresenter(editCustomerView);
         editCustomerView.GetDataAsync(customerId);
         editCustomerView.ShowDialog();
     }
@@ -98,10 +83,9 @@ public class OrderInfoPresenter
     private void ShowEditOrderView(int orderId)
     {
         var editOrderView = new EditOrderView();
-        var orderService = new OrderService(_connectionString);
 
-        _ = new EditOrderViewPresenter(editOrderView, orderService);
-        editOrderView.GetOldOrderData(orderId);
+        _ = new EditOrderViewPresenter(editOrderView);
+        editOrderView.GetOrderData(orderId);
         editOrderView.ShowDialog();
     }
 }

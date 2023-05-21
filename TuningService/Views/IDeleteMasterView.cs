@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using TuningService.Models;
+using TuningService.Models.ViewModels;
 
 
 namespace TuningService.Views
@@ -13,6 +15,6 @@ namespace TuningService.Views
 
         event DeleteMasterDelegate DeleteAndReplaceMasterEvent;
 
-        void SetDataAboutMasters(DataTable dt);
+        void SetDataAboutMasters(IEnumerable<MasterViewModel> masterViewModels);
     }
 }

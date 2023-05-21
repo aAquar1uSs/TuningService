@@ -1,5 +1,7 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using TuningService.Models.ViewModels;
 
 namespace TuningService.Views;
 
@@ -23,7 +25,11 @@ public interface IMainView
 
     event EventHandler ShowDeleteMasterView;
 
+    event EventHandler ShowImportMenuView;
+
+    event Func<Task<IReadOnlyCollection<DataForProcessing>>> GetDataForExport;
+
     string SearchValue { get; set; }
 
-    void SetAllDataToDataGridView(DataTable dt);
+    void SetAllDataToDataGridView(IReadOnlyCollection<ComparedDataView> comparedDataViews);
 }

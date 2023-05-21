@@ -4,7 +4,8 @@ namespace TuningService.Models;
 
 public class Customer
 {
-    public int Id { get; set; }
+    [Key]
+    public int CustomerId { get; set; }
 
     [Required]
     [StringLength(30, MinimumLength = 3, ErrorMessage = "Customer name must be between 3 and 30 characters")]
@@ -21,13 +22,4 @@ public class Customer
     [Required]
     [RegularExpression("^(?!0+$)(\\+\\d{1,3}[- ]?)?(?!0+$)\\d{9}$")]
     public string Phone { get; set; }
-
-    public Customer(string name,
-        string lastname, string surname, string phone)
-    {
-        Name = name;
-        Lastname = lastname;
-        Surname = surname;
-        Phone = phone;
-    }
 }

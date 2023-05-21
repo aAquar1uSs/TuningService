@@ -30,7 +30,6 @@
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonChangeOrder = new System.Windows.Forms.Button();
-            this.buttonChange = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.buttonEditOwner = new System.Windows.Forms.Button();
             this.labelCustomerPhone = new System.Windows.Forms.Label();
@@ -82,7 +81,6 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.buttonChangeOrder);
-            this.groupBox1.Controls.Add(this.buttonChange);
             this.groupBox1.Controls.Add(this.groupBox4);
             this.groupBox1.Controls.Add(this.groupBox3);
             this.groupBox1.Controls.Add(this.checkBoxInWork);
@@ -118,15 +116,6 @@
             this.buttonChangeOrder.UseVisualStyleBackColor = true;
             this.buttonChangeOrder.Click += new System.EventHandler(this.buttonChangeOrder_Click);
             // 
-            // buttonChange
-            // 
-            this.buttonChange.Location = new System.Drawing.Point(146, 194);
-            this.buttonChange.Name = "buttonChange";
-            this.buttonChange.Size = new System.Drawing.Size(75, 29);
-            this.buttonChange.TabIndex = 23;
-            this.buttonChange.Text = "Change";
-            this.buttonChange.UseVisualStyleBackColor = true;
-            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.buttonEditOwner);
@@ -135,9 +124,9 @@
             this.groupBox4.Controls.Add(this.labelCustomerSurname);
             this.groupBox4.Controls.Add(this.labelCustomerName);
             this.groupBox4.Controls.Add(this.labelCustomerId);
+            this.groupBox4.Controls.Add(this.label16);
             this.groupBox4.Controls.Add(this.label18);
             this.groupBox4.Controls.Add(this.label17);
-            this.groupBox4.Controls.Add(this.label16);
             this.groupBox4.Controls.Add(this.label15);
             this.groupBox4.Controls.Add(this.label12);
             this.groupBox4.Location = new System.Drawing.Point(259, 201);
@@ -202,19 +191,19 @@
             // 
             // label17
             // 
-            this.label17.Location = new System.Drawing.Point(6, 111);
+            this.label17.Location = new System.Drawing.Point(6, 52);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(79, 19);
             this.label17.TabIndex = 29;
-            this.label17.Text = "Lastname:";
+            this.label17.Text = "Surname:";
             // 
             // label16
             // 
-            this.label16.Location = new System.Drawing.Point(6, 52);
+            this.label16.Location = new System.Drawing.Point(6, 111);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(72, 19);
             this.label16.TabIndex = 28;
-            this.label16.Text = "Surname:";
+            this.label16.Text = "Lastname:";
             // 
             // label15
             // 
@@ -379,10 +368,10 @@
             this.labelMasterName.Size = new System.Drawing.Size(100, 19);
             this.labelMasterName.TabIndex = 15;
             // 
-            // labelBoxId
+            // labelBoxNumber
             // 
             this.labelBoxNumber.Location = new System.Drawing.Point(121, 167);
-            this.labelBoxNumber.Name = "labelBoxId";
+            this.labelBoxNumber.Name = "labelBoxNumber";
             this.labelBoxNumber.Size = new System.Drawing.Size(100, 19);
             this.labelBoxNumber.TabIndex = 11;
             // 
@@ -483,11 +472,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(911, 450);
+            this.ClientSize = new System.Drawing.Size(910, 448);
             this.Controls.Add(this.labelError);
             this.Controls.Add(this.groupBox1);
-            this.MaximumSize = new System.Drawing.Size(927, 489);
-            this.MinimumSize = new System.Drawing.Size(927, 489);
+            this.MaximumSize = new System.Drawing.Size(926, 487);
+            this.MinimumSize = new System.Drawing.Size(926, 487);
             this.Name = "OrderInfoView";
             this.Text = "OrderInfoView";
             this.Load += new System.EventHandler(this.OrderInfoView_Load);
@@ -496,10 +485,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
-
         }
-
-        private System.Windows.Forms.Button buttonChange;
 
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label12;

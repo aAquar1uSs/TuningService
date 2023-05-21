@@ -1,7 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Npgsql;
+using TuningService.Models.ExportModel;
+using TuningService.Models.ViewModels;
 
 namespace TuningService.Views.Impl
 {
@@ -12,13 +19,15 @@ namespace TuningService.Views.Impl
             get => textBoxSearch.Text;
             set => textBoxSearch.Text = value;
         }
+
+        private ExportModel _exportModel { get; set; }
+
         public MainView()
         {
             InitializeComponent();
             WindowState = FormWindowState.Normal;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-
-            //SetEventHandlerForOrderButton();
+            
             SetSearchEvents();
             buttonDeleteMaster.Click += (_, _) => ShowDeleteMasterView?.Invoke(this, EventArgs.Empty);
             buttonAddNewOrder.Click += (_, _) => ShowNewOrderViewEvent?.Invoke(this, EventArgs.Empty);
@@ -33,14 +42,38 @@ namespace TuningService.Views.Impl
         public event EventHandler SearchEvent;
         public event EventHandler ShowNewMasterView;
         public event EventHandler ShowDeleteMasterView;
+        public event EventHandler ShowImportMenuView;
+        public event Func<Task<IReadOnlyCollection<DataForProcessing>>> GetDataForExport; 
 
-        public void SetAllDataToDataGridView(DataTable dt)
+
+        public void SetAllDataToDataGridView(IReadOnlyCollection<ComparedDataView> comparedDataViews)
         {
-            dataGridView1.DataSource = dt;
-            if (dataGridView1.Columns.Count == 8)
-                InitHeadersInTable();
-        }
+            var dataTable = new DataTable();
+            var properties = typeof(ComparedDataView).GetProperties();
 
+            foreach (var property in properties)
+            {
+                dataTable.Columns.Add(property.Name, property.PropertyType);
+            }
+            
+            foreach (var comparedData in comparedDataViews)
+            {
+                dataTable.LoadDataRow(new object[]
+                {
+                    comparedData.CustomerId,
+                    comparedData.CustomerName,
+                    comparedData.CustomerPhone,
+                    comparedData.CarId,
+                    comparedData.CarModel,
+                    comparedData.BoxId,
+                    comparedData.MasterName,
+                    comparedData.MasterPhone
+                }, true);
+            }
+            
+            dataGridView1.DataSource = dataTable;
+        }
+        
         private void SetSearchEvents()
         {
             buttonSearch.Click += delegate
@@ -94,8 +127,7 @@ namespace TuningService.Views.Impl
                 if (result == DialogResult.No)
                     return;
 
-                RemoveDataFromTableEvent?.Invoke(customerId);
-                UpdateAllDataEvent?.Invoke(this, EventArgs.Empty);
+                RemoveDataFromTableEvent?.Invoke(customerId); 
             }
             catch (FormatException)
             {
@@ -106,29 +138,15 @@ namespace TuningService.Views.Impl
             }
         }
 
-        private void InitHeadersInTable()
-        {
-            dataGridView1.Columns[0].HeaderText = "Id";
-            dataGridView1.Columns[1].HeaderText = "Full name";
-            dataGridView1.Columns[2].HeaderText = "Customer phone";
-            dataGridView1.Columns[3].HeaderText = "Car id";
-            dataGridView1.Columns[4].HeaderText = "Car";
-            dataGridView1.Columns[5].HeaderText = "Tuning box";
-            dataGridView1.Columns[6].HeaderText = "Master full name";
-            dataGridView1.Columns[7].HeaderText = "Master phone";
-        }
-
         private void buttonShowOrder_Click(object sender, EventArgs e)
         {
-
             try
             {
                 var index = Convert
                         .ToInt32(dataGridView1[5, dataGridView1.CurrentRow.Index]
                             .Value
                             .ToString());
-
-                //ButtonHandler
+                
                  ShowOrderInfoViewEvent?.Invoke(index);
             }
             catch (FormatException)
@@ -151,13 +169,11 @@ namespace TuningService.Views.Impl
         {
             try
             {
-
                 var index = Convert
                         .ToInt32(dataGridView1[5, dataGridView1.CurrentRow.Index]
                             .Value
                             .ToString());
-
-                //DataGridHandler
+                
                     ShowOrderInfoViewEvent?.Invoke(index);
             }
             catch (FormatException)
@@ -174,6 +190,69 @@ namespace TuningService.Views.Impl
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+        }
+
+        private async void ExportToCSV(object sender, EventArgs e)
+        {
+            if (backgroundWorker.IsBusy)
+                return;
+
+            using var sfd = new SaveFileDialog { Filter = "CSV files (*.csv)|*.csv", ValidateNames = true };
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                _exportModel = new ExportModel
+                {
+                    Data = (await GetDataForExport?.Invoke()).ToArray(),
+                    FileName = sfd.FileName
+                };
+                
+                progressBar.Minimum = 0;
+                progressBar.Value = 0;
+                backgroundWorker.RunWorkerAsync(_exportModel);
+            }
+
+        }
+
+        private void ImportFromCSV(object sender, EventArgs e)
+        {
+            ShowImportMenuView?.Invoke(this, e);
+        }
+
+        private void backgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            var list = ((ExportModel)e.Argument).Data;
+            var fileName = ((ExportModel)e.Argument).FileName;
+            var index = 1;
+            var process = list.Length;
+            using var sw = new StreamWriter(new FileStream(fileName, FileMode.Create), Encoding.UTF8);
+            var sb = new StringBuilder();
+            sb.AppendLine("CustomerName, CustomerSurname, CustomerLastname, CustomerPhone, CarBrand, CarModel, BoxNumber, StartDate, EndDate, Description, Price");
+                
+            foreach (DataForProcessing p in list)
+            {
+                if (!backgroundWorker.CancellationPending)
+                {
+                    backgroundWorker.ReportProgress(index++ * 100 / process);
+                    sb.AppendLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", p.CustomerName, p.CustomerSurname, p.CustomerLastname, p.CustomerPhone,
+                        p.CarBrand, p.CarModel, p.BoxNumber, p.StartDate, p.EndDate, p.Description, p.Price));
+                }
+            }
+            sw.Write(sb.ToString());
+            
+            MessageBox.Show("Data has been successfully exported",
+                "Success",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+
+            progressBar.Value = 0;
+            labelStatus.Text = "Processing...0%";
+        }
+
+        private void backgroundWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            progressBar.Value = e.ProgressPercentage;
+            labelStatus.Text = string.Format("Processing...{0}%", e.ProgressPercentage);
+            progressBar.Update();
         }
     }
 }
