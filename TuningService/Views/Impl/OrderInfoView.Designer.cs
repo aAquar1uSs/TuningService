@@ -124,9 +124,9 @@
             this.groupBox4.Controls.Add(this.labelCustomerSurname);
             this.groupBox4.Controls.Add(this.labelCustomerName);
             this.groupBox4.Controls.Add(this.labelCustomerId);
+            this.groupBox4.Controls.Add(this.label16);
             this.groupBox4.Controls.Add(this.label18);
             this.groupBox4.Controls.Add(this.label17);
-            this.groupBox4.Controls.Add(this.label16);
             this.groupBox4.Controls.Add(this.label15);
             this.groupBox4.Controls.Add(this.label12);
             this.groupBox4.Location = new System.Drawing.Point(259, 201);
@@ -191,19 +191,19 @@
             // 
             // label17
             // 
-            this.label17.Location = new System.Drawing.Point(6, 111);
+            this.label17.Location = new System.Drawing.Point(6, 52);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(79, 19);
             this.label17.TabIndex = 29;
-            this.label17.Text = "Lastname:";
+            this.label17.Text = "Surname:";
             // 
             // label16
             // 
-            this.label16.Location = new System.Drawing.Point(6, 52);
+            this.label16.Location = new System.Drawing.Point(6, 111);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(72, 19);
             this.label16.TabIndex = 28;
-            this.label16.Text = "Surname:";
+            this.label16.Text = "Lastname:";
             // 
             // label15
             // 

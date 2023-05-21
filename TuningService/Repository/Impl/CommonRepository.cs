@@ -14,7 +14,7 @@ namespace TuningService.Repository.Impl
         private readonly NpgsqlConnection _db;
         
         private const string SqlRequestSearchInfo = "SELECT customer.customer_id AS CustomerId,"
-                                                        + "concat(customer.surname,' ', customer.name, ' ', customer.lastname) AS CustomerName, customer.phone AS CustomerPhone,"
+                                                        + "concat(customer.lastname ,' ', customer.name, ' ', customer.surname) AS CustomerName, customer.phone AS CustomerPhone,"
                                                         + "car.car_id  AS CarId, concat(car.brand, ' ', car.model) AS CarModel, tuning_box.box_id AS BoxId,"
                                                         + "master.master_id AS MasterId, concat(master.name, ' ', master.surname) AS MasterName, master.phone AS MasterPhone "
                                                         + "FROM customer JOIN car ON customer.customer_id = car.customer_id "
@@ -35,7 +35,7 @@ namespace TuningService.Repository.Impl
                 _db.Open();
 
             var sqlQuery = "SELECT customer.customer_id AS CustomerId, " +
-                           "concat(customer.surname, ' ', customer.name, ' ', customer.lastname) AS CustomerName, customer.phone AS CustomerPhone, " +
+                           "concat(customer.lastname ,' ', customer.name, ' ', customer.surname) AS CustomerName, customer.phone AS CustomerPhone, " +
                            "car.car_id AS CarId, concat(car.brand, ' ', car.model) AS CarModel, " +
                            "tuning_box.box_id AS BoxId, " +
                            "master.master_id AS MasterId, concat(master.name, ' ', master.surname) AS MasterName, master.phone AS MasterPhone " +
