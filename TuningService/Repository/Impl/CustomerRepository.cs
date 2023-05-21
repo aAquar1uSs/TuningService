@@ -46,6 +46,17 @@ public class CustomerRepository : ICustomerRepository
         return await _db.QueryFirstOrDefaultAsync<Customer>(sqlQuery, parameters, commandType: CommandType.Text);
     }
 
+    public async Task<Customer> GetAsync(string phone)
+    {
+        if (_db.State == ConnectionState.Closed)
+            _db.Open();
+
+        var sqlQuery = "SELECT customer_id AS CustomerId, name AS Name, surname as Surname, lastname AS Lastname, phone as Phone  FROM customer WHERE customer.phone = @phone";
+        var parameters = new { Phone = phone };
+        
+        return await _db.QueryFirstOrDefaultAsync<Customer>(sqlQuery, parameters, commandType: CommandType.Text);
+    }
+
     public async Task<int> InsertAsync(Customer customer)
     {
         if (_db.State == ConnectionState.Closed)

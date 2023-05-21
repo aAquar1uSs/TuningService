@@ -9,6 +9,8 @@ public interface ICustomerRepository
 
     Task<Customer?> GetAsync(int customerId);
 
+    Task<Customer?> GetAsync(string phone);
+
     Task<int> InsertAsync(Customer customer);
 
     Task UpdateAsync(Customer customer);

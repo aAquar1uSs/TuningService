@@ -44,7 +44,17 @@ public class NewOrderViewPresenter
     {
         await using var transaction = _db.BeginTransaction(IsolationLevel.ReadCommitted);
 
-        var customerId = await _customerRepository.InsertAsync(customer);
+        int customerId;
+        var maybeCustomer = await _customerRepository.GetAsync(customer.Phone);
+        if (maybeCustomer is not null)
+        {
+            customerId = maybeCustomer.CustomerId;
+        }
+        else
+        {
+            customerId = await _customerRepository.InsertAsync(customer);  
+        }
+        
 
         car.Owner.CustomerId = customerId;
         var carId = await _carRepository.InsertAsync(car);
